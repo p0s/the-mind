@@ -1,0 +1,66 @@
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.venv*/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Devcontainer / editor config (keep local)
+.devcontainer/
+.vscode/
+.idea/
+*.code-workspace
+
+# Environment / local state
+.env
+.env.*
+.direnv/
+.envrc
+
+# Local private docs (not committed)
+spec.md
+spec.local.md
+
+# Build artifacts (optional later)
+manuscript/build/
+manuscript/book.md
+manuscript/book_public.md
+manuscript/references.md
+content/series/chapters/
+dist/
+
+# Download artifacts (yt-dlp, etc.)
+*.aria2
+*.part
+*.ytdl
+*.info.json
+*.description
+*.live_chat.json
+*.webm
+*.mp4
+*.mkv
+*.mov
+*.m4a
+*.mp3
+*.wav
+*.flac
+
+# Raw transcripts (keep notes + timecodes in git, not the raw captions)
+transcripts/
+
+# Temporary local-only helper files
+TEMP_GITHUB_SSH_SIGNING_KEY.pub
