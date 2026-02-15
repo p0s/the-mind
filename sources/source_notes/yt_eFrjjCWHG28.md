@@ -1,0 +1,22 @@
+# yt_eFrjjCWHG28 — Joscha Bach Stades de Conscience, IA et la Vie comme un Jeu Contre l'Entropie
+
+## Metadata
+- Kind: youtube
+- Creator/channel: Germain Linder
+- Published: 2025-11-10
+- URL: https://www.youtube.com/watch?v=eFrjjCWHG28
+
+## One-paragraph summary
+AUTO (keyword-based): dominant terms include identity, consciousness, alignment, goal, model, social, understanding, experience.
+
+## Key segments (timecodes)
+- [00:00:30-00:00:32] keywords: consciousness
+- [00:02:40-00:02:42] keywords: identity, value
+- [00:04:40-00:04:42] keywords: goal, identity
+- [00:06:29-00:06:31] keywords: goal, identity
+
+## Terms to add to glossary
+TBD.
+
+## Candidate claims to add to claim ledger
+TBD.
