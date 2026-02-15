@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="{{root}}assets/style.css" />
+  </head>
+  <body class="{{body_class}}">
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="topbar">
+      <div class="topbar__brand">
+        <a class="brand" href="{{root}}index.html">the-mind</a>
+        <div class="tagline">A definition-driven synthesis of mind (Bach framework)</div>
+      </div>
+
+      <div class="topbar__tools">
+        <div class="search">
+          <input id="searchInput" class="search__input" type="search" placeholder="Search…" autocomplete="off" />
+          <div id="searchResults" class="search__results" hidden></div>
+        </div>
+
+        <button id="toggleTags" class="btn" type="button" title="Toggle internal annotations">
+          Annotations
+        </button>
+      </div>
+    </header>
+
+    <div class="layout">
+      <nav class="sidenav" aria-label="Primary">
+        {{nav}}
+      </nav>
+
+      <main id="main" class="main">
+        <article class="paper">
+          {{content}}
+        </article>
+      </main>
+    </div>
+
+    <footer class="footer">
+      <div class="footer__inner">
+        <div>Not affiliated with or endorsed by Joscha Bach.</div>
+        <div class="footer__meta">
+          <span>Source-first: citations link to original talks/essays.</span>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      window.__SITE_ROOT__ = "{{root}}";
+      window.__PAGE_ID__ = "{{page_id}}";
+    </script>
+    <script src="{{root}}assets/app.js"></script>
+    {{extra_scripts}}
+  </body>
+</html>
