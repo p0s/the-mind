@@ -8,10 +8,15 @@ Rationale:
 - Keep GitHub README and the built site Home page in sync.
 - Rewrite site-relative links (reader/index.html, etc.) to the GitHub Pages URL
   so the README links work on GitHub without committing dist/.
+
+Override:
+- Set THE_MIND_SITE_BASE_URL to rewrite links against a custom site base URL
+  (e.g. after moving to a custom domain).
 """
 
 from __future__ import annotations
 
+import os
 import re
 import subprocess
 from pathlib import Path
@@ -45,6 +50,9 @@ def parse_repo_slug(remote_url: str) -> Optional[Tuple[str, str]]:
 
 
 def github_pages_base_url() -> Optional[str]:
+    override = (os.environ.get("THE_MIND_SITE_BASE_URL") or "").strip()
+    if override:
+        return override if override.endswith("/") else override + "/"
     try:
         cp = subprocess.run(
             ["git", "config", "--get", "remote.origin.url"],

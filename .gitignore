@@ -31,6 +31,14 @@ npm-debug.log*
 .direnv/
 .envrc
 
+# Cookies / auth exports (never commit)
+cookies.txt
+cookies*.txt
+cookies*.json
+cookies/
+*cookies*.txt
+*cookies*.json
+
 # Local private docs (not committed)
 spec.md
 spec.local.md
