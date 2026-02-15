@@ -113,6 +113,55 @@ function setupTagToggle() {
   });
 }
 
+function setupThemeToggle() {
+  const btn = document.getElementById("toggleTheme");
+  if (!btn) return;
+
+  function getStoredTheme() {
+    try {
+      const t = localStorage.getItem("theme");
+      if (t === "dark" || t === "light") return t;
+    } catch (e) {}
+    return null;
+  }
+
+  function setStoredTheme(theme) {
+    try {
+      localStorage.setItem("theme", theme);
+    } catch (e) {}
+  }
+
+  function currentTheme() {
+    return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+  }
+
+  function apply(theme) {
+    document.documentElement.dataset.theme = theme;
+    btn.setAttribute("aria-pressed", theme === "dark" ? "true" : "false");
+    const label = theme === "dark" ? "Switch to light mode" : "Switch to dark mode";
+    btn.title = label;
+    btn.setAttribute("aria-label", label);
+  }
+
+  apply(currentTheme());
+
+  btn.addEventListener("click", () => {
+    const next = currentTheme() === "dark" ? "light" : "dark";
+    setStoredTheme(next);
+    apply(next);
+  });
+
+  const mq = window.matchMedia ? window.matchMedia("(prefers-color-scheme: dark)") : null;
+  if (mq && !getStoredTheme()) {
+    const handler = (ev) => {
+      apply(ev.matches ? "dark" : "light");
+    };
+    if (mq.addEventListener) mq.addEventListener("change", handler);
+    else if (mq.addListener) mq.addListener(handler);
+  }
+}
+
 const ROOT = window.__SITE_ROOT__ || "./";
 setupSearch(ROOT);
 setupTagToggle();
+setupThemeToggle();
