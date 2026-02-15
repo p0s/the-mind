@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import csv
 import html
+import os
 import re
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
@@ -41,7 +42,7 @@ CSV_FIELDS = [
     "notes",
 ]
 
-USER_AGENT = "the-mind-source-importer/0.1 (+https://github.com/p0s/the-mind)"
+USER_AGENT = os.environ.get("THE_MIND_USER_AGENT", "the-mind-source-importer/0.1")
 SITEMAP_URL = "http://bach.ai/sitemap.xml"
 
 

@@ -19,6 +19,7 @@ from __future__ import annotations
 import argparse
 import csv
 import html
+import os
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -38,7 +39,7 @@ CSV_FIELDS = [
     "notes",
 ]
 
-USER_AGENT = "the-mind-source-importer/0.1 (+https://github.com/p0s/the-mind)"
+USER_AGENT = os.environ.get("THE_MIND_USER_AGENT", "the-mind-source-importer/0.1")
 
 
 def fetch_text(url: str) -> str:
