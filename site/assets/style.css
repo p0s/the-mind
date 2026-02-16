@@ -168,6 +168,16 @@ body {
   color: var(--muted);
   margin-top: 2px;
 }
+.tagline a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--line-hover);
+  text-underline-offset: 2px;
+}
+.tagline a:hover {
+  color: var(--ink0);
+  text-decoration-color: var(--accent);
+}
 
 .topbar__tools {
   display: flex;
