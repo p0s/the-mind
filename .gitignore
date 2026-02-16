@@ -40,7 +40,6 @@ cookies/
 *cookies*.json
 
 # Local private docs (not committed)
-spec.md
 spec.local.md
 
 # Build artifacts (optional later)
