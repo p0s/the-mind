@@ -74,6 +74,45 @@
   --cite-hover-bg: rgba(86, 214, 204, 0.14);
 }
 
+/* Default to system theme when possible (and fall back to light if unsupported).
+   A user-selected light theme should override system-dark. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg0: #0f1112;
+    --bg1: #0f1112;
+    --ink0: #ece7dd;
+    --ink1: #d7d1c7;
+    --muted: #a7a095;
+    --paper: #16191a;
+    --paper-strong: #1b1f20;
+    --line: rgba(236, 231, 221, 0.14);
+    --line-hover: rgba(236, 231, 221, 0.26);
+    --shadow: rgba(0, 0, 0, 0.45);
+    --topbar-bg: rgba(15, 17, 18, 0.92);
+
+    --code-bg: rgba(236, 231, 221, 0.08);
+    --code-border: rgba(236, 231, 221, 0.12);
+    --pre-bg: rgba(236, 231, 221, 0.08);
+    --pre-border: rgba(236, 231, 221, 0.14);
+    --diagram-bg: rgba(236, 231, 221, 0.04);
+    --diagram-border: rgba(236, 231, 221, 0.12);
+
+    --tag-note: rgba(236, 231, 221, 0.22);
+    --tag-open: rgba(236, 231, 221, 0.30);
+    --tag-bach: rgba(86, 214, 204, 0.38);
+    --tag-synth: rgba(226, 154, 122, 0.38);
+
+    --accent: #56d6cc;
+    --accent2: #e29a7a;
+    --accent-hover-bg: rgba(86, 214, 204, 0.14);
+    --accent-hover-border: rgba(86, 214, 204, 0.28);
+    --current-bg: rgba(226, 154, 122, 0.18);
+    --current-border: rgba(226, 154, 122, 0.34);
+    --cite-border: rgba(86, 214, 204, 0.34);
+    --cite-hover-bg: rgba(86, 214, 204, 0.14);
+  }
+}
+
 * { box-sizing: border-box; }
 html {
   height: 100%;
