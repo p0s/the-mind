@@ -60,27 +60,11 @@
 [SYNTH] In a control framing, the question is not "are memes good or bad?" It is: what do they optimize, and what feedback loops select them? A meme that increases group cohesion can be adaptive in a hostile environment even if it distorts reality. A meme that maximizes engagement can spread even if it destroys long-horizon coordination.
 
 ## Worked example
-[NOTE] A contract.
+[NOTE] A person is driving to a time-sensitive meeting in city traffic.
 
-A contract is a shared representation: a model that both parties expect to be enforced. It changes the predicted future for both agents. The enforcement can be legal, reputational, or internalized as norm. In each case, the key is the same: a commitment becomes stable because deviation carries predictable cost.
-
-This illustrates why social systems can be understood as control systems: they implement feedback that makes certain behaviors stable and others unstable.
-
-[NOTE] A second example: money.
-
-Money is not just a neutral medium of exchange. It is also a social control signal: a way of assigning generalized reward and thereby steering attention, effort, and learning at scale. This framing becomes especially salient when considering AI deployment: if the reward infrastructure is misaligned, increasing capability can amplify failure rather than solve it.
-
-[NOTE] A third example: reputational loops.
-
-Reputation is a slow feedback mechanism that allows norms to be enforced without constant coercion. An agent that predicts reputational consequences can act cooperatively even when cheating would yield short-term gain. This is another reason why social emotions matter: they are internal channels that make reputational costs feel real before the external punishment arrives.
-
-[NOTE] A fourth example: traffic norms.
-
-Traffic is a coordination problem under time pressure. A stop sign, a right-of-way rule, or a traffic light is an institutional control loop: it makes behavior predictable so that agents can coordinate without explicit negotiation. When the norm is shared, the world-models align enough that driving becomes routine. When norms diverge, the same physical intersection becomes a high-uncertainty environment and demands much more attention and modeling.
-
-[NOTE] A fifth example: science as collective error correction.
-
-Science can be seen as a set of institutionalized feedback loops for truth-tracking: measurement, peer review, replication, and formal models that can be challenged by reality. In a control framing, this is the collective analogue of prediction error minimization. It is a way for culture to build and refine models that no single individual could maintain alone.
+- Traffic is social modeling: turn signals, eye contact, and lane position are messages that coordinate predictions between agents.
+- Norms (right-of-way, speed limits, courtesy) are shared control loops that reduce uncertainty and make intersections tractable.
+- When norms diverge, the same physical scene becomes a high-entropy negotiation problem that demands more attention and explicit modeling.
 
 ## Predictions / implications
 [SYNTH]

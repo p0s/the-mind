@@ -63,27 +63,11 @@ flowchart LR
 [BACH] This sets up the key distinction for the next chapter: attention is selection; consciousness is a particular way selected content becomes integrated into a point of view. Attention is necessary for coherent agency, but it is not, by itself, the whole story of being conscious. <!-- src: yt_UkAOHrbcnAs @ 00:19:11 -->
 
 ## Worked example
-[NOTE] Mental arithmetic.
+[NOTE] A person is driving to a time-sensitive meeting in city traffic.
 
-To compute in one's head, the system must hold intermediate values while suppressing distractions. Working memory is the stabilization mechanism; attention is the policy that maintains that stabilization. A distraction is not just an external stimulus; it is internal competition for workspace access.
-
-[NOTE] A second example: rumination.
-
-Rumination can be described as an attentional policy that repeatedly selects the same internal content (a worry, a plan, a regret) because it is tagged as high-valence/high-uncertainty. The system keeps re-running the loop because it predicts that "thinking more" might resolve the error signal. Often, however, the loop fails to produce new information, and attention becomes trapped in a low-yield attractor.
-
-[NOTE] A third example: mind wandering.
-
-Mind wandering can be interpreted as the default behavior of a system that is not currently clamped by a strong task set. The workspace is filled by whatever is most salient under current value and uncertainty: unresolved plans, social concerns, memories, fantasies. This is not necessarily dysfunction; it can be spontaneous model exploration. It becomes dysfunctional when it repeatedly returns to the same low-yield attractor without producing policy improvement.
-
-[NOTE] A fourth example: feed algorithms.
-
-A feed is a machine-designed attentional environment. It presents a stream of candidates optimized for engagement. In control terms, it supplies a continual sequence of high-salience cues that compete for workspace. Over time, this can train attentional policies: the agent becomes biased toward novelty and social reward, and away from slow, low-reward tasks that build long-horizon agency.
-
-The point is not moral panic about technology. The point is architectural: if attention is the scarce resource, then any environment that systematically shapes attention is systematically shaping the agent.
-
-[NOTE] A fifth example: flow.
-
-In flow, attention is stable, the workspace is dominated by task-relevant representations, and error signals are tractable enough that the agent can continuously update policy without getting stuck in meta-conflict. Phenomenologically, this can feel like effortlessness: not because control is absent, but because the control loops are coherent and do not require frequent arbitration.
+- Attention selects a few cues into workspace (light state, lead car braking, pedestrian at curb) while suppressing irrelevant chatter.
+- Workspace integration binds "late + wet road + yellow light" into one coherent control state instead of competing reflexes.
+- Attentional capture (phone buzz, billboard, intrusive thought) is a control hazard: it steals workspace and degrades policy.
 
 ## Predictions / implications
 [SYNTH]

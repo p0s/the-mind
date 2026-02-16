@@ -100,28 +100,11 @@ flowchart LR
 [SYNTH] This does not settle ethics, but it makes ethical questions more precise. Instead of asking "does this system have free will?", one asks: what control capacities does it have; what commitments can it maintain; what incentives train it; and what governance loops constrain it?
 
 ## Worked example
-[NOTE] Thermostat vs agent.
+[NOTE] A person is driving to a time-sensitive meeting in city traffic.
 
-- A simple thermostat measures temperature now and switches heat on/off. It regulates the present. It does not need a model of how the room will change.
-- A predictive thermostat models thermal inertia: how quickly the room heats after switching, how sensor placement distorts measurement, and how outside temperature matters. As soon as it regulates the future, it begins to look like it has preferences ("wants the room warm"), knowledge ("knows the room is large"), and commitments ("keeps heating until the predicted future crosses a threshold").
-
-[NOTE] The point is not to anthropomorphize thermostats, but to show that agent-like properties can arise as projections of model-based control.
-
-[NOTE] A second example: a self-driving stack.
-
-A lane-keeping controller can be highly competent at a narrow task (stay centered, avoid collisions) without being a general agent. Agency increases when the system must:
-- maintain a world-model that persists across occlusion,
-- plan among counterfactual futures,
-- trade off constraints (comfort, safety, speed),
-- and manage commitments ("take this exit") over time despite local temptations.
-
-As these requirements accumulate, "the agent" becomes the integrated control stack rather than any single module.
-
-[NOTE] A third example: deliberate practice as an agentic intervention.
-
-Consider a tennis player who decides: "today I will improve my backhand." This commitment changes the training loop. The player is no longer optimizing for immediate success in the game; they are optimizing for learning. They will take actions that temporarily reduce performance (slower strokes, exaggerated form) because they predict long-term policy improvement.
-
-This is a small but vivid instance of multi-level agency. A higher-level loop (learning goal) temporarily overrides a lower-level loop (win points now). The ability to install such a learning commitment is a control capacity: the agent can decide what kind of agent it will become.
+- Agent: the integrated control stack selects actions to keep the car within viability bounds (lane, speed, collision margins).
+- Control: steering and braking close fast feedback loops (error = deviation from lane/spacing targets), while a slower loop maintains commitments ("take this exit").
+- Degrees of agency show up when tradeoffs appear (comfort vs speed vs safety) and the system must arbitrate under uncertainty.
 
 ## Predictions / implications
 [SYNTH]

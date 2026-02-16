@@ -66,25 +66,11 @@ flowchart TB
 ```
 
 ## Worked example
-[NOTE] Rationalization.
+[NOTE] A person is driving to a time-sensitive meeting in city traffic.
 
-A person is asked why they chose a particular option. Often, the action was produced by fast policies and affective evaluation. Yet the person can produce a coherent narrative explanation. In this framework, the narrative is not a lie; it is a model completion: a compact story that makes the action intelligible and socially legible.
-
-The danger is to treat narrative as direct access to mechanism. Introspection reports the content of the self-model, not the circuitry that produced the action.
-
-[NOTE] A second example: free will as compulsion.
-
-In this framing, "free will" is not a metaphysical exception to causality. It is the ability of the agent to act according to what it takes to be right (its higher-order model and commitments), rather than being dragged by compulsive local loops. When a person says "I couldn't help it", that is a report of internal governance failure: the endorsed policy did not control the actuators.
-
-[NOTE] A third example: role switching.
-
-The same person can behave very differently as a parent, a manager, a friend, or a student. In this framework, these are not separate souls. They are context-specific self-model configurations: different constraints become salient, different commitments become active, and different narratives become the interface to others.
-
-This matters because it shows why identity is both stable and plastic. Some identity constraints persist across roles ("I don't lie"), while others are role-specific ("in this context I am responsible for decisions"). A mind that cannot switch roles becomes rigid; a mind that switches without continuity becomes incoherent.
-
-[NOTE] A fourth example: depersonalization as boundary instability.
-
-In depersonalization-like experiences, people report that the world is present but the self feels distant or unreal. In the present framing, this can be interpreted as a partial decoupling between observer processes and the self-model: perception-of-perception may still occur, but the self/world boundary representation is not being stabilized in the usual way.
+- Self-model: "I am a careful driver" (or "I keep promises") becomes a constraint that shapes which policies feel available.
+- Narrative: after a risky maneuver, the agent can produce a story ("I had to") that stabilizes identity even if the mechanism was reactive.
+- Role switches appear as context shifts: driving alone vs with a child passenger activates different commitments and different self-descriptions.
 
 ## Predictions / implications
 [SYNTH]

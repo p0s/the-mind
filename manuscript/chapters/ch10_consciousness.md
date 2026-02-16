@@ -87,31 +87,11 @@ flowchart TB
 [SYNTH] This matters for AI discourse. Conversational fluency and self-report are cheap to generate relative to building an architecture that maintains coherent self-relation across time. Treating self-report as evidence of consciousness encourages anthropomorphic over-attribution.
 
 ## Worked example
-[NOTE] The epiphany.
+[NOTE] A person is driving to a time-sensitive meeting in city traffic.
 
-A person struggles with a problem, then suddenly "sees" the solution. In a coherence framing:
-- multiple subsystems produce incompatible partial models,
-- attention brings them into a shared integration arena,
-- conscious processing resolves the incoherence by constructing a new stable model,
-- the phenomenology of insight is the subjective aspect of this stabilization.
-
-[NOTE] The epiphany feels like a direct perception of truth, but it is also an internal reconfiguration: the model became coherent enough that the system can act and explain.
-
-[NOTE] A second example: being conscious in a dream.
-
-Consciousness is often associated with wakefulness, but in this framing it is associated with a particular organization of modeling and self-relation. A system can be conscious in dreams: it can inhabit a modeled world, even if that world is not constrained by current sensory input. This helps separate "consciousness" from "veridical perception".
-
-It also motivates a separation between consciousness and first-person perspective: some conscious states may lack a stable first-person vantage ("looking from nowhere"), even though something is being experienced.
-
-[NOTE] A third example: meditation as self-model reconfiguration.
-
-In meditation practices, the agent often learns to observe the contents of experience without immediately identifying with them. In the present framing, this can be interpreted as changing the observer/self-model coupling: the system maintains perception-of-perception while weakening the narrative that says "this is happening to me". Phenomenologically, the world can remain vivid while the sense of self becomes thinner or more transparent.
-
-This example matters because it makes deconstruction legible as architecture. It is not a metaphysical revelation; it is a change in representational stance and in governance of attention.
-
-[NOTE] A fourth example: autopilot and dissociation.
-
-People can perform complex behavior with minimal reportable awareness: driving a familiar route while thinking about something else, typing while planning a conversation, or acting out a practiced routine. In this framing, the agent is still controlling, but the control is executed by cached policies that do not require the full workspace/conductor loop. When something unexpected happens (a sudden hazard), attention snaps back and conscious integration reasserts itself.
+- Most of the drive runs on cached policies, but when something unexpected happens (a sudden swerve), attention pulls content into a shared integration arena.
+- Conscious experience is the stabilized "now": the system models not just the road, but its own act of perceiving and deciding in real time.
+- This is why "autopilot driving" can feel like missing time: control continues, but the observer-stabilization loop is only weakly engaged.
 
 ## Predictions / implications
 [SYNTH]

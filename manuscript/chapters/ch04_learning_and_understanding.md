@@ -83,26 +83,11 @@ flowchart LR
 ```
 
 ## Worked example
-[NOTE] Skill versus skill acquisition.
+[NOTE] A person is driving to a time-sensitive meeting in city traffic.
 
-A person can memorize the moves to solve a puzzle, but that does not imply understanding. Understanding appears when the person can solve variations: the model has compressed the problem into a reusable structure.
-
-In machine learning terms, a system can overfit: it learns a brittle representation that performs on the training distribution but collapses out of distribution. Under this lens, overfitting is not "too much learning"; it is the wrong compression. The model captured surface statistics that do not preserve invariances relevant for control.
-
-[NOTE] A second example: programming as self-play.
-
-Programming gives a peculiar kind of feedback: the program compiles or it does not; tests pass or they do not. This turns many problems into a self-play loop where the environment is a formal system that can evaluate behavior. This is useful because it separates:
-- "sounding correct" from being correct,
-- imitation from construction,
-- and verbal fluency from control-relevant structure.
-
-This also shows why some domains accelerate quickly with AI: wherever the world provides cheap, dense feedback, learning becomes easier to stabilize.
-
-[NOTE] A third example: fluent explanations without grounded control.
-
-A system can learn to produce explanations that match the style and surface logic of human explanations without being able to reliably use those explanations as a basis for control. The difference shows up when the system must keep track of constraints across time, notice contradictions, or act in the world under uncertainty.
-
-This is why understanding is not an aesthetic property of text. It is a property of representations: do they support stable counterfactual reasoning and action under perturbation?
+- Learning: repeated commutes teach which cues predict congestion and which detours actually save time.
+- Understanding: the driver handles variations (road closed, new signage) because the model compressed reusable invariances, not just a memorized route.
+- Overfitting looks like brittle habits: a policy that worked on one street fails when conditions shift (rain, construction, new traffic pattern).
 
 ## Predictions / implications
 [SYNTH]
