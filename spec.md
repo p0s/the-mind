@@ -100,16 +100,16 @@ Time/version handling:
 
 ## 4) Repository Backbone (shared foundation)
 
-The "backend" of the project is the source inventory plus extracted, timecoded ideas:
-- `sources/sources.csv` (canonical source index)
-- `sources/source_notes/` (timecoded notes per source)
-- `notes/glossary.md` (canonical definitions + disambiguations)
-- `notes/claims.md` (claim ledger)
-- `notes/concept_map.md` (dependency/disambiguation graph)
+Mental model (architecture):
+- This repo is a small, reproducible pipeline from **sources** → **extracted meaning** → **publishable views**.
+- Think of `notes/` + `sources/` as an intermediate semantic layer (an IR) that makes long-form writing auditable and consistent.
 
-Long-form content draws from that backend:
-- `manuscript/` (reader/book chapters + references)
-- `content/blog/posts/` (question-driven companion essays)
+Layers (data flow):
+1. Evidence (inputs): `sources/sources.csv` (canonical source index) + optional local artifacts (e.g., transcripts; gitignored).
+2. Extraction (timecoded notes): `sources/source_notes/` (segments, anchors, candidate claims).
+3. Semantic backbone (canonical meaning): `notes/glossary.md`, `notes/claims.md`, `notes/concept_map.md`.
+4. Views (human-facing composition): `manuscript/chapters/`, `content/blog/posts/`, `site/home.md`.
+5. Builds (generated views): `manuscript/book*.md`, `manuscript/references.md`, `README.md`, `content/series/chapters/`, `dist/`.
 
 Multi-output intent:
 - Treat the backend (sources + extracted claims/terms) as the **base layer of knowledge**.
