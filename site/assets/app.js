@@ -161,7 +161,48 @@ function setupThemeToggle() {
   }
 }
 
+function setupNavToggle() {
+  const btn = document.getElementById("toggleNav");
+  const nav = document.getElementById("siteNav");
+  if (!btn || !nav) return;
+
+  function setOpen(open) {
+    document.body.classList.toggle("nav-open", open);
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+    btn.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    btn.title = open ? "Close menu" : "Open menu";
+  }
+
+  setOpen(false);
+
+  btn.addEventListener("click", () => {
+    const open = !document.body.classList.contains("nav-open");
+    setOpen(open);
+  });
+
+  nav.addEventListener("click", (ev) => {
+    const t = ev.target;
+    if (t && t.closest && t.closest("a")) {
+      setOpen(false);
+    }
+  });
+
+  const mq = window.matchMedia ? window.matchMedia("(max-width: 920px)") : null;
+  if (mq) {
+    const onChange = (ev) => {
+      if (!ev.matches) setOpen(false);
+    };
+    if (mq.addEventListener) mq.addEventListener("change", onChange);
+    else if (mq.addListener) mq.addListener(onChange);
+  }
+
+  document.addEventListener("keydown", (ev) => {
+    if (ev.key === "Escape") setOpen(false);
+  });
+}
+
 const ROOT = window.__SITE_ROOT__ || "./";
+setupNavToggle();
 setupSearch(ROOT);
 setupTagToggle();
 setupThemeToggle();

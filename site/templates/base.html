@@ -45,6 +45,20 @@
       </div>
 
       <div class="topbar__tools">
+        <button
+          id="toggleNav"
+          class="btn btn--icon btn--nav"
+          type="button"
+          title="Open menu"
+          aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="siteNav"
+        >
+          <svg class="nav-toggle__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M3 6h18M3 12h18M3 18h18" />
+          </svg>
+        </button>
+
         <div class="search">
           <input id="searchInput" class="search__input" type="search" placeholder="Search…" autocomplete="off" />
           <div id="searchResults" class="search__results" hidden></div>
@@ -74,7 +88,7 @@
     </header>
 
     <div class="layout">
-      <nav class="sidenav" aria-label="Primary">
+      <nav id="siteNav" class="sidenav" aria-label="Primary">
         {{nav}}
       </nav>
 
