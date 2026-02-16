@@ -33,6 +33,13 @@ def parse_hms(t: str) -> Optional[float]:
     return out
 
 
+def parse_offset_seconds(v: str) -> float:
+    try:
+        return float((v or "").strip() or "0")
+    except Exception:
+        return 0.0
+
+
 def iter_vtt(path: Path) -> Iterator[Tuple[float, float, str]]:
     lines = path.read_text(encoding="utf-8", errors="replace").splitlines()
     i = 0
@@ -97,7 +104,13 @@ def iter_segments(path: Path) -> Iterator[Tuple[float, float, str]]:
         yield from iter_srt(path)
 
 
-def find_transcript_path(source_id: str) -> Optional[Path]:
+@dataclass(frozen=True)
+class TranscriptInfo:
+    path: Path
+    offset_s: float
+
+
+def find_transcript_info(source_id: str) -> Optional[TranscriptInfo]:
     if not INDEX_CSV.exists():
         return None
     with INDEX_CSV.open("r", encoding="utf-8", newline="") as f:
@@ -107,8 +120,9 @@ def find_transcript_path(source_id: str) -> Optional[Path]:
             rel = row.get("transcript_path", "")
             if not rel:
                 return None
+            offset_s = parse_offset_seconds(row.get("time_offset_seconds", ""))
             p = ROOT / rel
-            return p if p.exists() else None
+            return TranscriptInfo(p, offset_s) if p.exists() else None
     return None
 
 
@@ -161,17 +175,23 @@ def main() -> int:
     t = parse_hms(args.timecode)
     if t is None:
         raise SystemExit(f"bad timecode: {args.timecode}")
-    path = find_transcript_path(args.source_id)
-    if path is None:
+    info = find_transcript_info(args.source_id)
+    if info is None:
         raise SystemExit(f"no local transcript for {args.source_id}")
+    path = info.path
+    offset_s = info.offset_s
 
     lo = max(0.0, t - args.window)
     hi = t + args.window
     intervals = load_intervals(args.source_id, bach_only=bool(args.bach_only), speaker=(args.speaker or ""))
     print(f"{args.source_id}  {args.timecode}  ({path})")
+    if offset_s:
+        print(f"time_offset_seconds: {offset_s}")
     print("")
 
     for start, end, text in iter_segments(path):
+        start = max(0.0, start + offset_s)
+        end = max(0.0, end + offset_s)
         if end < lo:
             continue
         if start > hi:
