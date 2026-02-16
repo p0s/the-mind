@@ -22,12 +22,14 @@ import argparse
 import csv
 import html
 import json
+import os
 import re
 import shutil
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple
+from urllib.parse import urljoin
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -45,6 +47,7 @@ CLAIMS_MD = ROOT / "notes" / "claims.md"
 LINEAGE_MD = ROOT / "notes" / "lineage.md"
 SOURCES_CSV = ROOT / "sources" / "sources.csv"
 SPEAKERS_DIR = ROOT / "transcripts" / "_speakers"
+DEFAULT_SITE_BASE_URL = "https://the-mind.xyz/"
 
 
 TAG_RX = re.compile(r"^\[(BACH|SYNTH|NOTE|OPEN)\]\s*", re.IGNORECASE)
@@ -609,13 +612,39 @@ def read_template() -> str:
     return TEMPLATE_BASE.read_text(encoding="utf-8", errors="replace")
 
 
-def render_page(template: str, *, title: str, nav: str, content: str, root: str, page_id: str, extra_scripts: str = "") -> str:
+def site_base_url() -> str:
+    v = (os.environ.get("THE_MIND_SITE_BASE_URL") or "").strip()
+    if not v:
+        v = DEFAULT_SITE_BASE_URL
+    if not v.endswith("/"):
+        v += "/"
+    return v
+
+
+def absolute_page_url(base_url: str, href: str) -> str:
+    return urljoin(base_url, href.lstrip("./"))
+
+
+def render_page(
+    template: str,
+    *,
+    title: str,
+    nav: str,
+    content: str,
+    root: str,
+    page_id: str,
+    page_url: str,
+    og_image_url: str,
+    extra_scripts: str = "",
+) -> str:
     return (
         template.replace("{{title}}", escape(title))
         .replace("{{nav}}", nav)
         .replace("{{content}}", content)
         .replace("{{root}}", root)
         .replace("{{page_id}}", escape(page_id))
+        .replace("{{page_url}}", escape_attr(page_url))
+        .replace("{{og_image_url}}", escape_attr(og_image_url))
         .replace("{{body_class}}", "")
         .replace("{{extra_scripts}}", extra_scripts)
     )
@@ -711,6 +740,8 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     sources = load_sources()
     template = read_template()
+    base_url = site_base_url()
+    og_image_url = absolute_page_url(base_url, "og.png")
 
     # Collect chapters (used for Reader + nav; we do not emit per-chapter pages).
     chapter_files = sorted(CHAPTERS_DIR.glob("ch*.md"))
@@ -733,7 +764,19 @@ def main(argv: Optional[List[str]] = None) -> int:
         home_md = "# the-mind\n\n_Home content missing: site/home.md._\n"
     home_html, home_text = blocks_to_html(parse_blocks(home_md), sources, root="./")
     home_nav = build_nav(chapters_for_nav, current_href="index.html", root="./")
-    write(out_dir / "index.html", render_page(template, title="the-mind", nav=home_nav, content=home_html, root="./", page_id="home"))
+    write(
+        out_dir / "index.html",
+        render_page(
+            template,
+            title="the-mind",
+            nav=home_nav,
+            content=home_html,
+            root="./",
+            page_id="home",
+            page_url=absolute_page_url(base_url, "index.html"),
+            og_image_url=og_image_url,
+        ),
+    )
     search_index.append({"href": "index.html", "title": "Home", "text": home_text})
 
     # Reader (single page)
@@ -749,7 +792,16 @@ def main(argv: Optional[List[str]] = None) -> int:
     nav = build_nav(chapters_for_nav, current_href="reader/index.html", root="../")
     write(
         out_dir / "reader" / "index.html",
-        render_page(template, title="Reader", nav=nav, content=reader_html, root="../", page_id="reader"),
+        render_page(
+            template,
+            title="Reader",
+            nav=nav,
+            content=reader_html,
+            root="../",
+            page_id="reader",
+            page_url=absolute_page_url(base_url, "reader/index.html"),
+            og_image_url=og_image_url,
+        ),
     )
     search_index.append({"href": "reader/index.html", "title": "Reader", "text": reader_text})
 
@@ -784,7 +836,16 @@ def main(argv: Optional[List[str]] = None) -> int:
     blog_nav = build_nav(chapters_for_nav, current_href="blog/index.html", root="../")
     write(
         out_dir / "blog" / "index.html",
-        render_page(template, title="Blog", nav=blog_nav, content=blog_index_html, root="../", page_id="blog-index"),
+        render_page(
+            template,
+            title="Blog",
+            nav=blog_nav,
+            content=blog_index_html,
+            root="../",
+            page_id="blog-index",
+            page_url=absolute_page_url(base_url, "blog/index.html"),
+            og_image_url=og_image_url,
+        ),
     )
     search_index.append({"href": "blog/index.html", "title": "Blog", "text": blog_index_text})
 
@@ -792,7 +853,19 @@ def main(argv: Optional[List[str]] = None) -> int:
         md = Path(src_path).read_text(encoding="utf-8", errors="replace")
         html_body, text_body = blocks_to_html(parse_blocks(md), sources, root="../")
         nav = build_nav(chapters_for_nav, current_href=href, root="../")
-        write(out_dir / href, render_page(template, title=title, nav=nav, content=html_body, root="../", page_id=href))
+        write(
+            out_dir / href,
+            render_page(
+                template,
+                title=title,
+                nav=nav,
+                content=html_body,
+                root="../",
+                page_id=href,
+                page_url=absolute_page_url(base_url, href),
+                og_image_url=og_image_url,
+            ),
+        )
         search_index.append({"href": href, "title": title, "text": text_body})
 
     # Per-chapter search results that jump into the Reader.
@@ -808,7 +881,16 @@ def main(argv: Optional[List[str]] = None) -> int:
         nav = build_nav(chapters_for_nav, current_href="glossary/index.html", root="../")
         write(
             out_dir / "glossary" / "index.html",
-            render_page(template, title="Glossary", nav=nav, content=html_body, root="../", page_id="glossary"),
+            render_page(
+                template,
+                title="Glossary",
+                nav=nav,
+                content=html_body,
+                root="../",
+                page_id="glossary",
+                page_url=absolute_page_url(base_url, "glossary/index.html"),
+                og_image_url=og_image_url,
+            ),
         )
         search_index.append({"href": "glossary/index.html", "title": "Glossary", "text": text_body})
 
@@ -819,7 +901,16 @@ def main(argv: Optional[List[str]] = None) -> int:
         nav = build_nav(chapters_for_nav, current_href="claims/index.html", root="../")
         write(
             out_dir / "claims" / "index.html",
-            render_page(template, title="Claims", nav=nav, content=html_body, root="../", page_id="claims"),
+            render_page(
+                template,
+                title="Claims",
+                nav=nav,
+                content=html_body,
+                root="../",
+                page_id="claims",
+                page_url=absolute_page_url(base_url, "claims/index.html"),
+                og_image_url=og_image_url,
+            ),
         )
         search_index.append({"href": "claims/index.html", "title": "Claims", "text": text_body})
 
@@ -830,7 +921,16 @@ def main(argv: Optional[List[str]] = None) -> int:
         nav = build_nav(chapters_for_nav, current_href="lineage/index.html", root="../")
         write(
             out_dir / "lineage" / "index.html",
-            render_page(template, title="Lineage", nav=nav, content=html_body, root="../", page_id="lineage"),
+            render_page(
+                template,
+                title="Lineage",
+                nav=nav,
+                content=html_body,
+                root="../",
+                page_id="lineage",
+                page_url=absolute_page_url(base_url, "lineage/index.html"),
+                og_image_url=og_image_url,
+            ),
         )
         search_index.append({"href": "lineage/index.html", "title": "Lineage", "text": text_body})
 
@@ -863,7 +963,16 @@ def main(argv: Optional[List[str]] = None) -> int:
     nav = build_nav(chapters_for_nav, current_href="sources/index.html", root="../")
     write(
         out_dir / "sources" / "index.html",
-        render_page(template, title="Sources", nav=nav, content=src_html, root="../", page_id="sources"),
+        render_page(
+            template,
+            title="Sources",
+            nav=nav,
+            content=src_html,
+            root="../",
+            page_id="sources",
+            page_url=absolute_page_url(base_url, "sources/index.html"),
+            og_image_url=og_image_url,
+        ),
     )
     search_index.append({"href": "sources/index.html", "title": "Sources", "text": src_text})
 
