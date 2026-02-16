@@ -303,31 +303,47 @@ def escape_attr(s: str) -> str:
 
 
 def inline_format(s: str) -> str:
-    # Conservative inline formatting: code, then links, then bold + italics.
+    # Conservative inline formatting:
+    # - Escape text
+    # - Protect code/links from emphasis processing
+    # - Apply bold/italics to remaining text only
     s = escape(s)
-    # `code`
-    def repl_code(m: re.Match[str]) -> str:
-        # `s` is already escaped; prevent later emphasis regex from touching code.
-        code = m.group(1).replace("*", "&#42;").replace("_", "&#95;")
-        return f"<code>{code}</code>"
+    protected: List[str] = []
 
-    s = re.sub(r"`([^`]+)`", repl_code, s)
+    def stash(fragment: str) -> str:
+        token = f"@@FMT{len(protected)}@@"
+        protected.append(fragment)
+        return token
+
+    # `code`
+    s = re.sub(r"`([^`]+)`", lambda m: stash(f"<code>{m.group(1)}</code>"), s)
+
     # [text](url)
-    def repl_link(m: re.Match[str]) -> str:
-        label = m.group(1)
-        href = m.group(2)
+    def make_anchor(label: str, href: str) -> str:
         # `href` is already escaped except for quotes (escape() uses quote=False).
         href_attr = href.replace('"', "&quot;").replace("'", "&#x27;")
         if href.startswith(("http://", "https://")):
             return f'<a href="{href_attr}" target="_blank" rel="noopener noreferrer">{label}</a>'
         return f'<a href="{href_attr}">{label}</a>'
 
-    s = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", repl_link, s)
+    s = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", lambda m: stash(make_anchor(m.group(1), m.group(2))), s)
+
+    # Bare URLs
+    s = re.sub(
+        r"(?<![\"'=])(https?://[^\s<>()]+)",
+        lambda m: stash(make_anchor(m.group(1), m.group(1))),
+        s,
+    )
+
     # **bold**
     s = re.sub(r"\*\*([^*]+)\*\*", lambda m: f"<strong>{m.group(1)}</strong>", s)
     # *italics* and _italics_ (keep conservative boundaries)
     s = re.sub(r"(?<!\w)\*([^*\n]+?)\*(?!\w)", lambda m: f"<em>{m.group(1)}</em>", s)
     s = re.sub(r"(?<!\w)_([^_\n]+?)_(?!\w)", lambda m: f"<em>{m.group(1)}</em>", s)
+
+    # Restore protected fragments (code/links) after emphasis processing.
+    for idx, frag in enumerate(protected):
+        s = s.replace(f"@@FMT{idx}@@", frag)
     return s
 
 
