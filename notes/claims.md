@@ -6,8 +6,10 @@ Template (copy/paste for new claims):
 - Status: candidate | verified | contested
 - Confidence: low | medium | high
 - Supports:
-  - <source_id> @ <timecode or section>
-- Notes:
+  - <source_id> @ <HH:MM:SS>
+- Dependencies: (optional)
+  - CLM-XXXX
+- Notes: (optional)
   - <ambiguities, alternate phrasings, context>
 
 ## CLM-0001: A mind can be described as an adaptive control system that builds and uses a world-model to predict and steer outcomes.
