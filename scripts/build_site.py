@@ -673,6 +673,19 @@ def copy_assets(out_dir: Path) -> None:
             shutil.copy2(p, dst / p.name)
 
 
+def copy_root_assets(out_dir: Path) -> None:
+    """
+    Copy a few conventional top-level assets for better UX / link previews.
+
+    We still keep the canonical files under site/assets/; this just provides
+    stable root paths like /favicon.ico and /og.png.
+    """
+    for name in ("favicon.ico", "favicon.svg", "apple-touch-icon.png", "og.png"):
+        p = ASSETS_DIR / name
+        if p.is_file():
+            shutil.copy2(p, out_dir / name)
+
+
 def write_nojekyll(out_dir: Path) -> None:
     # Makes branch-based Pages deployments work (no Jekyll processing).
     (out_dir / ".nojekyll").write_text("", encoding="utf-8")
@@ -693,6 +706,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         shutil.rmtree(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     copy_assets(out_dir)
+    copy_root_assets(out_dir)
     write_nojekyll(out_dir)
 
     sources = load_sources()
