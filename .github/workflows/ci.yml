@@ -33,6 +33,9 @@ jobs:
       - name: Build all outputs
         run: python3 scripts/build_all.py
 
+      - name: Lint knowledge base
+        run: python3 scripts/lint_knowledge_base.py
+        
       - name: Lint provenance
         run: python3 scripts/lint_provenance.py
 
