@@ -136,3 +136,6 @@ flowchart LR
 - The project is to naturalize mind: explain it as a functional organization realized by mechanisms.
 - Minds are model-building control systems; better models expand agency.
 - Consciousness must be discussed with triangulation: phenomenology, mechanism, function.
+
+## Bridge
+We now have the framing and method, but we still cannot explain agency without specifying what a model is and how it supports counterfactual prediction. Next chapter: Models and Representation, where we define representation/world-model as the internal medium of control.

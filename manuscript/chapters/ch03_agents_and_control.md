@@ -158,3 +158,6 @@ This is a small but vivid instance of multi-level agency. A higher-level loop (l
 - Agency is model-based control of the future, not a metaphysical add-on.
 - Agents exist as layered control loops coordinated through shared models.
 - Goal-directedness, knowledge, and preference can be understood as projections of control architectures.
+
+## Bridge
+We can now describe agency as layered control under constraints, but we still cannot explain how the architecture improves itself and generalizes beyond its initial competence. Next chapter: Learning and Understanding, where learning updates model and policy and yields usable compression.

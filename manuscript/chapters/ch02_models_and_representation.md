@@ -171,3 +171,6 @@ This matters because it shows that models are not only about external objects. T
 - Representation is the prerequisite for prediction; prediction is the prerequisite for control.
 - World-models are built for agency, not for mirror-accuracy.
 - Perception and imagination are both model states; they differ by constraint.
+
+## Bridge
+We now have models and representations, but we still cannot call the system an agent until prediction is used for goal-directed control. Next chapter: Agents and Control, where goals, policies, commitments, and layered feedback loops turn modeling into agency.

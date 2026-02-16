@@ -123,3 +123,6 @@ In depersonalization-like experiences, people report that the world is present b
 - The self is a model component used for self-prediction and governance.
 - Narrative is compressed coherence for planning and communication, not a mechanism readout.
 - First-person perspective is the experience of being located in a model via an observer variable.
+
+## Bridge
+We now have self-model and narrative as coherence and coordination tools, but we still cannot explain how limited bandwidth is allocated so the right contents become globally available for control. Next chapter: Attention and Workspace, where selection and a shared workspace become the coordination substrate.

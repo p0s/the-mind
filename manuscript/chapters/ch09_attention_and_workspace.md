@@ -120,3 +120,6 @@ In flow, attention is stable, the workspace is dominated by task-relevant repres
 - Attention is selection and resource allocation under bandwidth constraints.
 - Working memory stabilizes selected content; a workspace integrates and broadcasts it.
 - Attention shapes both what is experienced and what is learned.
+
+## Bridge
+We can now describe attention/workspace as the selection and integration interface of a bounded agent, but we still cannot state the specific organizational hypothesis that yields the phenomenology of presence and a stabilized point of view. Next chapter: Consciousness, where we treat consciousness as the coherence-inducing interface that stabilizes an observer and a present.

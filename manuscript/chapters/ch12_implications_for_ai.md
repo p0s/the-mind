@@ -112,3 +112,6 @@ This example motivates why governance is not optional. When control loops span p
 - The core question is agency: whether AI extends or replaces human control of the future.
 - Alignment requires value learning and governance, not a single optimization target.
 - If artificial consciousness is possible, it becomes a first-class ethical constraint in system design.
+
+## Bridge
+We can now talk about AI risks and levers in the same vocabulary as the mind model, but we still need to confront the deepest consequence of model-mediated reality: the agent’s world is virtual in the technical sense. Next chapter: Machine Dreams and Virtualism, where perception, imagination, and dreams are treated as modes of modeling.

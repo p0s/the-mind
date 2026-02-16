@@ -138,3 +138,6 @@ This is why understanding is not an aesthetic property of text. It is a property
 - Learning updates both model and policy to reduce error over time.
 - Understanding is usable compression: abstractions that support prediction and control.
 - Intelligence can be framed as efficiency of model building, not as a fixed bag of skills.
+
+## Bridge
+We now have learning and understanding as usable compression for control, but we still cannot say what makes any future preferable or how learning is trained by evaluation signals. Next chapter: Valence, where value/valence and norms supply the machinery of “what matters”.

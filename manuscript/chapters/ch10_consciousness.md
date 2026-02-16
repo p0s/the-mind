@@ -160,3 +160,6 @@ People can perform complex behavior with minimal reportable awareness: driving a
 - Consciousness is treated as a coherence-inducing organization that stabilizes a point of view.
 - The self is a representational construct: useful, real as implemented, not metaphysically fundamental.
 - The hard problem is addressed by disciplined triangulation: phenomenology, mechanism, function.
+
+## Bridge
+We now have a functional framing of consciousness, but we still cannot complete the picture without the social layer where models are coordinated across agents by language, norms, and culture. Next chapter: Social Minds, Language, Culture, where multi-agent coordination becomes part of the architecture.

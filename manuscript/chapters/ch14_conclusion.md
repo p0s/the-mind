@@ -40,6 +40,9 @@
 - Values are not external labels; they are learned control structures that drift and can be hacked.
 - The most important AI question is agency: whether we build systems that extend or replace human control of the future.
 
+## Bridge
+This completes the dependency spine from models to social minds and treats selfhood and consciousness as architectural roles with explicit provenance. What remains is empirical and engineering work: build systems that instantiate these roles, test where the framing breaks, and refine the contracts without losing auditability.
+
 ## Anchors (sources + timecodes)
 - yt_uc112kET-i0 @ 00:02:07 (keywords: agent, control, control system)
 - yt_UkAOHrbcnAs @ 00:24:59 (keywords: model, world model)

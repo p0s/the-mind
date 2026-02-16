@@ -136,3 +136,6 @@ The danger is that status is a proxy. A system can become obsessed with the prox
 - Valence is the control variable that makes prediction matter for an agent.
 - Reward is a signal for learning; value is a learned predictive structure.
 - Valence shapes both action selection and what becomes salient in experience.
+
+## Bridge
+We can now talk about valence/value as the machinery that makes futures matter, but we still cannot explain the rapid reconfiguration of priorities and policy under changing contexts. Next chapter: Emotion and Motivation, where emotions are treated as control modulators that shift attention, learning, and action readiness.

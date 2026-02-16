@@ -135,3 +135,6 @@ Grief can be described as a forced update of the world-model and value model: fu
 - Emotions are control modulators: they reconfigure policy, attention, and learning.
 - Affect is how these reconfigurations feel from the inside.
 - Motivation is the long-term trajectory that emerges from valence and modulation.
+
+## Bridge
+We now have emotion as control modulation, but we still cannot explain how a coalition of subsystems stays coherent enough to maintain commitments across time. Next chapter: Self-Control and Failure Modes, where governance and internal failure modes become explicit.

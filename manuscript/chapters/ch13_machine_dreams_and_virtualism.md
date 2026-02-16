@@ -116,3 +116,6 @@ Many classic illusions can be read as cases where priors and constraints are mis
 - Virtual objects can be real as implemented causal structure at the right level of description.
 - Virtualism treats consciousness as simulation in an information-processing substrate, not as a fundamental substance.
 - Generative AI can produce "dream content"; consciousness would require the "dream within the dream" (observer stabilization).
+
+## Bridge
+We now have virtualism and the “dream machinery” as a model-level account of experience, but we still need to compress the whole stack into what it buys you and what remains open. Next chapter: Conclusion, where we summarize the leverage and the remaining architectural questions.

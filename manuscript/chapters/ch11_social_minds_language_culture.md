@@ -120,3 +120,6 @@ Science can be seen as a set of institutionalized feedback loops for truth-track
 - Social cognition is modeling and control in a world of other agents.
 - Language is shared compression for coordination.
 - Norms and institutions are slow control loops that stabilize expectations and commitments.
+
+## Bridge
+We now have social modeling and cultural control loops, but we still cannot translate the stack into concrete AI design and governance constraints. Next chapter: Implications for AI, where we map the primitives to AI systems and surface failure modes and levers.

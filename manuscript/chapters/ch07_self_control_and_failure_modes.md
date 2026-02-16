@@ -135,3 +135,6 @@ The point is not to reduce addiction to a slogan. It is to show why moralizing i
 - Self-control is governance across internal policies and time scales.
 - Habits are compressed policies; they trade flexibility for efficiency.
 - Many failures are predictable outcomes of misaligned learning signals and weak internal governance.
+
+## Bridge
+We can now describe self-control as governance across policies and time scales, but we still cannot explain the construct that makes the agent a stable object to itself and to other agents. Next chapter: Self-Model and Narrative, where the self is treated as a model component and narrative as an interface.
