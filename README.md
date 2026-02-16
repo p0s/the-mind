@@ -3,7 +3,7 @@
 > Man is a machine.
 > — Julien Offray de La Mettrie, *L’Homme Machine* (1748)
 
-A dense, definition-driven synthesis of mind, based on Joscha Bach’s public work.
+This is a dense, definition-driven synthesis of mind, based on Joscha Bach’s public work.
 
 > “Why should we build AI?” in first place, then, "How can we build AI? How is it possible at all that AI can succeed in its goal?". Then “When is it going to happen?”, if ever. "What are the necessary ingredients?", what do we need to put together to get AI to work? And: “Where should you start?”
 >
