@@ -112,6 +112,13 @@ def parse_timecode(tc: str) -> Optional[float]:
     return int(h) * 3600 + int(mnt) * 60 + int(s) + int(ms) / 1000.0
 
 
+def parse_offset_seconds(v: str) -> float:
+    try:
+        return float((v or "").strip() or "0")
+    except Exception:
+        return 0.0
+
+
 def format_timecode(seconds: float) -> str:
     if seconds < 0:
         seconds = 0.0
@@ -368,6 +375,7 @@ def main() -> int:
         idx = index.get(sid)
         if not idx or idx.get("status") != "ok":
             continue
+        offset_s = parse_offset_seconds(idx.get("time_offset_seconds", ""))
         rel = idx.get("transcript_path", "")
         if not rel:
             continue
@@ -376,6 +384,8 @@ def main() -> int:
             continue
 
         segments = [s for s in iter_segments(transcript_path) if len(s[2]) <= args.max_text_chars]
+        if offset_s:
+            segments = [(max(0.0, s + offset_s), max(0.0, e + offset_s), t) for s, e, t in segments]
         if args.bach_only:
             intervals = load_bach_intervals(sid)
             if intervals:

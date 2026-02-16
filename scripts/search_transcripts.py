@@ -128,6 +128,25 @@ def parse_timecode_start(tc: str) -> Optional[float]:
     return float(out)
 
 
+def parse_offset_seconds(v: str) -> float:
+    try:
+        return float((v or "").strip() or "0")
+    except Exception:
+        return 0.0
+
+
+def format_timecode(seconds: float) -> str:
+    if seconds < 0:
+        seconds = 0.0
+    total_ms = int(round(seconds * 1000))
+    h, rem = divmod(total_ms, 3600_000)
+    m, rem = divmod(rem, 60_000)
+    s, ms = divmod(rem, 1000)
+    if ms:
+        return f"{h:02}:{m:02}:{s:02}.{ms:03}"
+    return f"{h:02}:{m:02}:{s:02}"
+
+
 def load_bach_intervals(source_id: str) -> List[Tuple[float, float]]:
     path = SPEAKERS_DIR / f"{source_id}.speakers.json"
     if not path.exists():
@@ -197,6 +216,7 @@ def main(argv: Optional[list[str]] = None) -> int:
                 continue
             sid = row.get("source_id", "")
             rel = row.get("transcript_path", "")
+            offset_s = parse_offset_seconds(row.get("time_offset_seconds", ""))
             if not sid or not rel:
                 continue
             path = ROOT / rel
@@ -213,15 +233,16 @@ def main(argv: Optional[list[str]] = None) -> int:
             for tc, text in iter_segments(path):
                 if not text:
                     continue
-                if args.bach_only and intervals:
-                    t0 = parse_timecode_start(tc)
-                    if t0 is not None and not in_intervals(t0, intervals):
+                t0 = parse_timecode_start(tc)
+                tc_out = format_timecode((t0 or 0.0) + offset_s) if t0 is not None else tc
+                if args.bach_only and intervals and t0 is not None:
+                    if not in_intervals(t0 + offset_s, intervals):
                         continue
                 if rx.search(text):
                     snippet = text
                     if len(snippet) > 240:
                         snippet = snippet[:237] + "..."
-                    print(f"{sid}\t{tc}\t{snippet}")
+                    print(f"{sid}\t{tc_out}\t{snippet}")
                     hits += 1
                     if hits >= args.max_hits:
                         return 0
