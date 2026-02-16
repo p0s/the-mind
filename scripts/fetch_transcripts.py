@@ -50,6 +50,9 @@ INDEX_FIELDS = [
     "selected_lang",
     "selected_kind",  # subs|auto|web|ccc|none
     "transcript_path",
+    # Optional local-only adjustment: add this offset (in seconds) to transcript cue times
+    # to get canonical source timecodes for anchors/notes.
+    "time_offset_seconds",
     # Optional local-only media retained for QA (primarily for ASR sources).
     "media_kind",  # audio|video|none
     "media_path",

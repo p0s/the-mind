@@ -338,6 +338,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
 
         print(f"decode: {sid} ({media.name})")
         y = fw_audio.decode_audio(str(media), sampling_rate=SR)
+        media_duration_s = float(len(y)) / float(SR)
 
         print(f"vad: {sid}")
         speech = fw_vad.get_speech_timestamps(y, sampling_rate=SR)
@@ -405,6 +406,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             "source_id": sid,
             "generated_at": now_iso(),
             "audio_path": str(media.relative_to(ROOT)),
+            "media_duration_s": media_duration_s,
             "feature": "logmel_mean",
             "sample_rate_hz": SR,
             "chunk_seconds": chunk_s,

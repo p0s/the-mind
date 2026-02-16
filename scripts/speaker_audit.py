@@ -109,6 +109,17 @@ def load_bach_intervals(meta: dict) -> List[Tuple[float, float]]:
     return out
 
 
+def approx_duration_s(meta: dict) -> Optional[float]:
+    segs = meta.get("segments") or []
+    mx = 0.0
+    for s in segs:
+        try:
+            mx = max(mx, float(s.get("end_s", 0.0)))
+        except Exception:
+            continue
+    return mx if mx > 0 else None
+
+
 def in_intervals(t: float, intervals: List[Tuple[float, float]]) -> bool:
     lo, hi = 0, len(intervals) - 1
     while lo <= hi:
@@ -126,6 +137,8 @@ def in_intervals(t: float, intervals: List[Tuple[float, float]]) -> bool:
 def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--include-solo", action="store_true", help="Also check sources where multi_speaker_heuristic is false")
+    ap.add_argument("--intro-seconds", type=float, default=120.0, help="Mark anchors in the first N seconds as intro-risk")
+    ap.add_argument("--outro-seconds", type=float, default=120.0, help="Mark anchors in the last N seconds as outro-risk")
     args = ap.parse_args(argv)
 
     refs = list(iter_refs_from_claims(CLAIMS_MD)) + list(iter_refs_from_chapters(CHAPTERS_DIR))
@@ -138,6 +151,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     missing = 0
     missing_sources: List[Tuple[str, int]] = []
     skipped = 0
+    risks: List[Tuple[str, Ref, str]] = []
 
     for sid, items in sorted(refs_by_source.items()):
         meta = load_speaker_meta(sid)
@@ -150,10 +164,19 @@ def main(argv: Optional[List[str]] = None) -> int:
             skipped += 1
             continue
         intervals = load_bach_intervals(meta)
+        dur_s = approx_duration_s(meta)
         if not intervals:
             continue
         for r in items:
             total += 1
+            if multi:
+                labels: List[str] = []
+                if r.time_s <= float(args.intro_seconds):
+                    labels.append("intro")
+                if dur_s is not None and r.time_s >= max(0.0, float(dur_s) - float(args.outro_seconds)):
+                    labels.append("outro")
+                if labels:
+                    risks.append((sid, r, "+".join(labels)))
             if not in_intervals(r.time_s, intervals):
                 bad.append((sid, r))
 
@@ -163,6 +186,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     print(f"  sources_missing_speaker_file: {missing}")
     print(f"  sources_skipped_solo: {skipped}")
     print(f"  refs_outside_bach_segments: {len(bad)}")
+    print(f"  refs_intro_outro_risk: {len(risks)}")
     if missing_sources:
         print("")
         print("missing_speaker_files:")
@@ -173,6 +197,11 @@ def main(argv: Optional[List[str]] = None) -> int:
         print("outside_bach_segments:")
         for sid, r in bad:
             print(f"  - {sid} @ {r.timecode} ({r.where})")
+    if risks:
+        print("")
+        print("intro_outro_risk (multi-speaker):")
+        for sid, r, lab in risks:
+            print(f"  - {sid} @ {r.timecode} ({r.where}) [{lab}]")
 
     return 0
 
