@@ -21,6 +21,7 @@ Update triggers:
 - New source trigger: when adding newer/untracked Bach material, update `sources/sources.csv`, add/update source notes, then propagate into claims/glossary/content with anchors.
 - Collaboration trigger: when a collaborator proposes a different writing/epistemic/output policy, resolve that change in `spec.md` first, then regenerate derived content.
 - Repo/workflow trigger: when canonical artifacts, build helpers, generation boundaries, or publish workflow change, update `spec.md` in the same PR.
+- Periodic refresh trigger: run a source sweep (discover → triage → extract) to catch newer/untracked Bach material; only update derived content when the new sources actually change or extend the current semantic backbone.
 - PRs that change output semantics should include a short “spec delta” note describing which clauses changed and which artifacts were regenerated.
 - No silent drift: if generated/derived content changes but no source delta or spec delta explains it, treat it as a regression.
 
@@ -214,6 +215,30 @@ Phase A -- Inventory (gather)
 1. Keep `sources/sources.csv` up to date (candidate superset is fine during discovery).
 2. Collect transcripts locally when useful for extraction.
 3. Create `sources/source_notes/<source_id>.md` for key sources (summary + key segments + candidate claims).
+
+### Source sweeps (new material → semantic refresh)
+
+Goal:
+- Periodically discover newer/untracked public sources and decide whether they warrant updating the semantic backbone or composed views.
+
+Discovery inputs (public / no secrets):
+- Preferred: add candidates into `sources/sources.csv` via existing importers and lightweight discovery tooling:
+  - `python3 scripts/import_bach_ai_sitemap.py` (Bach AI site index)
+  - `yt-dlp` discovery + `python3 scripts/import_youtube_sources.py` (YouTube search/playlist metadata)
+  - `python3 scripts/import_ccc_sources.py` (CCC events)
+  - `python3 scripts/import_web_urls.py` (manual web finds)
+
+Triage + prioritization:
+- Normalize `sources/sources.csv` notes tokens (`curation_status`, `format`, `topic`, `priority`, etc.).
+- Use `python3 scripts/source_queue.py --missing-notes --output markdown` to generate the next extraction queue.
+
+Update gating (avoid churn):
+- A sweep should separate:
+  1) inventory changes (new/updated source rows, notes tokens), from
+  2) semantic changes (claims/glossary), from
+  3) view changes (chapters/posts).
+- Default stance: most updates are small; only update composed prose when a new source adds a missing step, sharpens a definition, or resolves a documented ambiguity.
+- If newer sources materially differ from older ones, represent this as versioned claims (don’t silently rewrite history).
 
 Phase B -- Extract (understand)
 4. Populate `notes/claims.md` with atomic claims + anchors + confidence.
