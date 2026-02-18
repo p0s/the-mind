@@ -251,8 +251,17 @@ Triage + prioritization:
 - Normalize `sources/sources.csv` notes tokens (`curation_status`, `format`, `topic`, `priority`, etc.).
 - Use `python3 scripts/source_queue.py --missing-notes --output markdown` to generate the next extraction queue.
 
+End-to-end sweep PRs (default):
+- A source sweep is done as one end-to-end change (single branch/PR) that includes:
+  1) inventory update (`sources/sources.csv`),
+  2) listen/review + triage (keep/reject + tier/format),
+  3) extraction (`sources/source_notes/` + any required claim/glossary updates),
+  4) speaker QA for any multi-speaker sources used,
+  5) repo hygiene (lint + build + privacy check).
+- Keep the phases reviewable (ideally separate commits), but do not merge partial sweeps.
+
 Update gating (avoid churn):
-- Inventory-only PRs are allowed (e.g., add sources + metadata + notes tokens) without touching claims/glossary or prose.
+- Prefer end-to-end sweep PRs over inventory-only changes. If discovery needs to be staged, use a draft PR and merge only after extraction + QA are complete.
 - Any semantic/prose changes (claims, glossary, chapters, posts) require explicit maintainer approval based on a short proposed delta:
   - which claim IDs / term IDs change and why,
   - which chapters/posts are impacted,
