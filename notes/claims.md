@@ -68,7 +68,7 @@ Template (copy/paste for new claims):
   - ccc_38c3_self_models_of_loving_grace @ 00:01:14
   - yt_UkAOHrbcnAs @ 00:16:40
   - yt_xthJ1R9Ifc0 @ 00:15:44
-  - yt_HTCRIX3P32M @ 00:23:58
+  - yt_HTCRIX3P32M @ 00:30:08
 - Notes:
   - Guard against metaphysical reification.
 
@@ -167,7 +167,6 @@ Template (copy/paste for new claims):
 - Supports:
   - yt_DYm7VBaEmHU @ 00:20:01
   - yt_9LtKJ2k8UyM @ 00:02:05
-  - yt_y0txHUVZF5I @ 01:22:15
 - Notes:
   - Central methodological rule.
 
@@ -441,3 +440,19 @@ Template (copy/paste for new claims):
   - yt_oR-BQTSpL5U @ 00:50:27
 - Notes:
   - Phrase carefully: "extending consciousness into AI" is his rhetoric; interpret in the book as extending agency via shared modeling/control loops.
+
+## CLM-0050: Testing machine consciousness can be decomposed into independent modules (phenomenology, functionality, implementation space, search procedure, and success criteria) rather than treated as a single monolithic test.
+- Status: verified
+- Confidence: low
+- Supports:
+  - yt_9LtKJ2k8UyM @ 00:02:05
+- Notes:
+  - This is a methodological proposal: it structures what "testable" could mean without committing to a single theory.
+
+## CLM-0051: Consciousness may be a binary property that "ignites" once a system has sufficient representational organization (even if lucidity admits degrees).
+- Status: verified
+- Confidence: low
+- Supports:
+  - yt_y0txHUVZF5I @ 01:27:34
+- Notes:
+  - He also expresses uncertainty about which components/thresholds are required to "ignite" it.

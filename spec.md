@@ -256,12 +256,17 @@ End-to-end sweep PRs (default):
   1) inventory update (`sources/sources.csv`),
   2) listen/review + triage (keep/reject + tier/format),
   3) extraction (`sources/source_notes/` + any required claim/glossary updates),
-  4) speaker QA for any multi-speaker sources used,
+  4) speaker QA for any multi-speaker sources used:
+     - treat any source tagged `format=interview` as multi-speaker,
+     - download local-only audio if needed (e.g., `python3 scripts/asr_faster_whisper.py --download-only ...`),
+     - diarize locally (`python3 scripts/diarize_bach.py ...`),
+     - verify anchors against Bach segments (`python3 scripts/speaker_audit.py`),
   5) repo hygiene (lint + build + privacy check).
 - Keep the phases reviewable (ideally separate commits), but do not merge partial sweeps.
 
 Update gating (avoid churn):
 - Prefer end-to-end sweep PRs over inventory-only changes. If discovery needs to be staged, use a draft PR and merge only after extraction + QA are complete.
+  - Inventory-only PRs may exist as draft/WIP, but should not be merged on their own.
 - Any semantic/prose changes (claims, glossary, chapters, posts) require explicit maintainer approval based on a short proposed delta:
   - which claim IDs / term IDs change and why,
   - which chapters/posts are impacted,
