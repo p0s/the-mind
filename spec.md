@@ -242,7 +242,10 @@ Discovery inputs (public / no secrets):
   - `python3 scripts/import_web_urls.py` (manual web finds)
 
 Discovery scope:
-- The exact set of channels/playlists/sites to sweep is editorial and can change; keep it explicit and reviewable (e.g., a small committed seed list) rather than relying on memory.
+- Keep a small committed, public seed list at `sources/sweep_seeds.md` (channels/playlists/sites/queries to sweep + the preferred importer).
+- Keep “not yet extracted / not yet used” status inside existing repo state:
+  - presence/absence of `sources/source_notes/<source_id>.md`
+  - and `sources/sources.csv` notes tokens (e.g., `curation_status`, `priority`, `tier`)
 
 Triage + prioritization:
 - Normalize `sources/sources.csv` notes tokens (`curation_status`, `format`, `topic`, `priority`, etc.).
