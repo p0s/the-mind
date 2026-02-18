@@ -285,6 +285,10 @@ def guess_num_speakers(meta: Dict[str, str]) -> int:
 
 
 def is_likely_multi_speaker(meta: Dict[str, str]) -> bool:
+    notes = (meta.get("notes") or "").lower()
+    if "format=interview" in notes:
+        return True
+
     title = (meta.get("title") or "").lower()
     channel = (meta.get("creator_or_channel") or "").lower()
 
