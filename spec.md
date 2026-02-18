@@ -254,7 +254,8 @@ Triage + prioritization:
 End-to-end sweep PRs (default):
 - A source sweep is done as one end-to-end change (single branch/PR) that includes:
   1) inventory update (`sources/sources.csv`),
-  2) listen/review + triage (keep/reject + tier/format),
+  2) review + triage (keep/reject + tier/format),
+     - Default review mode is transcript-first (skim end-to-end); listening is optional and only used to resolve ambiguity.
   3) extraction (`sources/source_notes/` + any required claim/glossary updates),
   4) speaker QA for any multi-speaker sources used:
      - treat any source tagged `format=interview` as multi-speaker,
