@@ -68,6 +68,7 @@ Template (copy/paste for new claims):
   - ccc_38c3_self_models_of_loving_grace @ 00:01:14
   - yt_UkAOHrbcnAs @ 00:16:40
   - yt_xthJ1R9Ifc0 @ 00:15:44
+  - yt_HTCRIX3P32M @ 00:23:58
 - Notes:
   - Guard against metaphysical reification.
 
@@ -138,6 +139,7 @@ Template (copy/paste for new claims):
 - Supports:
   - yt_3MkJEGE9GRY @ 01:06:10
   - ccc_35c3_10030_the_ghost_in_the_machine @ 00:28:18
+  - yt_OheY9DIUie4 @ 00:38:50
 - Notes:
   - Treat as emergent control layers.
 
@@ -164,6 +166,8 @@ Template (copy/paste for new claims):
 - Confidence: high
 - Supports:
   - yt_DYm7VBaEmHU @ 00:20:01
+  - yt_9LtKJ2k8UyM @ 00:02:05
+  - yt_y0txHUVZF5I @ 01:22:15
 - Notes:
   - Central methodological rule.
 
@@ -258,6 +262,7 @@ Template (copy/paste for new claims):
 - Supports:
   - ccc_35c3_10030_the_ghost_in_the_machine @ 00:04:02
   - yt_CcQMYNi9a2w @ 01:59:34
+  - yt_HTCRIX3P32M @ 00:00:02
 - Notes:
   - The point is representationalism (model vs territory), not mysticism.
 
@@ -277,6 +282,7 @@ Template (copy/paste for new claims):
 - Supports:
   - yt_34VOI_oo-qM @ 00:19:16
   - yt_DYm7VBaEmHU @ 00:30:34
+  - yt_y0txHUVZF5I @ 00:00:18
 - Notes:
   - "Nowness" is a modeled present, not a metaphysical property of time.
 
