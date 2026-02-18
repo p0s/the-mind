@@ -7,20 +7,15 @@
 - URL: https://www.youtube.com/watch?v=HTCRIX3P32M
 
 ## One-paragraph summary
-AUTO (keyword-based): dominant terms include experience, language, consciousness, agent, model, understanding, culture, emotion.
+Long-form interview on the “world as model” framing: the experienced world is treated as a generated, interpretive model (a “dream” produced by the brain) rather than direct access to physics. Consciousness is framed as a coherence-making process that allows a collection of interacting parts to behave as a unified agent; the self is treated as a self-model (a representational tool for coordination), not an extra entity behind experience.
 
 ## Key segments (timecodes)
-- [00:03:51-00:03:53] keywords: agent, control
-- [00:08:20-00:08:22] keywords: predict, prediction
-- [00:09:26-00:09:28] keywords: emotion, experience
-- [00:10:56-00:10:58] keywords: culture, experience
-- [00:23:52-00:23:54] keywords: consciousness, experience
-- [00:25:19-00:25:22] keywords: model, world model
-- [00:30:08-00:30:10] keywords: model, self model
-- [01:12:33-01:12:35] keywords: model, self model, world model
+- [00:00:08-00:00:12] The experienced world as a generated “dream”/model; consciousness framed as a dream state.
+- [00:30:08-00:30:55] Self as a self-model for coherent coordination; consciousness as coherence-making; experience as interacting with representation.
 
 ## Terms to add to glossary
-TBD.
+None (no new stable term candidates).
 
 ## Candidate claims to add to claim ledger
-TBD.
+- Supports: CLM-0006 (`yt_HTCRIX3P32M @ 00:30:08`)
+- Supports: CLM-0028 (`yt_HTCRIX3P32M @ 00:00:02`)

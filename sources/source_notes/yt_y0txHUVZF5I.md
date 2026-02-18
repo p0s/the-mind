@@ -7,20 +7,16 @@
 - URL: https://www.youtube.com/watch?v=y0txHUVZF5I
 
 ## One-paragraph summary
-AUTO (keyword-based): dominant terms include consciousness, model, function, social, experience, culture, agency, control.
+Long-form interview spanning consciousness, perception-as-modeling, and AI: consciousness is framed as a stabilizing control function (keeping the “observer” and its “screen” coherent) that yields a bubble of “nowness” in which experience is consistent. Discusses the machine-consciousness question in terms of internal organization (phenomenology vs functionality), and suggests consciousness may be “binary” in the sense of igniting once sufficient representational structure exists (while lucidity admits degrees).
 
 ## Key segments (timecodes)
-- [00:00:04-00:00:06] keywords: consciousness, observer
-- [00:02:22-00:02:24] keywords: attention, learning
-- [00:07:49-00:07:51] keywords: agency, understanding
-- [00:12:44-00:12:46] keywords: experience, predict, prediction
-- [00:14:20-00:14:23] keywords: function, working memory
-- [01:15:54-01:15:57] keywords: predict, prediction, prediction error
-- [01:22:07-01:22:09] keywords: experience, function, phenomenology
-- [01:27:34-01:27:36] keywords: model, representation, world model
+- [00:00:04-00:00:35] Consciousness stabilizes the observer/screen; coherence as a precondition for perception; “bubble of nowness”; “binary” framing + degrees of lucidity.
+- [01:22:00-01:23:00] Phenomenology vs functionality framing (multi-speaker; verify speaker before anchoring heavily).
+- [01:27:34-01:28:20] Consciousness as a binary property that “ignites”; uncertainty about thresholds / moving parts; links to representational complexity.
 
 ## Terms to add to glossary
-TBD.
+None (no new stable term candidates).
 
 ## Candidate claims to add to claim ledger
-TBD.
+- Added: CLM-0051 (`yt_y0txHUVZF5I @ 01:27:34`)
+- Supports: CLM-0030 (`yt_y0txHUVZF5I @ 00:00:18`)
