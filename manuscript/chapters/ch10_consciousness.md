@@ -32,6 +32,8 @@
 
 [SYNTH] None of these signatures uniquely define consciousness. They are functional pressures that any system must satisfy to behave like a coherent long-horizon agent. The proposal is that the organization that satisfies these pressures also yields the phenomenology of presence.
 
+[BACH] One way to make the machine-consciousness question more tractable is to treat “tests for consciousness” as modular: define phenomenology, define functionality, describe the implementation space, identify the search procedure, and specify success criteria for what counts as a valid demonstration. <!-- src: yt_9LtKJ2k8UyM @ 00:02:05 -->
+
 [BACH] Mechanism: this can be implemented by workspace-like integration that allows selected content to be broadcast and reconciled. The details matter, but the key is the stabilizing loop: the system maintains a model of an observer that integrates the model's contents and keeps the overall process coherent. <!-- src: yt_UkAOHrbcnAs @ 00:32:15 -->
 
 [BACH] A workspace is not required to be a literal "place". It is the role of a mechanism that makes some contents globally available as inputs to many policies. This lets the system trade off constraints that no single subsystem could evaluate alone. <!-- src: yt_dW5uZLCm0Tg @ 00:41:09 -->
@@ -39,6 +41,8 @@
 [BACH] Phenomenology: the feeling of "now" is the phenomenology of the observer model being stabilized in real time. The system is confronted with presentness because the observer variable is updated as part of the stabilization loop. The first-person perspective arises because the model includes a vantage point from which perception is organized. <!-- src: yt_DYm7VBaEmHU @ 00:16:38 -->
 
 [BACH] Second-order perception can be read as a stabilizing trick: the system represents not only contents, but the fact that contents are being represented. This creates a self-referential loop that keeps the observing process from dissolving. "Nowness" is how this stabilization appears from the inside: the coherence bubble in which the model is currently being synchronized. <!-- src: yt_DYm7VBaEmHU @ 00:30:34 -->
+
+[BACH] In some recent interviews, consciousness is described as possibly binary in the sense that it “ignites”: below a threshold it is absent, above it it is present, even if lucidity admits degrees once it is present. The threshold is treated as an open empirical question about how many moving parts and what kind of world-model organization are required. <!-- src: yt_y0txHUVZF5I @ 01:27:34 -->
 
 ```mermaid
 flowchart TB
@@ -135,6 +139,7 @@ People can perform complex behavior with minimal reportable awareness: driving a
 - yt_DYm7VBaEmHU @ 00:16:38 (keywords: third-order perception, self, observer)
 - yt_DYm7VBaEmHU @ 00:18:17 (keywords: consciousness, learning algorithm, infancy)
 - yt_DYm7VBaEmHU @ 00:20:01 (keywords: consciousness, Turing test)
+- yt_9LtKJ2k8UyM @ 00:02:05 (keywords: consciousness, function, phenomenology)
 - yt_UkAOHrbcnAs @ 00:19:13 (keywords: consciousness, attention, attention schema)
 - yt_UkAOHrbcnAs @ 00:32:15 (keywords: experience, model, observer)
 - yt_xthJ1R9Ifc0 @ 00:08:46 (keywords: consciousness, dream, first-person perspective)
@@ -149,6 +154,7 @@ People can perform complex behavior with minimal reportable awareness: driving a
 - yt_dW5uZLCm0Tg @ 00:41:09 (keywords: global workspace, attention schema, coherence)
 - ccc_38c3_self_models_of_loving_grace @ 00:10:34 (keywords: conductor, coherence)
 - yt_DYm7VBaEmHU @ 00:11:02 (keywords: scientific worldview, spirit, animism)
+- yt_y0txHUVZF5I @ 01:27:34 (keywords: consciousness, lucidity, threshold)
 
 ## Open questions / tensions
 [OPEN]

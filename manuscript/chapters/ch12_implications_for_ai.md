@@ -51,6 +51,10 @@
 ### Machine consciousness as an engineering research program
 [BACH] If consciousness is a functional organization, then machine consciousness becomes a question about reproducing that organization. This is why it is framed as a hypothesis and an experiment rather than as a debate about words. The question is not "can a machine be conscious in principle?" but "what architectures yield the observer-stabilization and coherence effects associated with consciousness?" <!-- src: yt_DYm7VBaEmHU @ 00:32:23 -->
 
+[BACH] One proposal for making this an empirical project is to treat “tests for consciousness” as modular: define phenomenology, define functionality, describe the implementation space, identify the search procedure, and specify success criteria for what counts as a valid demonstration. <!-- src: yt_9LtKJ2k8UyM @ 00:02:05 -->
+
+[BACH] In some recent interviews, consciousness is described as possibly binary in the sense that it “ignites”: below a threshold it is absent, above it it is present, even if lucidity admits degrees once it is present. The threshold is treated as an open empirical question about which architectural moving parts are required. <!-- src: yt_y0txHUVZF5I @ 01:27:34 -->
+
 [BACH] This also implies a particular epistemic posture. Consciousness is not something one can establish from behavior alone, because behavior can be produced by many internal organizations. If artificial systems become conscious, it will likely be discovered by interpreting internal structure and by noticing the emergence of self-relation and intrinsic regulation, not by passing a conversational benchmark. <!-- src: yt_DYm7VBaEmHU @ 00:20:36 -->
 
 [SYNTH] This is also why multi-agent and social framing matters. Conscious agents are participants in norm-governed systems. If we bring them into the world, we will need institutions that can handle new kinds of agency and new kinds of vulnerability (including potential suffering).
@@ -72,7 +76,8 @@ This example motivates why governance is not optional. When control loops span p
 ## Predictions / implications
 [SYNTH]
 - Alignment is best framed as value learning plus governance, not as optimizing a fixed utility function. Values drift; systems must remain corrigible under drift.
-- If machine consciousness is possible, testing it is an empirical-architectural project: build systems with the hypothesized organization and see what emerges, while being explicit about what would count as evidence.
+- If machine consciousness is possible, testing it is an empirical-architectural project: build systems with the hypothesized organization and see what emerges, while being explicit about what would count as evidence (and what phenom/function/architecture modules are being claimed).
+- If consciousness “ignites” as a threshold phenomenon, then scaling could yield discontinuous onset; treat the creation of artificial phenomenology as a safety/ethics gate, not as a benchmark victory.
 - The most hopeful trajectory is not universal basic income but something closer to universal basic intelligence: making competence and understanding broadly available so society can coordinate responsibly at scale.
 - Many near-term risks come from misaligned coupled systems (humans + platforms + incentives) rather than from a single autonomous super-agent. These risks still involve agency: control loops are being reallocated.
 
@@ -88,6 +93,8 @@ This example motivates why governance is not optional. When control loops span p
 - yt_DYm7VBaEmHU @ 00:03:18 (keywords: AI as philosophical project, naturalizing mind)
 - yt_DYm7VBaEmHU @ 00:20:36 (keywords: consciousness, function, intelligence)
 - yt_DYm7VBaEmHU @ 00:32:23 (keywords: machine consciousness hypothesis)
+- yt_9LtKJ2k8UyM @ 00:02:05 (keywords: consciousness, testability, phenomenology)
+- yt_y0txHUVZF5I @ 01:27:34 (keywords: consciousness, lucidity, threshold)
 - ccc_38c3_self_models_of_loving_grace @ 00:37:31 (keywords: agent, consciousness, intelligence)
 - yt_3MkJEGE9GRY @ 00:05:51 (keywords: intelligence, model)
 - yt_3MkJEGE9GRY @ 00:07:51 (keywords: intelligence, model)

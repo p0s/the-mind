@@ -28,9 +28,13 @@ In this framing, the system maintains and stabilizes an observer reference frame
 
 Phenomenologically, “nowness” is treated as how the stabilization loop appears from the inside: a coherence bubble in which the model’s active contents are synchronized tightly enough to be experienced as present. Second-order perception (“perception of perception”) is one handle for this: the model represents not only contents, but the fact that contents are being represented, which stabilizes the observer variable. <!-- src: yt_DYm7VBaEmHU @ 00:30:34 -->
 
+In some interviews, consciousness is described as possibly binary in the sense that it “ignites”: below a threshold it is absent, above it it is present, even if lucidity admits degrees once it is present. The threshold is treated as an open question about what kind of representational organization is required. <!-- src: yt_y0txHUVZF5I @ 01:27:34 -->
+
 ## Why there is no easy test
 
 This framing implies there is no Turing-test-style shortcut: performance alone does not tell you whether the system implements the stabilizing observer organization. Consciousness is treated as a hypothesis about internal organization, not a behavior score. <!-- src: yt_DYm7VBaEmHU @ 00:20:01 -->
+
+One pragmatic move (especially for machine consciousness) is to decompose what “testing” would mean into modules: specify phenomenology, specify functionality, describe the implementation/search space, and state what would count as a valid demonstration. <!-- src: yt_9LtKJ2k8UyM @ 00:02:05 -->
 
 ## References
 
@@ -41,3 +45,5 @@ This framing implies there is no Turing-test-style shortcut: performance alone d
 - yt_UkAOHrbcnAs @ 00:32:15
 - yt_DYm7VBaEmHU @ 00:30:34
 - yt_DYm7VBaEmHU @ 00:20:01
+- yt_y0txHUVZF5I @ 01:27:34
+- yt_9LtKJ2k8UyM @ 00:02:05
