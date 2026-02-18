@@ -92,6 +92,8 @@ Deutsch-style explanation standard (applies to our exposition, not as a filter o
 Time/version handling:
 - Track source date for every anchor.
 - If accounts differ across years, represent them as versioned claims instead of forcing artificial consistency.
+  - Preferred: create a new `CLM-XXXX` entry for the newer articulation and link it to the older one in `Notes:` (e.g., `Supersedes: CLM-YYYY` / `Variant of: CLM-YYYY`), with supports anchored to the relevant time window.
+  - Do not silently rewrite older claims to make them match newer phrasing; keep the history explicit.
 
 "No silent upgrades" rule:
 - Do not import improvements from other frameworks and present them as Bach's view.
@@ -180,10 +182,17 @@ Notes field conventions (prefer `key=value` tokens, space-separated):
 - `curation_status=candidate|keep|reject`
 - `format=talk|interview|essay` (presentation type; not the media type)
 Optional (recommended once curation starts):
+- `tier=keystone|supporting|legacy|aux`
 - `topic=self|consciousness|agency|value|...`
 - `bach_presence=solo|mostly|mixed|unknown`
 - `transcript=ok|needs_asr|missing`
 - `priority=1|2|3`
+
+Prioritization semantics (recommended):
+- `priority=1`: likely to change/extend the semantic backbone (new definitions, corrections, missing steps); extract soon.
+- `priority=2`: supporting coverage; extract when expanding or validating chapters/posts.
+- `priority=3`: backlog / low urgency.
+- `tier=keystone`: core, frequently cited sources; `supporting`: good secondary sources; `legacy`: older but useful; `aux`: tangential.
 
 Claim contract (`notes/claims.md`):
 - One claim per claim ID (`CLM-XXXX`) with one main predicate.
@@ -193,6 +202,7 @@ Claim contract (`notes/claims.md`):
   - `Supports` (`source_id @ HH:MM:SS`)
   - `Notes` (optional ambiguity/context)
 - Dependencies should be explicit when a claim relies on another claim or term.
+- Versioning (when needed): if a claim changes across time, keep both variants as separate claim IDs and link them explicitly in `Notes:` (do not overwrite history).
 
 Glossary contract (`notes/glossary.md`):
 - One term per term ID (`TERM-XXXX`).
@@ -221,6 +231,9 @@ Phase A -- Inventory (gather)
 Goal:
 - Periodically discover newer/untracked public sources and decide whether they warrant updating the semantic backbone or composed views.
 
+Cadence:
+- Manual sweeps (no scheduled automation). Run a sweep when you suspect there is significant new material or before major releases.
+
 Discovery inputs (public / no secrets):
 - Preferred: add candidates into `sources/sources.csv` via existing importers and lightweight discovery tooling:
   - `python3 scripts/import_bach_ai_sitemap.py` (Bach AI site index)
@@ -228,11 +241,19 @@ Discovery inputs (public / no secrets):
   - `python3 scripts/import_ccc_sources.py` (CCC events)
   - `python3 scripts/import_web_urls.py` (manual web finds)
 
+Discovery scope:
+- The exact set of channels/playlists/sites to sweep is editorial and can change; keep it explicit and reviewable (e.g., a small committed seed list) rather than relying on memory.
+
 Triage + prioritization:
 - Normalize `sources/sources.csv` notes tokens (`curation_status`, `format`, `topic`, `priority`, etc.).
 - Use `python3 scripts/source_queue.py --missing-notes --output markdown` to generate the next extraction queue.
 
 Update gating (avoid churn):
+- Inventory-only PRs are allowed (e.g., add sources + metadata + notes tokens) without touching claims/glossary or prose.
+- Any semantic/prose changes (claims, glossary, chapters, posts) require explicit maintainer approval based on a short proposed delta:
+  - which claim IDs / term IDs change and why,
+  - which chapters/posts are impacted,
+  - which new sources justify the change.
 - A sweep should separate:
   1) inventory changes (new/updated source rows, notes tokens), from
   2) semantic changes (claims/glossary), from
