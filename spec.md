@@ -262,7 +262,9 @@ End-to-end sweep PRs (default):
      - download local-only audio if needed (e.g., `python3 scripts/asr_faster_whisper.py --download-only ...`),
      - diarize locally (`python3 scripts/diarize_bach.py ...`),
      - verify anchors against Bach segments (`python3 scripts/speaker_audit.py`),
-  5) repo hygiene (lint + build + privacy check).
+  5) compose (if needed): check whether any new/updated claims/terms imply edits to the reader/blog outputs.
+     - If a sweep introduces new CLM/term semantics, update the relevant chapters/posts (minimal deltas) or explicitly defer in the PR description.
+  6) repo hygiene (lint + build + privacy check).
 - Keep the phases reviewable (ideally separate commits), but do not merge partial sweeps.
 
 Update gating (avoid churn):
