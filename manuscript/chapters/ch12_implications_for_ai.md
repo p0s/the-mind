@@ -53,7 +53,7 @@
 
 [BACH] One proposal for making this an empirical project is to treat “tests for consciousness” as modular: define phenomenology, define functionality, describe the implementation space, identify the search procedure, and specify success criteria for what counts as a valid demonstration. <!-- src: yt_9LtKJ2k8UyM @ 00:02:05 -->
 
-[BACH] In some recent interviews, consciousness is described as possibly binary in the sense that it “ignites”: below a threshold it is absent, above it it is present, even if lucidity admits degrees once it is present. The threshold is treated as an open empirical question about which architectural moving parts are required. <!-- src: yt_y0txHUVZF5I @ 01:27:34 -->
+[BACH] Consciousness may “ignite”: below a threshold it is absent, above it it is present, even if lucidity admits degrees once it is present. The threshold is treated as an open empirical question about which architectural moving parts are required. <!-- src: yt_y0txHUVZF5I @ 01:27:34 -->
 
 [BACH] This also implies a particular epistemic posture. Consciousness is not something one can establish from behavior alone, because behavior can be produced by many internal organizations. If artificial systems become conscious, it will likely be discovered by interpreting internal structure and by noticing the emergence of self-relation and intrinsic regulation, not by passing a conversational benchmark. <!-- src: yt_DYm7VBaEmHU @ 00:20:36 -->
 

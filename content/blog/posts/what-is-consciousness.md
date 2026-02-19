@@ -28,7 +28,7 @@ In this framing, the system maintains and stabilizes an observer reference frame
 
 Phenomenologically, “nowness” is treated as how the stabilization loop appears from the inside: a coherence bubble in which the model’s active contents are synchronized tightly enough to be experienced as present. Second-order perception (“perception of perception”) is one handle for this: the model represents not only contents, but the fact that contents are being represented, which stabilizes the observer variable. <!-- src: yt_DYm7VBaEmHU @ 00:30:34 -->
 
-In some interviews, consciousness is described as possibly binary in the sense that it “ignites”: below a threshold it is absent, above it it is present, even if lucidity admits degrees once it is present. The threshold is treated as an open question about what kind of representational organization is required. <!-- src: yt_y0txHUVZF5I @ 01:27:34 -->
+Consciousness may “ignite”: below a threshold it is absent, above it it is present, even if lucidity admits degrees once it is present. The threshold is treated as an open question about what kind of representational organization is required. <!-- src: yt_y0txHUVZF5I @ 01:27:34 -->
 
 ## Why there is no easy test
 

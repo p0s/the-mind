@@ -42,7 +42,7 @@
 
 [BACH] Second-order perception can be read as a stabilizing trick: the system represents not only contents, but the fact that contents are being represented. This creates a self-referential loop that keeps the observing process from dissolving. "Nowness" is how this stabilization appears from the inside: the coherence bubble in which the model is currently being synchronized. <!-- src: yt_DYm7VBaEmHU @ 00:30:34 -->
 
-[BACH] In some recent interviews, consciousness is described as possibly binary in the sense that it “ignites”: below a threshold it is absent, above it it is present, even if lucidity admits degrees once it is present. The threshold is treated as an open empirical question about how many moving parts and what kind of world-model organization are required. <!-- src: yt_y0txHUVZF5I @ 01:27:34 -->
+[BACH] Consciousness may “ignite”: below a threshold it is absent, above it it is present, even if lucidity admits degrees once it is present. The threshold is treated as an open empirical question about how many moving parts and what kind of world-model organization are required. <!-- src: yt_y0txHUVZF5I @ 01:27:34 -->
 
 ```mermaid
 flowchart TB

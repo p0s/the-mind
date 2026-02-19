@@ -31,10 +31,10 @@ Update triggers:
 - Level/register: match Bach's recent public-talk register (dense, careful, definition-driven, non-mathematical).
 - Voice: neutral exposition about the framework (not "as Bach").
   - Use an explicit editorial "we" for conventions, definitions, and scope decisions (e.g., "We will use X to mean Y …").
-  - Use content-first attribution: describe what the cited source *does* (defines, distinguishes, argues, frames), then state our working meaning and anchor it.
+  - Prefer content-first sentences: state the claim/definition directly; use tags + anchors for provenance.
   - Prefer direct, active sentences where the concept is the grammatical subject (e.g., "Consciousness is …" / "We will use TERM to mean …").
   - Definition template (preferred): `We will use TERM to mean …` (then anchor it with `<!-- src: <source_id> @ <HH:MM:SS> -->`).
-  - Attribution template (when needed): `In the cited talk/interview/essay, TERM is used to mean …` (then anchor).
+  - Avoid vague medium-first attribution (“In some talks/interviews…”, “In this talk…”). If disambiguation is necessary (e.g., version drift), be specific and anchor it.
 - Clarity mandate: restate ideas as clearly and precisely as possible; do not merely paraphrase.
 - Length: no word-count target; make it as long as required to cover the framework completely (and no longer).
 - Audience: dense technical generalist (software/AI-literate), comfortable with abstraction.
