@@ -21,6 +21,7 @@ Update triggers:
 - New source trigger: when adding newer/untracked Bach material, update `sources/sources.csv`, add/update source notes, then propagate into claims/glossary/content with anchors.
 - Collaboration trigger: when a collaborator proposes a different writing/epistemic/output policy, resolve that change in `spec.md` first, then regenerate derived content.
 - Repo/workflow trigger: when canonical artifacts, build helpers, generation boundaries, or publish workflow change, update `spec.md` in the same PR.
+- Periodic refresh trigger: run a source sweep (discover → triage → extract) to catch newer/untracked Bach material; only update derived content when the new sources actually change or extend the current semantic backbone.
 - PRs that change output semantics should include a short “spec delta” note describing which clauses changed and which artifacts were regenerated.
 - No silent drift: if generated/derived content changes but no source delta or spec delta explains it, treat it as a regression.
 
@@ -30,10 +31,10 @@ Update triggers:
 - Level/register: match Bach's recent public-talk register (dense, careful, definition-driven, non-mathematical).
 - Voice: neutral exposition about the framework (not "as Bach").
   - Use an explicit editorial "we" for conventions, definitions, and scope decisions (e.g., "We will use X to mean Y …").
-  - Use content-first attribution: describe what the cited source *does* (defines, distinguishes, argues, frames), then state our working meaning and anchor it.
+  - Prefer content-first sentences: state the claim/definition directly; use tags + anchors for provenance.
   - Prefer direct, active sentences where the concept is the grammatical subject (e.g., "Consciousness is …" / "We will use TERM to mean …").
   - Definition template (preferred): `We will use TERM to mean …` (then anchor it with `<!-- src: <source_id> @ <HH:MM:SS> -->`).
-  - Attribution template (when needed): `In the cited talk/interview/essay, TERM is used to mean …` (then anchor).
+  - Avoid vague medium-first attribution (“In some talks/interviews…”, “In this talk…”). If disambiguation is necessary (e.g., version drift), be specific and anchor it.
 - Clarity mandate: restate ideas as clearly and precisely as possible; do not merely paraphrase.
 - Length: no word-count target; make it as long as required to cover the framework completely (and no longer).
 - Audience: dense technical generalist (software/AI-literate), comfortable with abstraction.
@@ -91,6 +92,8 @@ Deutsch-style explanation standard (applies to our exposition, not as a filter o
 Time/version handling:
 - Track source date for every anchor.
 - If accounts differ across years, represent them as versioned claims instead of forcing artificial consistency.
+  - Preferred: create a new `CLM-XXXX` entry for the newer articulation and link it to the older one in `Notes:` (e.g., `Supersedes: CLM-YYYY` / `Variant of: CLM-YYYY`), with supports anchored to the relevant time window.
+  - Do not silently rewrite older claims to make them match newer phrasing; keep the history explicit.
 
 "No silent upgrades" rule:
 - Do not import improvements from other frameworks and present them as Bach's view.
@@ -179,10 +182,17 @@ Notes field conventions (prefer `key=value` tokens, space-separated):
 - `curation_status=candidate|keep|reject`
 - `format=talk|interview|essay` (presentation type; not the media type)
 Optional (recommended once curation starts):
+- `tier=keystone|supporting|legacy|aux`
 - `topic=self|consciousness|agency|value|...`
 - `bach_presence=solo|mostly|mixed|unknown`
 - `transcript=ok|needs_asr|missing`
 - `priority=1|2|3`
+
+Prioritization semantics (recommended):
+- `priority=1`: likely to change/extend the semantic backbone (new definitions, corrections, missing steps); extract soon.
+- `priority=2`: supporting coverage; extract when expanding or validating chapters/posts.
+- `priority=3`: backlog / low urgency.
+- `tier=keystone`: core, frequently cited sources; `supporting`: good secondary sources; `legacy`: older but useful; `aux`: tangential.
 
 Claim contract (`notes/claims.md`):
 - One claim per claim ID (`CLM-XXXX`) with one main predicate.
@@ -192,6 +202,7 @@ Claim contract (`notes/claims.md`):
   - `Supports` (`source_id @ HH:MM:SS`)
   - `Notes` (optional ambiguity/context)
 - Dependencies should be explicit when a claim relies on another claim or term.
+- Versioning (when needed): if a claim changes across time, keep both variants as separate claim IDs and link them explicitly in `Notes:` (do not overwrite history).
 
 Glossary contract (`notes/glossary.md`):
 - One term per term ID (`TERM-XXXX`).
@@ -214,6 +225,61 @@ Phase A -- Inventory (gather)
 1. Keep `sources/sources.csv` up to date (candidate superset is fine during discovery).
 2. Collect transcripts locally when useful for extraction.
 3. Create `sources/source_notes/<source_id>.md` for key sources (summary + key segments + candidate claims).
+
+### Source sweeps (new material → semantic refresh)
+
+Goal:
+- Periodically discover newer/untracked public sources and decide whether they warrant updating the semantic backbone or composed views.
+
+Cadence:
+- Manual sweeps (no scheduled automation). Run a sweep when you suspect there is significant new material or before major releases.
+
+Discovery inputs (public / no secrets):
+- Preferred: add candidates into `sources/sources.csv` via existing importers and lightweight discovery tooling:
+  - `python3 scripts/import_bach_ai_sitemap.py` (Bach AI site index)
+  - `yt-dlp` discovery + `python3 scripts/import_youtube_sources.py` (YouTube search/playlist metadata)
+  - `python3 scripts/import_ccc_sources.py` (CCC events)
+  - `python3 scripts/import_web_urls.py` (manual web finds)
+
+Discovery scope:
+- Keep a small committed, public seed list at `sources/sweep_seeds.md` (channels/playlists/sites/queries to sweep + the preferred importer).
+- Keep “not yet extracted / not yet used” status inside existing repo state:
+  - presence/absence of `sources/source_notes/<source_id>.md`
+  - and `sources/sources.csv` notes tokens (e.g., `curation_status`, `priority`, `tier`)
+
+Triage + prioritization:
+- Normalize `sources/sources.csv` notes tokens (`curation_status`, `format`, `topic`, `priority`, etc.).
+- Use `python3 scripts/source_queue.py --missing-notes --output markdown` to generate the next extraction queue.
+
+End-to-end sweep PRs (default):
+- A source sweep is done as one end-to-end change (single branch/PR) that includes:
+  1) inventory update (`sources/sources.csv`),
+  2) review + triage (keep/reject + tier/format),
+     - Default review mode is transcript-first (skim end-to-end); listening is optional and only used to resolve ambiguity.
+  3) extraction (`sources/source_notes/` + any required claim/glossary updates),
+  4) speaker QA for any multi-speaker sources used:
+     - treat any source tagged `format=interview` as multi-speaker,
+     - download local-only audio if needed (e.g., `python3 scripts/asr_faster_whisper.py --download-only ...`),
+     - diarize locally (`python3 scripts/diarize_bach.py ...`),
+     - verify anchors against Bach segments (`python3 scripts/speaker_audit.py`),
+  5) compose (if needed): check whether any new/updated claims/terms imply edits to the reader/blog outputs.
+     - If a sweep introduces new CLM/term semantics, update the relevant chapters/posts (minimal deltas) or explicitly defer in the PR description.
+  6) repo hygiene (lint + build + privacy check).
+- Keep the phases reviewable (ideally separate commits), but do not merge partial sweeps.
+
+Update gating (avoid churn):
+- Prefer end-to-end sweep PRs over inventory-only changes. If discovery needs to be staged, use a draft PR and merge only after extraction + QA are complete.
+  - Inventory-only PRs may exist as draft/WIP, but should not be merged on their own.
+- Any semantic/prose changes (claims, glossary, chapters, posts) require explicit maintainer approval based on a short proposed delta:
+  - which claim IDs / term IDs change and why,
+  - which chapters/posts are impacted,
+  - which new sources justify the change.
+- A sweep should separate:
+  1) inventory changes (new/updated source rows, notes tokens), from
+  2) semantic changes (claims/glossary), from
+  3) view changes (chapters/posts).
+- Default stance: most updates are small; only update composed prose when a new source adds a missing step, sharpens a definition, or resolves a documented ambiguity.
+- If newer sources materially differ from older ones, represent this as versioned claims (don’t silently rewrite history).
 
 Phase B -- Extract (understand)
 4. Populate `notes/claims.md` with atomic claims + anchors + confidence.
