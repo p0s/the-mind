@@ -201,7 +201,23 @@ function setupNavToggle() {
   });
 }
 
+function setupNavMetrics() {
+  const topbar = document.querySelector(".topbar");
+  if (!topbar) return;
+
+  function sync() {
+    const height = Math.max(56, Math.ceil(topbar.getBoundingClientRect().height));
+    document.documentElement.style.setProperty("--topbar-h", `${height}px`);
+  }
+
+  sync();
+  window.addEventListener("resize", sync, { passive: true });
+  window.addEventListener("orientationchange", sync, { passive: true });
+  window.addEventListener("load", sync, { passive: true });
+}
+
 const ROOT = window.__SITE_ROOT__ || "./";
+setupNavMetrics();
 setupNavToggle();
 setupSearch(ROOT);
 setupTagToggle();
