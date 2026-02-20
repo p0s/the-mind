@@ -291,6 +291,14 @@ Template (copy/paste for new terms):
 - Sources:
   - ccc_35c3_10030_the_ghost_in_the_machine @ 00:38:16
 
+## Wireheading
+- Id: TERM-0093
+- Working meaning: We will use "Wireheading" to mean: The extreme case of reward hacking where an agent directly optimizes/stimulates its own reinforcement signal, bypassing the intended objectives.
+- Related: reward hacking, reinforcement, reward function, self-modification, addiction / reward capture.
+- Common confusion: treating wireheading as only an explicit "pleasure button" scenario; in practice it can also appear as subtler forms of reward capture.
+- Sources:
+  - ccc_38c3_self_models_of_loving_grace @ 00:32:16
+
 ## Suffering
 - Id: TERM-0030
 - Working meaning: We will use "Suffering" to mean: A control/valence phenomenon associated with persistent dysregulation, where the system cannot reduce salient error/aversion signals and cannot reframe/resolve the underlying constraints.
@@ -388,6 +396,15 @@ Template (copy/paste for new terms):
 - Sources:
   - ccc_35c3_10030_the_ghost_in_the_machine @ 00:27:50
 
+## Prediction error
+- Id: TERM-0092
+- Working meaning: We will use "Prediction error" to mean: The discrepancy between a model's prediction and observed input/outcome, used to update representations and drive learning.
+- Related: error signal, learning, perception, imagination, world-model.
+- Common confusion: conflating prediction error with conscious surprise; treating it as a single named theory rather than as a generic learning signal.
+- Sources:
+  - yt_UkAOHrbcnAs @ 00:24:59
+  - yt_xthJ1R9Ifc0 @ 00:06:05
+
 ## Viability constraints
 - Id: TERM-0042
 - Working meaning: We will use "Viability constraints" to mean: The boundary conditions that keep an agent viable as the kind of system it is (integrity, energy, stability of the learning machinery), shaping what control must accomplish.
@@ -395,6 +412,15 @@ Template (copy/paste for new terms):
 - Common confusion: treating viability as a single variable; in real agents it is a bundle of constraints.
 - Sources:
   - yt_DYm7VBaEmHU @ 00:06:57
+
+## Homeostasis
+- Id: TERM-0091
+- Working meaning: We will use "Homeostasis" to mean: Control that keeps internal variables within viability bounds by using error signals to regulate behavior.
+- Related: control, error signal, viability constraints.
+- Common confusion: treating homeostasis as purely physiological; in this framing it generalizes into hierarchies of viability constraints.
+- Sources:
+  - yt_DYm7VBaEmHU @ 00:06:57
+  - ccc_38c3_self_models_of_loving_grace @ 00:32:16
 
 ## Credit assignment
 - Id: TERM-0043
