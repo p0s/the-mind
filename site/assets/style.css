@@ -127,6 +127,7 @@ body {
   font-size: 17px;
   line-height: 1.65;
   background: var(--bg0);
+  overflow-x: hidden;
 }
 
 .skip-link {
@@ -149,12 +150,13 @@ body {
   gap: 16px;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   padding: 14px 16px;
   border-bottom: 1px solid var(--line);
   background: var(--topbar-bg);
   backdrop-filter: blur(6px);
 }
-.topbar__brand { min-width: 220px; }
+.topbar__brand { min-width: 0; flex: 1 1 220px; }
 .brand {
   font-family: var(--mono);
   font-weight: 600;
@@ -183,6 +185,9 @@ body {
   display: flex;
   gap: 12px;
   align-items: center;
+  min-width: 0;
+  flex: 2 1 520px;
+  flex-wrap: wrap;
 }
 
 .btn {
@@ -314,6 +319,7 @@ body {
   box-shadow: none;
   padding: 22px 22px;
   animation: none;
+  overflow-wrap: anywhere;
 }
 
 h1, h2, h3, h4 {
@@ -346,6 +352,7 @@ code {
   border: 1px solid var(--code-border);
   padding: 0 6px;
   border-radius: 8px;
+  overflow-wrap: anywhere;
 }
 pre {
   background: var(--pre-bg);
@@ -355,6 +362,11 @@ pre {
   overflow: auto;
 }
 pre code { background: transparent; border: 0; padding: 0; }
+
+img {
+  max-width: 100%;
+  height: auto;
+}
 
 .diagram {
   border: 1px solid var(--diagram-border);
@@ -424,7 +436,12 @@ pre code { background: transparent; border: 0; padding: 0; }
 .show-tags .blk[data-tag="NOTE"] { border-left: 3px solid var(--tag-note); padding-left: 12px; }
 .show-tags .blk[data-tag="OPEN"] { border-left: 3px solid var(--tag-open); padding-left: 12px; }
 
-.search { position: relative; width: min(520px, 52vw); }
+.search {
+  position: relative;
+  flex: 1 1 360px;
+  max-width: 520px;
+  min-width: 0;
+}
 .search__input {
   width: 100%;
   padding: 10px 12px;
@@ -480,6 +497,8 @@ pre code { background: transparent; border: 0; padding: 0; }
 .footer__meta { font-family: var(--mono); }
 
 @media (max-width: 920px) {
+  .topbar__brand { flex-basis: 100%; }
+  .topbar__tools { flex-basis: 100%; justify-content: flex-start; }
   .layout { grid-template-columns: 1fr; }
   .btn--nav { display: inline-flex; }
   .sidenav {
@@ -496,7 +515,8 @@ pre code { background: transparent; border: 0; padding: 0; }
   }
   body.nav-open { overflow: hidden; }
   body.nav-open .sidenav { display: block; }
-  .search { width: min(680px, 70vw); }
+  .search { flex: 1 1 100%; width: 100%; max-width: none; order: 10; }
   .paper { padding: 18px 16px; }
   .pill { display: none !important; }
+  .footer__inner { flex-wrap: wrap; }
 }
