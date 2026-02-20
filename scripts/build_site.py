@@ -971,7 +971,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         if creator:
             head += f" — {creator}"
         if url:
-            head += f" — {url}"
+            head += f" — [source]({url})"
         src_lines.append(head)
     src_md = "\n".join(src_lines) + "\n"
 
