@@ -132,6 +132,31 @@ Template (copy/paste for new terms):
 - Sources:
   - yt_DYm7VBaEmHU @ 00:20:05
 
+## Qualia
+- Id: TERM-0087
+- Working meaning: We will use "Qualia" to mean: The qualitative character of experience: what a given experience is like from the inside (the felt aspect of phenomenology).
+- Related: phenomenology, consciousness, first-person perspective, valence.
+- Common confusion: treating qualia as non-functional "mental paint" detached from mechanism/function; treating verbal self-report as sufficient evidence of experience.
+- Sources:
+  - yt_CcQMYNi9a2w @ 01:58:03
+
+## Hard problem
+- Id: TERM-0088
+- Working meaning: We will use "Hard problem" to mean: The puzzle of why any physical/functional process should feel like anything from the inside (an explanatory gap between mechanism and experience).
+- Related: explanatory gap, phenomenology, consciousness, mechanism, function.
+- Common confusion: treating it as evidence for dualism; expecting a mechanism description alone to yield phenomenology without a functional bridge.
+- Sources:
+  - yt_CcQMYNi9a2w @ 01:58:03
+
+## Explanatory gap
+- Id: TERM-0089
+- Working meaning: We will use "Explanatory gap" to mean: The apparent gap between a mechanism/implementation description and the subjective character of experience when no functional bridge is provided.
+- Related: hard problem, phenomenology, mechanism, function, triangulation discipline.
+- Common confusion: treating it as proof that experience is non-physical, rather than as a mismatch of explanatory levels.
+- Sources:
+  - yt_DYm7VBaEmHU @ 00:01:37
+  - yt_CcQMYNi9a2w @ 01:58:03
+
 ## Mechanism
 - Id: TERM-0015
 - Working meaning: We will use "Mechanism" to mean: The implementation details that realize a function in a substrate (e.g., neural circuitry, code, or hardware).
@@ -169,7 +194,7 @@ Template (copy/paste for new terms):
 ## Second-order perception
 - Id: TERM-0019
 - Working meaning: We will use "Second-order perception" to mean: Perception of perception: the system represents the fact that it is observing, which stabilizes the observing process.
-- Related: consciousness, observer, presentness.
+- Related: consciousness, observer, nowness.
 - Common confusion: treating second-order perception as introspective narration; the core point is stabilization via self-observation, not verbal report.
 - Sources:
   - ccc_37c3_12167_synthetic_sentience @ 00:40:15
@@ -186,10 +211,18 @@ Template (copy/paste for new terms):
 ## Nowness
 - Id: TERM-0021
 - Working meaning: We will use "Nowness" to mean: The modeled "present": a coherence bubble in which the mind's active contents are synchronized enough to be experienced as happening now.
-- Related: consciousness, second-order perception, coherence, presentness.
+- Related: consciousness, second-order perception, coherence, observer.
 - Common confusion: treating "nowness" as a fundamental property of time rather than as a representational construct.
 - Sources:
   - yt_34VOI_oo-qM @ 00:19:16
+
+## Lucidity
+- Id: TERM-0090
+- Working meaning: We will use "Lucidity" to mean: A graded property of conscious experience: how clearly and coherently the system's current model state is available for awareness, regulation, and (in humans) report.
+- Related: consciousness, nowness, attention, coherence, self-model.
+- Common confusion: equating lucidity with the mere presence/absence of consciousness; treating lucidity as a moral virtue rather than a representational/control property.
+- Sources:
+  - yt_y0txHUVZF5I @ 01:27:34
 
 ## Attention schema
 - Id: TERM-0022
