@@ -63,25 +63,11 @@ flowchart TB
 ```
 
 ## Worked example
-[NOTE] Virtual reality.
+[NOTE] A person is driving to a time-sensitive meeting in city traffic.
 
-In VR, a synthetic environment can feel present because the model is coherent and tightly coupled to sensorimotor contingencies. The head turns and the world updates accordingly. Presence is not magic; it is the result of a stable loop between action and predicted sensation.
-
-[NOTE] Dreaming.
-
-In a dream, the experienced world is generated with weak external constraint. The model still produces objects, scenes, and often a self-character. The difference is that prediction errors are not corrected by sensory input, so narrative and expectation can dominate. Lucid dreaming can be interpreted as partial re-introduction of meta-control: the system models the fact that it is dreaming and gains some governance.
-
-[NOTE] Lucidity as the model of modeling.
-
-Lucidity is a small but instructive case: the dream becomes a dream to the dreamer. The system represents the fact that it is in simulation mode. This is a version of second-order perception applied to dreaming, and it illustrates why the "dream within the dream" metaphor is not merely rhetoric.
-
-[NOTE] Generative AI as dream generator.
-
-When an LLM generates a coherent narrative world in text, it is generating a simulation in the medium of language. The model can be interactive: the user intervenes with prompts, the simulation updates. But this does not settle consciousness. It shows how "dream content" can be generated; it does not show that an observer model is stabilized inside the system.
-
-[NOTE] Optical illusions.
-
-Many classic illusions can be read as cases where priors and constraints are mismatched. The system chooses the interpretation that is most useful under typical conditions, and this choice becomes visible as an illusion when the stimulus is artificially constructed to exploit the prior. The point is not that perception is "false". The point is that perception is inference under constraints, and inference has failure modes.
+- The driver's "reality" is already virtual in the technical sense: a model constrained by sensors, not direct access to physics.
+- Planning a detour is running a simulator: the agent rolls out counterfactual futures ("if I take side streets, will I make it?") under uncertainty.
+- When constraint weakens (daydreaming, fatigue), the model can drift—an everyday analogue of dream-like generation and hallucination-like error.
 
 ## Predictions / implications
 [SYNTH]
@@ -116,3 +102,6 @@ Many classic illusions can be read as cases where priors and constraints are mis
 - Virtual objects can be real as implemented causal structure at the right level of description.
 - Virtualism treats consciousness as simulation in an information-processing substrate, not as a fundamental substance.
 - Generative AI can produce "dream content"; consciousness would require the "dream within the dream" (observer stabilization).
+
+## Bridge
+We now have virtualism and the “dream machinery” as a model-level account of experience, but we still need to compress the whole stack into what it buys you and what remains open. Next chapter: Conclusion, where we summarize the leverage and the remaining architectural questions.

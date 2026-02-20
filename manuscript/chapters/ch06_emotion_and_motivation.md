@@ -70,35 +70,11 @@ flowchart TB
 [SYNTH] Boredom can be interpreted as a signal that the current policy regime is not producing learning progress: the model is not improving and valence is flat or negative. In this framing, boredom is not laziness; it is a pressure toward exploration and reconfiguration.
 
 ## Worked example
-[NOTE] Fear.
+[NOTE] A person is driving to a time-sensitive meeting in city traffic.
 
-Fear is not simply "bad feeling". It is a configuration that often includes:
-- increased readiness for rapid action,
-- narrowed attention to threat-relevant cues,
-- biased prediction toward worst-case outcomes,
-- learning that prioritizes avoidance policies.
-
-[NOTE] In an agent that must survive in real time, this reconfiguration can be rational at the system level even if it reduces local deliberative optimality.
-
-[NOTE] A second example: anger.
-
-Anger can be understood as a control mode that increases readiness to change the environment when boundaries are violated. It often includes a shift toward confrontational policies, reduced tolerance for ambiguity, and increased willingness to incur costs to prevent future violations. In social settings, anger can function as a negotiation signal: it changes what others predict will happen if they continue.
-
-[NOTE] A third example: curiosity.
-
-Curiosity can be understood as a control regime where the system assigns positive valence to reducing model uncertainty. Functionally, it drives exploration when exploitation is locally tempting but informationally impoverished. Mechanistically, it can be implemented as intrinsic reward for prediction improvement or for visiting novel states. Phenomenologically, it feels like a pull toward information.
-
-This matters because it shows how motivations can be internal to learning itself, not only tied to external consumatory rewards.
-
-[NOTE] A fourth example: shame and repair.
-
-Shame is often treated as purely cultural or purely punitive. In a control framing, shame is a signal about predicted social consequences: "my current policy threatens my standing in the group and therefore future coordination." The phenomenology can be painful because the predicted future is costly. Functionally, shame pressures policy repair: apology, concealment, re-commitment, or exit.
-
-This example matters because it highlights that emotions can implement long-horizon prediction and control. They are not only about immediate stimuli; they are about anticipated futures inside a social world-model.
-
-[NOTE] A fifth example: grief as model update.
-
-Grief can be described as a forced update of the world-model and value model: futures that were previously valuable and plausible ("this person will be here") become impossible. The system must recompile its predictions, its commitments, and its identity. This is why grief is not only sadness; it is the felt cost of rewriting a large part of the model.
+- Anxiety ramps readiness and narrows attention to threats (pedestrians, gaps) when time pressure rises.
+- Anger can shift the policy set toward confrontation ("force the merge") by changing predicted social consequences.
+- Relief when traffic clears is a control signal: error decreases, attention can widen, and smoother policies return.
 
 ## Predictions / implications
 [SYNTH]
@@ -135,3 +111,6 @@ Grief can be described as a forced update of the world-model and value model: fu
 - Emotions are control modulators: they reconfigure policy, attention, and learning.
 - Affect is how these reconfigurations feel from the inside.
 - Motivation is the long-term trajectory that emerges from valence and modulation.
+
+## Bridge
+We now have emotion as control modulation, but we still cannot explain how a coalition of subsystems stays coherent enough to maintain commitments across time. Next chapter: Self-Control and Failure Modes, where governance and internal failure modes become explicit.

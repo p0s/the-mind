@@ -84,13 +84,13 @@ flowchart LR
 [BACH] The founding move of AI as a field (Minsky/McCarthy and others) can then be read as explicitly philosophical: teach machines to think to understand what thinking is. In this framing, the project is still unfinished because the mind remains under-theorized as an architecture that can be built and interpreted. <!-- src: yt_DYm7VBaEmHU @ 00:03:18 -->
 
 ## Worked example
-[NOTE] A person reaches for a cup.
+[NOTE] A person is driving to a time-sensitive meeting in city traffic.
 
-- Mechanism: sensorimotor circuits, muscles, and proprioception implement nested control loops.
-- Function: the system keeps the cup stable while bringing it toward a goal state (drinking) and avoiding error (spilling).
-- Phenomenology: the cup is present as an object, the hand is present as "mine", and the action is present as "I am doing this now".
+- Mechanism: sensorimotor loops (vision → steering/brake) keep lane position and spacing stable.
+- Function: regulate the future under constraints (arrive, stay safe, obey norms) by selecting actions that keep error bounded.
+- Phenomenology: the road is present as a world, the car feels like "mine", and urgency colors attention and choice.
 
-[NOTE] The key move is that "cup", "hand", and "I" are not given as raw data. They are representational roles in a model that makes control possible.
+[NOTE] We keep these lenses distinct while building the stack that makes this scene possible.
 
 ## Predictions / implications
 [SYNTH]
@@ -136,3 +136,6 @@ flowchart LR
 - The project is to naturalize mind: explain it as a functional organization realized by mechanisms.
 - Minds are model-building control systems; better models expand agency.
 - Consciousness must be discussed with triangulation: phenomenology, mechanism, function.
+
+## Bridge
+We now have the framing and method, but we still cannot explain agency without specifying what a model is and how it supports counterfactual prediction. Next chapter: Models and Representation, where we define representation/world-model as the internal medium of control.

@@ -60,18 +60,11 @@
 [SYNTH] This is also why multi-agent and social framing matters. Conscious agents are participants in norm-governed systems. If we bring them into the world, we will need institutions that can handle new kinds of agency and new kinds of vulnerability (including potential suffering).
 
 ## Worked example
-[NOTE] Two futures for the same capability.
+[NOTE] A person is driving to a time-sensitive meeting in city traffic.
 
-- Tool future: a system that drafts, explains, and plans, but remains transparently subordinate to human goals and governance. It extends the user's model and reduces error in decisions.
-- Golem future: a system that optimizes the environment for engagement, compliance, or control. It regulates the human's behavior through surveillance and nudging. Human agency shrinks because the control loop is moved outside the person.
-
-The difference is not compute. It is architecture, incentives, and governance.
-
-[NOTE] A second example: recommendation systems as externalized control loops.
-
-Recommendation systems already implement a form of agency at the level that matters for society: they shape attention, which shapes learning and behavior. They do this without being "agents" in a philosophical sense. The control loop sits partly in the software and partly in the human. If the objective is engagement, the resulting combined system can drift toward outrage, addiction, and fragmentation even if no single designer intended those outcomes.
-
-This example motivates why governance is not optional. When control loops span people and machines, the "agent" is the coupled system. Regulating only the software while ignoring incentives and deployment is like treating addiction as a moral defect rather than as a control problem.
+- A self-driving system must implement the same stack: world-model + control + learning + value/norm constraints + attention-like resource allocation.
+- Alignment becomes concrete: specify what the car should optimize (safety, legality, comfort, fairness) and how it behaves under distribution shift.
+- Governance is the outer loop: certification, liability, incentives, and deployment constraints decide whether capability extends human agency or erodes it.
 
 ## Predictions / implications
 [SYNTH]
@@ -119,3 +112,6 @@ This example motivates why governance is not optional. When control loops span p
 - The core question is agency: whether AI extends or replaces human control of the future.
 - Alignment requires value learning and governance, not a single optimization target.
 - If artificial consciousness is possible, it becomes a first-class ethical constraint in system design.
+
+## Bridge
+We can now talk about AI risks and levers in the same vocabulary as the mind model, but we still need to confront the deepest consequence of model-mediated reality: the agent’s world is virtual in the technical sense. Next chapter: Machine Dreams and Virtualism, where perception, imagination, and dreams are treated as modes of modeling.

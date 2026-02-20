@@ -71,31 +71,11 @@ flowchart TB
 [SYNTH] This suggests a diagnostic stance: before moralizing, ask which loop is winning, what cue triggers it, what reward reinforces it, and what governance mechanism failed to intervene.
 
 ## Worked example
-[NOTE] The late-night scroll.
+[NOTE] A person is driving to a time-sensitive meeting in city traffic.
 
-A short-term loop values immediate novelty and social cues. A long-term loop values sleep, health, and future competence. If the environment presents salient triggers (phone within reach, notifications), the fast policy can win repeatedly because it is trained on immediate reward and has low activation cost.
-
-Self-control can succeed by:
-- changing the environment (phone outside the room),
-- changing attentional policies (noticing the trigger and shifting focus),
-- changing commitments (a rule that binds behavior across contexts),
-- changing values through learning (making long-term outcomes more salient now).
-
-[NOTE] Procrastination.
-
-Procrastination can be described as a short-horizon policy that reduces immediate discomfort by avoiding a task, even when the long-horizon model predicts higher cost later. The system is not "choosing badly" in a vacuum; it is resolving a local error signal (anxiety, boredom, uncertainty) with a cheap policy (delay) that is repeatedly reinforced by short-term relief.
-
-In this framing, procrastination is best understood as a learning and governance problem: how to make the long-horizon cost salient enough now, and how to reduce the immediate aversive signal of the task so that a better policy becomes executable.
-
-[NOTE] A third example: reward hacking as an internal attack surface.
-
-If an agent can model its own reinforcement machinery, it can attempt to directly trigger "good" signals without doing the work those signals were meant to incentivize. In humans this can range from simple short-circuits (compulsive patterns) to sophisticated strategies (learning to reshape identifications, meditation practices, or systematic environmental design). In artificial agents, this shows up as reward hacking, wireheading, or specification gaming. The form differs; the pressure is the same.
-
-[NOTE] A fourth example: addiction as local reward capture.
-
-Addiction can be described as a failure mode where a short-horizon loop captures the reinforcement signal and becomes dominant. The agent learns a policy that produces immediate relief or pleasure, while long-horizon loops carry the cost later (health, social trust, identity collapse). This creates a characteristic phenomenology: the person can endorse one policy ("I should stop") while repeatedly executing another ("do it again").
-
-The point is not to reduce addiction to a slogan. It is to show why moralizing is usually ineffective: the failure is not lack of knowledge; it is the architecture's inability to keep long-horizon commitments in control under strong short-term reinforcement.
+- Temptation: a short-horizon policy says "check the phone / take the risky gap"; long-horizon governance says "stay safe and legal."
+- Self-control succeeds via precommitment and environment design (phone away, rule: no lane changes in intersections) and by making long-horizon costs salient now.
+- Failure modes look like local reward capture: distraction, road rage, or speeding spirals that win because they are immediately reinforced.
 
 ## Predictions / implications
 [SYNTH]
@@ -135,3 +115,6 @@ The point is not to reduce addiction to a slogan. It is to show why moralizing i
 - Self-control is governance across internal policies and time scales.
 - Habits are compressed policies; they trade flexibility for efficiency.
 - Many failures are predictable outcomes of misaligned learning signals and weak internal governance.
+
+## Bridge
+We can now describe self-control as governance across policies and time scales, but we still cannot explain the construct that makes the agent a stable object to itself and to other agents. Next chapter: Self-Model and Narrative, where the self is treated as a model component and narrative as an interface.

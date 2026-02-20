@@ -117,21 +117,12 @@ flowchart TB
 [SYNTH] The phrase "the brain is a prediction machine" is too vague unless it is grounded in this counterfactual role. Prediction is not merely forecasting the next sensory input; prediction is the substrate for intervention: the ability to predict what would happen under different actions.
 
 ## Worked example
-[NOTE] A person walks through a dark room.
+[NOTE] A person is driving to a time-sensitive meeting in city traffic.
 
-They do not need to represent every photon. The world-model contains invariances: the geometry of the room, the likely location of furniture, the body's own reach. With sparse cues, the model stabilizes an interpretation ("there is a doorway there") that is good enough for control. This is why the room can feel present even when it is not fully observed.
-
-[NOTE] An illusion is a case where the model stabilizes the wrong interpretation because the input is ambiguous or because the priors are miscalibrated. A hallucination is a case where the model generates content with insufficient constraint from input. Both are failures of inference, not anomalies outside of modeling.
-
-[NOTE] A second example: driving.
-
-A driver does not compute physics from scratch. The model contains abstractions like lane boundaries, affordances ("this gap is passable"), and other agents ("that car is about to merge"). Most of what the driver experiences as "seeing" is the model locking onto an interpretation that supports safe action. When the model is wrong (black ice, an unseen cyclist), the failure is revealed as prediction error, surprise, and an urgent shift of attention.
-
-[NOTE] A third example: conversation as model coordination.
-
-In a conversation, the agent is not only predicting the physical world; it is predicting another agent's model. The listener infers the speaker's intent, beliefs, and social stance, and updates their own expectations about what will happen next. Much of what feels like "understanding language" is the world-model and social-model coordinating: a compressed signal (words) is used to update a rich model of an agent in a context.
-
-This matters because it shows that models are not only about external objects. They are also about other models. In social worlds, the reality you must control includes the beliefs and commitments of other agents.
+- Model: "lane", "gap", and "red light" are stabilized model-objects, not raw pixels.
+- Representation: a route plan stands in for the world so the agent can run counterfactuals ("if I detour, do I still arrive?").
+- World-model: occluded entities persist (the cyclist is still there behind the truck) because the model maintains state across missing data.
+- Prediction error is what makes the model visible: when it is wrong, surprise spikes and attention reallocates to update it.
 
 ## Predictions / implications
 [SYNTH]
@@ -171,3 +162,6 @@ This matters because it shows that models are not only about external objects. T
 - Representation is the prerequisite for prediction; prediction is the prerequisite for control.
 - World-models are built for agency, not for mirror-accuracy.
 - Perception and imagination are both model states; they differ by constraint.
+
+## Bridge
+We now have models and representations, but we still cannot call the system an agent until prediction is used for goal-directed control. Next chapter: Agents and Control, where goals, policies, commitments, and layered feedback loops turn modeling into agency.
