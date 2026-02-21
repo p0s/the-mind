@@ -637,8 +637,17 @@ def site_base_url() -> str:
     return v
 
 
+def canonical_rel_path(href: str) -> str:
+    rel = (href or "").strip().lstrip("./")
+    if not rel or rel == "index.html":
+        return ""
+    if rel.endswith("/index.html"):
+        return rel[: -len("index.html")]
+    return rel
+
+
 def absolute_page_url(base_url: str, href: str) -> str:
-    return urljoin(base_url, href.lstrip("./"))
+    return urljoin(base_url, canonical_rel_path(href))
 
 
 def render_page(
@@ -736,6 +745,30 @@ def write_nojekyll(out_dir: Path) -> None:
     (out_dir / ".nojekyll").write_text("", encoding="utf-8")
 
 
+def write_sitemap(out_dir: Path, base_url: str, hrefs: Iterable[str]) -> None:
+    urls = sorted({absolute_page_url(base_url, href) for href in hrefs})
+    parts = ['<?xml version="1.0" encoding="UTF-8"?>']
+    parts.append('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')
+    for u in urls:
+        parts.append(f"  <url><loc>{escape(u)}</loc></url>")
+    parts.append("</urlset>")
+    (out_dir / "sitemap.xml").write_text("\n".join(parts) + "\n", encoding="utf-8")
+
+
+def write_robots(out_dir: Path, base_url: str) -> None:
+    sitemap_url = absolute_page_url(base_url, "sitemap.xml")
+    text = "\n".join(
+        [
+            "User-agent: *",
+            "Disallow:",
+            "",
+            f"Sitemap: {sitemap_url}",
+            "",
+        ]
+    )
+    (out_dir / "robots.txt").write_text(text, encoding="utf-8")
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=str(ROOT / "dist"), help="Output directory (default: ./dist)")
@@ -772,6 +805,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     chapters_for_nav = [(anchor_id, title) for anchor_id, title, _src, _h1 in chapter_pages]
 
     search_index: List[Dict[str, str]] = []
+    page_hrefs: List[str] = []
 
     # Home (canonical source lives in site/home.md)
     if HOME_MD.exists():
@@ -793,6 +827,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             og_image_url=og_image_url,
         ),
     )
+    page_hrefs.append("index.html")
     search_index.append({"href": "index.html", "title": "Home", "text": home_text})
 
     # Reader (single page)
@@ -819,6 +854,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             og_image_url=og_image_url,
         ),
     )
+    page_hrefs.append("reader/index.html")
     search_index.append({"href": "reader/index.html", "title": "Reader", "text": reader_text})
 
     # Blog index + pages
@@ -863,6 +899,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             og_image_url=og_image_url,
         ),
     )
+    page_hrefs.append("blog/index.html")
     search_index.append({"href": "blog/index.html", "title": "Blog", "text": blog_index_text})
 
     for href, title, src_path in blog_pages:
@@ -882,6 +919,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                 og_image_url=og_image_url,
             ),
         )
+        page_hrefs.append(href)
         search_index.append({"href": href, "title": title, "text": text_body})
 
     # Per-chapter search results that jump into the Reader.
@@ -908,6 +946,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                 og_image_url=og_image_url,
             ),
         )
+        page_hrefs.append("glossary/index.html")
         search_index.append({"href": "glossary/index.html", "title": "Glossary", "text": text_body})
 
     # Claims
@@ -928,6 +967,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                 og_image_url=og_image_url,
             ),
         )
+        page_hrefs.append("claims/index.html")
         search_index.append({"href": "claims/index.html", "title": "Claims", "text": text_body})
 
     # Lineage
@@ -948,6 +988,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                 og_image_url=og_image_url,
             ),
         )
+        page_hrefs.append("lineage/index.html")
         search_index.append({"href": "lineage/index.html", "title": "Lineage", "text": text_body})
 
     # Sources (keep-only)
@@ -990,9 +1031,12 @@ def main(argv: Optional[List[str]] = None) -> int:
             og_image_url=og_image_url,
         ),
     )
+    page_hrefs.append("sources/index.html")
     search_index.append({"href": "sources/index.html", "title": "Sources", "text": src_text})
 
     (out_dir / "search_index.json").write_text(json.dumps(search_index, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
+    write_sitemap(out_dir, base_url, page_hrefs)
+    write_robots(out_dir, base_url)
 
     print(f"wrote site to {out_dir}")
     return 0
