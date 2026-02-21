@@ -1,6 +1,7 @@
 :root {
   --bg0: #fbf8f2; /* book white */
   --bg1: #fbf8f2;
+  --topbar-h: 72px;
   --ink0: #161514;
   --ink1: #2b2926;
   --muted: #5b564f;
@@ -248,14 +249,18 @@ body {
 .sidenav {
   align-self: start;
   position: sticky;
-  top: 72px;
+  top: calc(var(--topbar-h) + 10px);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--paper);
   box-shadow: none;
   padding: 14px 12px;
-  max-height: calc(100vh - 90px);
-  overflow: auto;
+  max-height: calc(100dvh - var(--topbar-h) - 20px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 .navgroup { margin-bottom: 12px; }
 .navtitle {
@@ -504,12 +509,13 @@ img {
   .sidenav {
     display: none;
     position: fixed;
-    top: 64px;
+    top: calc(var(--topbar-h) + 8px);
     left: 10px;
     right: 10px;
     bottom: 10px;
-    max-height: none;
-    overflow: auto;
+    max-height: calc(100dvh - var(--topbar-h) - 18px);
+    overflow-x: hidden;
+    overflow-y: auto;
     z-index: 18;
     box-shadow: 0 12px 28px var(--shadow);
   }
