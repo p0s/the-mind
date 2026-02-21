@@ -159,6 +159,8 @@ Current output build helpers:
 - Chapter series exports (reader-facing): `python3 scripts/export_blog_posts.py` -> `content/series/chapters/`
 - Static site (reader-facing): `python3 scripts/build_site.py --out dist` -> `dist/` (local build output)
   - Includes a single-page reader view at `dist/reader/index.html`.
+  - Emits crawl/indexing helpers: `dist/sitemap.xml` and `dist/robots.txt`.
+  - Emits canonical URLs in page `<head>` for dedupe across equivalent routes.
 
 Reader view citation contract (static site):
 - Render each `source_id @ HH:MM:SS` reference as a hyperlink to the canonical source URL at that timecode.
@@ -333,3 +335,4 @@ Build outputs (for whichever views are in scope)
   - `manuscript/book.md`
   - `manuscript/book_public.md`
 - When site outputs are in scope: `python3 scripts/build_site.py --out dist` succeeds and site outputs keep working source links/timecodes.
+- Site output QA also checks canonical + crawl artifacts: pages include canonical URLs and `dist/sitemap.xml` + `dist/robots.txt` are present and valid.
