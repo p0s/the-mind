@@ -71,3 +71,7 @@ transcripts/
 
 # Temporary local-only helper files
 TEMP_GITHUB_SSH_SIGNING_KEY.pub
+
+# Local AI agent instructions (do not commit)
+AGENTS.md
+agents.md
