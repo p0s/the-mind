@@ -17,6 +17,7 @@ import csv
 import datetime as dt
 import os
 import re
+import shutil
 import subprocess
 import sys
 import time
@@ -33,8 +34,15 @@ SOURCES_CSV = ROOT / "sources" / "sources.csv"
 TRANSCRIPTS_DIR = ROOT / "transcripts"
 INDEX_CSV = TRANSCRIPTS_DIR / "_index.csv"
 
-YT_DLP = os.environ.get("YT_DLP", "/home/node/.local/bin/yt-dlp")
-NODE = os.environ.get("NODE", "/usr/local/bin/node")
+def _resolve_bin(env_key: str, fallback: str) -> str:
+    override = (os.environ.get(env_key) or "").strip()
+    if override:
+        return override
+    return shutil.which(fallback) or fallback
+
+
+YT_DLP = _resolve_bin("YT_DLP", "yt-dlp")
+NODE = _resolve_bin("NODE", "node")
 YT_DLP_REMOTE_COMPONENTS = os.environ.get("YT_DLP_REMOTE_COMPONENTS", "ejs:github")
 YTDLP_SLEEP_REQUESTS = os.environ.get("YTDLP_SLEEP_REQUESTS", "1")
 YTDLP_COOKIES_FROM_BROWSER = os.environ.get("YTDLP_COOKIES_FROM_BROWSER", "")
