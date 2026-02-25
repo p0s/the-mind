@@ -1,5 +1,7 @@
 # Chapter 2: Models and Representation
 
+<!-- chapter_keywords: world model, world-model, representation, model, prediction, simulate, simulation -->
+
 ## Motivation / puzzle
 [BACH] A mind does not have direct access to reality. It has signals. If it acted on signals alone, it would behave like a reactive device. The distinctive feature of mind is that it controls the future, and future control requires a model: a way to represent what is not currently observed, what might happen next, and what would happen under counterfactual actions. <!-- src: yt_UkAOHrbcnAs @ 00:24:59 -->
 

@@ -1,5 +1,7 @@
 # Chapter 10: Consciousness
 
+<!-- chapter_keywords: consciousness, phenomenology, observer, experience -->
+
 ## Motivation / puzzle
 [BACH] Consciousness is a gap in the scientific worldview. The hard problem, in one formulation, is the explanatory gap between mechanism and experience: why should any physical process feel like something from the inside? <!-- src: yt_CcQMYNi9a2w @ 01:58:03 -->
 

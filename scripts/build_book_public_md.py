@@ -30,6 +30,7 @@ OUT_MD = ROOT / "manuscript" / "book_public.md"
 
 TAG_RX = re.compile(r"^\[(BACH|SYNTH|NOTE|OPEN)\]\s*", re.IGNORECASE)
 SRC_COMMENT_RX = re.compile(r"\s*<!--\s*src:\s*[^>]+-->\s*$", re.IGNORECASE)
+CHAPTER_KEYWORDS_RX = re.compile(r"^\s*<!--\s*chapter_keywords:\s*.*?-->\s*$", re.IGNORECASE)
 ANCHOR_HEADING_IN = "## Anchors (sources + timecodes)"
 ANCHOR_HEADING_OUT = "## References"
 ANCHOR_KEYWORDS_RX = re.compile(r"^(\s*-\s+[^\s]+\s+@\s+\d{2}:\d{2}:\d{2})\s+\(keywords:.*\)\s*$", re.IGNORECASE)
@@ -39,6 +40,9 @@ def transform(text: str) -> str:
     out_lines: list[str] = []
     for raw in text.splitlines():
         line = raw.rstrip("\n")
+
+        if CHAPTER_KEYWORDS_RX.match(line):
+            continue
 
         if line.strip() == ANCHOR_HEADING_IN:
             out_lines.append(ANCHOR_HEADING_OUT)

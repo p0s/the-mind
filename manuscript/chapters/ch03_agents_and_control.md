@@ -1,5 +1,7 @@
 # Chapter 3: Agents and Control
 
+<!-- chapter_keywords: agent, agency, control, control system, policy, goal -->
+
 ## Motivation / puzzle
 [BACH] A system that merely predicts is not yet an agent. Agency begins when prediction is used for control: selecting actions so that the future becomes more like the system prefers. <!-- src: ccc_38c3_self_models_of_loving_grace @ 00:32:16 -->
 

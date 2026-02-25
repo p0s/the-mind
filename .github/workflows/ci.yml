@@ -39,5 +39,8 @@ jobs:
       - name: Lint provenance
         run: python3 scripts/lint_provenance.py
 
+      - name: Run unit tests
+        run: python3 -m unittest discover -s tests
+
       - name: Ensure no tracked diffs
         run: git diff --exit-code

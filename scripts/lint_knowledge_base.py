@@ -11,12 +11,14 @@ Rules are documented in docs/knowledge_base.md.
 
 from __future__ import annotations
 
-import csv
 import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Set, Tuple
+
+from _core.sources import load_source_ids as core_load_source_ids
+from _core.timecodes import valid_timecode
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -54,28 +56,7 @@ class LintError:
 def load_source_ids() -> Set[str]:
     if not SOURCES_CSV.exists():
         raise SystemExit(f"missing {SOURCES_CSV}")
-    out: Set[str] = set()
-    with SOURCES_CSV.open("r", encoding="utf-8", newline="") as f:
-        for row in csv.DictReader(f):
-            sid = (row.get("source_id") or "").strip()
-            if sid:
-                out.add(sid)
-    return out
-
-
-def valid_timecode(tc: str) -> bool:
-    m = re.match(r"^(\d{2}):(\d{2}):(\d{2})(?:[.,](\d{1,3}))?$", (tc or "").strip())
-    if not m:
-        return False
-    _h, mm, ss, ms = m.groups()
-    try:
-        if int(mm) >= 60 or int(ss) >= 60:
-            return False
-        if ms is not None and int(ms) >= 1000:
-            return False
-    except Exception:
-        return False
-    return True
+    return core_load_source_ids(SOURCES_CSV)
 
 
 def read_lines(path: Path) -> List[Tuple[int, str]]:

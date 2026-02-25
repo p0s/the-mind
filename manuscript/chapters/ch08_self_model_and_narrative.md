@@ -1,5 +1,7 @@
 # Chapter 8: Self-Model and Narrative
 
+<!-- chapter_keywords: self-model, self model, identity, narrative -->
+
 ## Motivation / puzzle
 [BACH] Minds model the world, but human minds also model themselves. The puzzle is how a control system becomes a self for itself: how it constructs a first-person reference frame that stabilizes action, memory, and social coordination. <!-- src: yt_UkAOHrbcnAs @ 00:16:47 -->
 

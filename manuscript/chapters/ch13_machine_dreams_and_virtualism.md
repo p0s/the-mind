@@ -1,5 +1,7 @@
 # Chapter 13: Machine Dreams and Virtualism (Reality as a Model)
 
+<!-- chapter_keywords: dream, virtualism, simulation, constraint, reality, model, hallucination -->
+
 ## Motivation / puzzle
 [BACH] A deliberately provocative metaphor used in the cited sources is that the world we experience is a "dream". This is not a claim that the external world does not exist. It is a claim about how the mind relates to the external world. The mind does not experience physics directly; it experiences a constructed model that is constrained by physics. <!-- src: ccc_37c3_12167_synthetic_sentience @ 00:17:39 -->
 

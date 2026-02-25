@@ -18,7 +18,9 @@ import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import List, Tuple
+from typing import Dict, List, Tuple
+
+from _core.provenance import format_src_comment
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -30,7 +32,7 @@ ANCHOR_RX = re.compile(
     re.IGNORECASE,
 )
 BACH_LINE_RX = re.compile(r"^\[BACH\]")
-HAS_SRC_RX = re.compile(r"<!--\s*src:\s*[^>]+-->")
+HAS_SRC_RX = re.compile(r"<!--\s*src:\s*[^>]+-->", re.IGNORECASE)
 
 
 STOPWORDS = {
@@ -131,14 +133,38 @@ def context_for_bach_line(lines: List[str], i: int, max_follow: int = 10) -> str
 def choose_anchor(context: str, anchors: List[Anchor]) -> Anchor:
     if not anchors:
         raise RuntimeError("chapter has no anchors section")
-    best = anchors[0]
-    best_score = -1
-    for a in anchors:
-        s = score_anchor(context, a)
-        if s > best_score:
-            best = a
-            best_score = s
-    return best
+    scored = [(score_anchor(context, a), idx, a) for idx, a in enumerate(anchors)]
+    scored.sort(key=lambda t: (-t[0], t[1]))
+    return scored[0][2]
+
+
+def choose_anchor_with_confidence(context: str, anchors: List[Anchor]) -> Tuple[Anchor, Dict[str, str]]:
+    """
+    Choose an anchor and return optional non-public metadata when matching is ambiguous.
+
+    Ambiguity conditions:
+      - best_score == 0 (no keyword overlap)
+      - tie for best_score
+      - low margin between best and runner-up (margin < 1)
+    """
+    if not anchors:
+        raise RuntimeError("chapter has no anchors section")
+
+    scored = [(score_anchor(context, a), idx, a) for idx, a in enumerate(anchors)]
+    scored.sort(key=lambda t: (-t[0], t[1]))
+    best_score, _best_idx, best = scored[0]
+    second_score = scored[1][0] if len(scored) > 1 else -1
+    margin = best_score - second_score
+    tied = sum(1 for s, _idx, _a in scored if s == best_score) > 1
+
+    needs_review = best_score <= 0 or tied or margin < 1
+    if not needs_review:
+        return best, {}
+
+    meta: Dict[str, str] = {"auto": "needs_review", "score": str(best_score), "margin": str(margin)}
+    if tied:
+        meta["tie"] = "1"
+    return best, meta
 
 
 def process_chapter(path: Path) -> Tuple[bool, int, int]:
@@ -159,8 +185,8 @@ def process_chapter(path: Path) -> Tuple[bool, int, int]:
             anchored += 1
             continue
         ctx = context_for_bach_line(lines, i)
-        a = choose_anchor(ctx, anchors)
-        suffix = f" <!-- src: {a.source_id} @ {a.timecode} -->"
+        a, meta = choose_anchor_with_confidence(ctx, anchors)
+        suffix = " " + format_src_comment([(a.source_id, a.timecode)], meta=meta or None)
         lines[i] = line.rstrip() + suffix
         anchored += 1
         changed = True

@@ -1,5 +1,7 @@
 # Chapter 1: The Project (Mind as a Mechanism)
 
+<!-- chapter_keywords: consciousness, function, mechanism, phenomenology, model -->
+
 ## Motivation / puzzle
 [BACH] Artificial intelligence is not only an engineering project. It is also a philosophical project: it asks what kind of thing a mind is, what it means to know or understand, and whether consciousness can exist in a machine. <!-- src: yt_DYm7VBaEmHU @ 00:03:18 -->
 

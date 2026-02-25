@@ -1,5 +1,7 @@
 # Chapter 14: Conclusion (What the Model Buys You)
 
+<!-- chapter_keywords: mind, control, model, consciousness, self-model, valence, value, attention, architecture -->
+
 ## Motivation / puzzle
 [BACH] The point of a model is not to settle metaphysics by decree. The point is to gain leverage: to be able to predict, explain, and design. A theory of mind is useful if it lets us reason more clearly about ourselves and about the artificial agents we may build. <!-- src: yt_UkAOHrbcnAs @ 00:24:59 -->
 

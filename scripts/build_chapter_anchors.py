@@ -8,11 +8,13 @@ This avoids quoting transcripts and only writes source_id + timecode + keyword t
 from __future__ import annotations
 
 import argparse
-import csv
 import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, List, Tuple
+
+from _core.notes_tokens import parse_notes_kv
+from _core.sources import load_sources_csv
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,13 +43,7 @@ def parse_date_key(s: str) -> Tuple[int, int, int]:
 
 
 def load_sources(path: Path) -> Dict[str, Dict[str, str]]:
-    out: Dict[str, Dict[str, str]] = {}
-    with path.open("r", encoding="utf-8", newline="") as f:
-        for row in csv.DictReader(f):
-            sid = row.get("source_id", "").strip()
-            if sid:
-                out[sid] = dict(row)
-    return out
+    return load_sources_csv(path)
 
 
 def iter_segments(
@@ -61,14 +57,12 @@ def iter_segments(
         sid = path.stem
         meta = sources.get(sid, {})
         notes = meta.get("notes", "") or ""
+        kv = parse_notes_kv(notes)
         if keep_only and "curation_status=keep" not in notes:
             continue
         if not include_web and meta.get("kind") == "web":
             continue
-        tier = "supporting"
-        for tok in notes.split():
-            if tok.startswith("tier="):
-                tier = tok.split("=", 1)[1] or tier
+        tier = (kv.get("tier") or "").strip() or "supporting"
         published = meta.get("published_date", "")
         for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
             m = rx.match(line.strip())
@@ -131,6 +125,22 @@ def update_chapter(path: Path, anchors: List[Segment]) -> None:
     path.write_text(new_content, encoding="utf-8")
 
 
+CHAPTER_KEYWORDS_RX = re.compile(r"<!--\s*chapter_keywords:\s*(.*?)\s*-->", re.IGNORECASE)
+
+
+def parse_chapter_keywords(md: str) -> List[str]:
+    m = CHAPTER_KEYWORDS_RX.search(md or "")
+    if not m:
+        return []
+    raw = m.group(1)
+    out: List[str] = []
+    for piece in raw.split(","):
+        k = piece.strip()
+        if k:
+            out.append(k)
+    return out
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--max-items", type=int, default=8, help="Max anchors per chapter")
@@ -142,25 +152,14 @@ def main() -> int:
     sources = load_sources(SOURCES_CSV)
     segments = list(iter_segments(NOTES_DIR, sources, include_web=args.include_web, keep_only=args.keep_only))
 
-    chapter_keywords = {
-        "ch01_the_project.md": ["consciousness", "function", "mechanism", "phenomenology", "model"],
-        "ch02_models_and_representation.md": ["world model", "world-model", "representation", "model", "prediction", "simulate", "simulation"],
-        "ch03_agents_and_control.md": ["agent", "agency", "control", "control system", "policy", "goal"],
-        "ch04_learning_and_understanding.md": ["learning", "compression", "prediction error", "reinforcement", "understanding"],
-        "ch05_valence.md": ["valence", "reward", "value", "motivation"],
-        "ch06_emotion_and_motivation.md": ["emotion", "affect", "motivation", "valence"],
-        "ch07_self_control_and_failure_modes.md": ["control", "reward", "value", "policy", "valence"],
-        "ch08_self_model_and_narrative.md": ["self-model", "self model", "identity", "narrative"],
-        "ch09_attention_and_workspace.md": ["attention", "workspace", "working memory", "global workspace"],
-        "ch10_consciousness.md": ["consciousness", "phenomenology", "observer", "experience"],
-        "ch11_social_minds_language_culture.md": ["social", "language", "culture", "norm", "coordination", "contract"],
-        "ch12_implications_for_ai.md": ["alignment", "ethics", "intelligence", "value", "agency"],
-    }
-
-    for filename, keywords in chapter_keywords.items():
-        path = CHAPTERS_DIR / filename
-        if not path.exists():
-            continue
+    paths = sorted(CHAPTERS_DIR.glob("ch*.md"))
+    for path in paths:
+        md = path.read_text(encoding="utf-8", errors="replace")
+        keywords = parse_chapter_keywords(md)
+        if not keywords:
+            raise SystemExit(
+                f"Missing chapter keywords metadata in {path.relative_to(ROOT)}. Add: <!-- chapter_keywords: kw1, kw2, ... -->"
+            )
         anchors = pick_segments(segments, keywords, args.max_items, args.max_per_source)
         update_chapter(path, anchors)
 

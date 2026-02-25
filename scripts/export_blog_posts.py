@@ -24,6 +24,7 @@ OUT_DIR = ROOT / "content" / "series" / "chapters"
 
 TAG_RX = re.compile(r"^\[(BACH|SYNTH|NOTE|OPEN)\]\s*", re.IGNORECASE)
 SRC_COMMENT_RX = re.compile(r"\s*<!--\s*src:\s*[^>]+-->\s*$", re.IGNORECASE)
+CHAPTER_KEYWORDS_RX = re.compile(r"^\s*<!--\s*chapter_keywords:\s*.*?-->\s*$", re.IGNORECASE)
 CH_TITLE_RX = re.compile(r"^#\s+Chapter\s+\d+:\s*(.+?)\s*$", re.IGNORECASE)
 ANCHOR_HEADING = "## Anchors (sources + timecodes)"
 ANCHOR_HEADING_OUT = "## References"
@@ -42,6 +43,9 @@ def transform(text: str) -> str:
     out_lines: list[str] = []
     for raw in text.splitlines():
         line = raw.rstrip("\n")
+
+        if CHAPTER_KEYWORDS_RX.match(line):
+            continue
 
         # Rewrite headings.
         if line.strip() == ANCHOR_HEADING:

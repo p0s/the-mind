@@ -4,7 +4,7 @@ Lint provenance / citation syntax (Option 1).
 
 Contract:
 - Prose citations are hidden HTML comments at end of line:
-    <!-- src: <source_id> @ <HH:MM:SS> -->
+    <!-- src: <source_id> @ <HH:MM:SS>; <source_id> @ <HH:MM:SS> | auto=... -->
 - List citations are visible and start the list item:
     - <source_id> @ <HH:MM:SS> ...
 - In manuscript chapters, the "Anchors (sources + timecodes)" section requires
@@ -16,12 +16,15 @@ encodings and rejects ad-hoc variants.
 
 from __future__ import annotations
 
-import csv
 import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Sequence, Set, Tuple
+
+from _core.provenance import find_src_comments, parse_src_comment_eol
+from _core.sources import load_source_ids as core_load_source_ids
+from _core.timecodes import valid_timecode
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -37,12 +40,6 @@ NOTES = [
 ]
 HOME = ROOT / "site" / "home.md"
 
-
-SRC_COMMENT_CANON_RX = re.compile(
-    r"<!--\s*src:\s*([a-z0-9_\-]+)\s*@\s*(\d{2}:\d{2}:\d{2}(?:[.,]\d{1,3})?)\s*-->\s*$",
-    re.IGNORECASE,
-)
-SRC_COMMENT_ANY_RX = re.compile(r"<!--\s*src:\s*.*?-->", re.IGNORECASE)
 
 LIST_CITE_RX = re.compile(
     r"^\s*(?:-|\*|\+|\d+\.)\s+([a-z0-9_\-]+)\s+@\s*(\d{2}:\d{2}:\d{2}(?:[.,]\d{1,3})?)\b",
@@ -75,28 +72,7 @@ class LintError:
 def load_source_ids() -> Set[str]:
     if not SOURCES_CSV.exists():
         raise SystemExit(f"missing {SOURCES_CSV}")
-    out: Set[str] = set()
-    with SOURCES_CSV.open("r", encoding="utf-8", newline="") as f:
-        for row in csv.DictReader(f):
-            sid = (row.get("source_id") or "").strip()
-            if sid:
-                out.add(sid)
-    return out
-
-
-def valid_timecode(tc: str) -> bool:
-    m = re.match(r"^(\d{2}):(\d{2}):(\d{2})(?:[.,](\d{1,3}))?$", (tc or "").strip())
-    if not m:
-        return False
-    _h, mm, ss, ms = m.groups()
-    try:
-        if int(mm) >= 60 or int(ss) >= 60:
-            return False
-        if ms is not None and int(ms) >= 1000:
-            return False
-    except Exception:
-        return False
-    return True
+    return core_load_source_ids(SOURCES_CSV)
 
 
 def iter_target_files() -> List[Path]:
@@ -126,7 +102,7 @@ def lint_file(path: Path, *, source_ids: Set[str]) -> List[LintError]:
                 in_chapter_anchors = False
 
         # Disallow src comments inside list item lines (use list cite syntax instead).
-        if SRC_COMMENT_ANY_RX.search(line) and re.match(r"^\s*(?:-|\*|\+|\d+\.)\s+", line):
+        if find_src_comments(line) and re.match(r"^\s*(?:-|\*|\+|\d+\.)\s+", line):
             errors.append(
                 LintError(
                     path,
@@ -137,25 +113,31 @@ def lint_file(path: Path, *, source_ids: Set[str]) -> List[LintError]:
             )
 
         # Validate canonical src comments (must be end-of-line, must reference known source_id).
-        if SRC_COMMENT_ANY_RX.search(line):
-            m = SRC_COMMENT_CANON_RX.search(line)
-            if not m:
+        comments = find_src_comments(line)
+        if comments:
+            parsed = parse_src_comment_eol(line)
+            if not parsed:
                 errors.append(
                     LintError(
                         path,
                         i,
-                        "Non-canonical src comment; must be '... <!-- src: <source_id> @ <HH:MM:SS> -->' at end of line.",
+                        "Non-canonical src comment; must be '... <!-- src: <source_id> @ <HH:MM:SS>; ... -->' at end of line.",
                         line,
                     )
                 )
             else:
-                sid, tc = m.group(1), m.group(2).replace(",", ".")
-                if sid not in source_ids:
-                    errors.append(LintError(path, i, f"Unknown source_id '{sid}' (not in sources/sources.csv).", line))
-                if not valid_timecode(tc):
-                    errors.append(LintError(path, i, f"Invalid timecode '{tc}' (expected HH:MM:SS).", line))
+                for sid, tc in parsed.refs:
+                    if sid not in source_ids:
+                        errors.append(LintError(path, i, f"Unknown source_id '{sid}' (not in sources/sources.csv).", line))
+                    if not valid_timecode(tc):
+                        errors.append(LintError(path, i, f"Invalid timecode '{tc}' (expected HH:MM:SS).", line))
+
+                meta = parsed.meta_dict
+                if meta.get("auto", "").strip().lower() == "needs_review":
+                    errors.append(LintError(path, i, "Found auto=needs_review anchor; must be resolved manually.", line))
+
                 # Ensure there's only one src comment on the line.
-                if len(SRC_COMMENT_ANY_RX.findall(line)) > 1:
+                if len(comments) > 1:
                     errors.append(LintError(path, i, "Multiple src comments on one line; use exactly one.", line))
 
         # Validate list citation items (visible form).
@@ -188,7 +170,7 @@ def lint_file(path: Path, *, source_ids: Set[str]) -> List[LintError]:
 
         # Catch stray visible cite tokens in prose (not a list item, not in a src comment).
         # Only flag tokens whose source_id is known.
-        without_comments = SRC_COMMENT_ANY_RX.sub("", line)
+        without_comments = re.sub(r"<!--\s*src:\s*.*?-->", "", line, flags=re.IGNORECASE)
         if not LIST_CITE_RX.match(without_comments):
             for m_vis in VISIBLE_CITE_TOKEN_RX.finditer(without_comments):
                 sid = m_vis.group(1)
@@ -208,12 +190,12 @@ def lint_file(path: Path, *, source_ids: Set[str]) -> List[LintError]:
         # BACH tag lines must include a canonical src comment somewhere on the line.
         # (add_bach_anchors.py enforces this in chapters, but we lint for drift.)
         if BACH_TAG_LINE_RX.match(line):
-            if not SRC_COMMENT_CANON_RX.search(line):
+            if not parse_src_comment_eol(line):
                 errors.append(
                     LintError(
                         path,
                         i,
-                        "[BACH] lines must include a canonical end-of-line src comment: <!-- src: <source_id> @ <HH:MM:SS> -->.",
+                        "[BACH] lines must include a canonical end-of-line src comment: <!-- src: <source_id> @ <HH:MM:SS>; ... -->.",
                         line,
                     )
                 )

@@ -1,5 +1,7 @@
 # Chapter 5: Valence (Why Anything Matters)
 
+<!-- chapter_keywords: valence, reward, value, motivation -->
+
 ## Motivation / puzzle
 [BACH] A world-model without preference is inert. It can predict, but it cannot choose. To become an agent, a system must have a way to mark futures as better or worse for itself. This marking is not an optional add-on; it is the control variable that turns prediction into motivation. <!-- src: yt_3MkJEGE9GRY @ 00:24:13 -->
 

@@ -8,11 +8,12 @@ from collections import Counter
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
+from _core.notes_tokens import parse_notes_kv
+from _core.sources import normalize_presentation_format
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES_CSV = ROOT / "sources" / "sources.csv"
-
-ALLOWED_PRESENTATION_FORMATS = {"talk", "interview", "essay"}
 
 _ESSAY_HINTS = (
     "summary",
@@ -88,37 +89,6 @@ _TALK_HINTS = (
 
 _EP_RX = re.compile(r"\b(?:ep\.?\s*\d+|episode\s*\d+|ep\d+)\b", re.IGNORECASE)
 _HASHNUM_RX = re.compile(r"#\d{1,4}\b")
-
-
-def parse_notes_kv(notes: str) -> Dict[str, str]:
-    out: Dict[str, str] = {}
-    for tok in (notes or "").split():
-        if "=" not in tok:
-            continue
-        k, v = tok.split("=", 1)
-        k = k.strip()
-        v = v.strip()
-        if k and v:
-            out[k] = v
-    return out
-
-
-def normalize_presentation_format(v: str) -> Optional[str]:
-    x = (v or "").strip().lower()
-    if not x:
-        return None
-    if x in ALLOWED_PRESENTATION_FORMATS:
-        return x
-
-    if x in {"podcast", "conversation", "qa"}:
-        return "interview"
-    if x in {"lecture", "presentation", "keynote"}:
-        return "talk"
-    if x in {"article", "post", "blog"}:
-        return "essay"
-
-    # "video"/"clip"/etc are media types, not presentation types; do not preserve.
-    return None
 
 
 def infer_presentation_format(meta: Dict[str, str], *, force: bool) -> str:

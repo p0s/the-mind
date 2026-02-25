@@ -1,5 +1,7 @@
 # Chapter 9: Attention and Workspace
 
+<!-- chapter_keywords: attention, workspace, working memory, global workspace -->
+
 ## Motivation / puzzle
 [BACH] Minds operate under bandwidth constraints. They cannot process everything they could represent. The puzzle is how a system remains coherent while most of what could be processed is ignored. Attention is the answer: the selection mechanism that allocates limited resources to a small subset of representations. <!-- src: yt_DYm7VBaEmHU @ 00:02:58 -->
 

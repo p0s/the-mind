@@ -1,5 +1,7 @@
 # Chapter 12: Implications for AI
 
+<!-- chapter_keywords: alignment, ethics, intelligence, value, agency -->
+
 ## Motivation / puzzle
 [BACH] If minds are model-building control systems, then artificial minds are possible in principle. The puzzle is not whether machines can be useful, but what kind of agency and consciousness we may bring into the world and how to integrate it into human society without collapsing human agency. <!-- src: yt_DYm7VBaEmHU @ 00:32:23 -->
 
