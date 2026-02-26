@@ -371,7 +371,8 @@ Phase D -- QA (prove we didn't drift)
 ## 8) Security / Hygiene
 - Never commit login data, credentials, or other authentication material.
 - If such data is temporarily required for local tooling, store it outside the repo and delete it immediately after use.
-- CI should run `python3 scripts/check_public_repo_hygiene.py` to fail on likely secrets and local path leakage in tracked files.
+- Local-first guardrail: install repo hooks via `./scripts/install_git_hooks.sh` so staged commits and outbound pushes are scanned before they leave your machine.
+- CI should run `python3 scripts/check_public_repo_hygiene.py` to fail on likely secrets and warn on local path leakage in tracked files.
 
 ---
 
