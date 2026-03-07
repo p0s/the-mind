@@ -1,5 +1,7 @@
 # Chapter 6: Emotion and Motivation
 
+<!-- chapter_keywords: emotion, affect, motivation, valence -->
+
 ## Motivation / puzzle
 [BACH] Emotions are often described as irrational noise that interferes with thinking. In a control framing, emotions are part of the control architecture: they are rapid global reconfigurations that help the system select actions and learn under uncertainty. <!-- src: yt_FMfA6i60WDA @ 00:56:36 -->
 

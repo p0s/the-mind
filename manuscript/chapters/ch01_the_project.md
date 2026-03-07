@@ -1,5 +1,7 @@
 # Chapter 1: The Project (Mind as a Mechanism)
 
+<!-- chapter_keywords: consciousness, function, mechanism, phenomenology, model -->
+
 ## Motivation / puzzle
 [BACH] Artificial intelligence is not only an engineering project. It is also a philosophical project: it asks what kind of thing a mind is, what it means to know or understand, and whether consciousness can exist in a machine. <!-- src: yt_DYm7VBaEmHU @ 00:03:18 -->
 
@@ -11,16 +13,16 @@
 
 [BACH] This also forces a methodological discipline: consciousness cannot be settled by a single observational angle. One needs triangulation. <!-- src: yt_DYm7VBaEmHU @ 00:05:14 -->
 
-[BACH] In particular, consciousness is not treated as a benchmark property. There is no straightforward Turing test for it: performance can be achieved by many internal organizations, and consciousness is a particular way a system is organized and relates to itself. This makes consciousness a matter of interpretation of internal structure, not a score. <!-- src: yt_DYm7VBaEmHU @ 00:20:01 -->
+[BACH] In particular, consciousness is not treated as a benchmark property. There is no straightforward Turing test for it: performance can be achieved by many internal organizations, and consciousness is a particular way a system is organized and relates to itself. This makes consciousness a matter of interpretation of internal structure, not a score. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p23; yt_DYm7VBaEmHU @ 00:20:01 -->
 
 ## Definitions introduced or refined
-[BACH] <!-- src: yt_DYm7VBaEmHU @ 00:03:18 -->
+[BACH] <!-- src: yt_DYm7VBaEmHU @ 00:03:18; web_cimc_ai_cimchypothesis_pdf @ p18; web_cimc_ai_cimchypothesis_pdf @ p21; web_arxiv_org_pdf_2512_01081 @ p1 -->
 - Naturalizing the mind: treating mind as part of the causal fabric of the world, explainable by mechanisms that implement functions.
 - Model: a constructed structure that supports prediction and control; not a copy of reality.
 - Representation: an internal structure that stands in for something else and supports inference for control.
 - Agent: a control system that uses models to choose actions under constraints.
 - Control: closed-loop regulation under feedback, not domination.
-- Consciousness: a functional organization that stabilizes and coordinates mental contents into a coherent point of view (working definition for this book).
+- Consciousness: a functional interface/organization that stabilizes and coordinates mental contents into a coherent point of view; often framed as second-order perception (perception of perception).
 - Coherence: a control-relevant agreement among subsystems that allows the system to act as one agent rather than as competing local processes.
 - Self-organization: a process in which the system's structure is produced and maintained by its own dynamics rather than being fully specified externally.
 - Computationalist functionalism: a philosophical backbone for AI and cognitive modeling.
@@ -43,7 +45,7 @@ flowchart LR
 ## How to Read This Book (Method)
 [SYNTH] The primary failure mode of writing about mind is category drift: a definition shifts by a few degrees in each chapter until the reader no longer knows what is being claimed. This book tries to avoid that by repeating a discipline: define terms as roles in an architecture, keep levels of explanation separate, and cash out abstractions in concrete control loops and examples.
 
-[SYNTH] A second failure mode is attribution drift: the author silently imports improvements from adjacent frameworks and then attributes the improved version to the subject. The present approach is stricter: where the text restates the sources, it aims to do so precisely and points to source anchors (URLs + timecodes). Where the text makes a bridge or extrapolation, it should be readable as such.
+[SYNTH] A second failure mode is attribution drift: the author silently imports improvements from adjacent frameworks and then attributes the improved version to the subject. The present approach is stricter: where the text restates the sources, it aims to do so precisely and points to source anchors (URLs + locators). Where the text makes a bridge or extrapolation, it should be readable as such.
 
 [SYNTH] The standard for explanations in the exposition (especially when the text is doing synthesis rather than restatement) is "good explanations" in Deutsch's sense: explanations should be hard to vary while still accounting for the same phenomena, and they should expose consequences that can, in principle, be tested against experience (including the experience of building or analyzing systems).
 
@@ -79,7 +81,7 @@ flowchart LR
 
 [BACH] Cybernetics (Wiener) is invoked as a control-centric bridge: minds can be described as feedback systems. Computer architecture (von Neumann) is invoked as the practical substrate for building arbitrary causal structures at scale, which makes "building minds" an engineering possibility rather than a purely philosophical speculation. <!-- src: yt_DYm7VBaEmHU @ 00:07:04 -->
 
-[BACH] Turing is invoked as the first person to propose a pragmatic test for intelligence via discourse (the Turing test). This is used to make a contrast: a test for intelligence is about performance; consciousness is about organization and self-relation, so there is no clean behavioral Turing test for it. <!-- src: yt_DYm7VBaEmHU @ 00:20:01 -->
+[BACH] Turing is invoked as the first person to propose a pragmatic test for intelligence via discourse (the Turing test). This is used to make a contrast: a test for intelligence is about performance; consciousness is about organization and self-relation, so there is no clean behavioral Turing test for it. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p23; yt_DYm7VBaEmHU @ 00:20:01 -->
 
 [BACH] The founding move of AI as a field (Minsky/McCarthy and others) can then be read as explicitly philosophical: teach machines to think to understand what thinking is. In this framing, the project is still unfinished because the mind remains under-theorized as an architecture that can be built and interpreted. <!-- src: yt_DYm7VBaEmHU @ 00:03:18 -->
 
@@ -116,6 +118,10 @@ flowchart LR
 - yt_DYm7VBaEmHU @ 00:08:24 (keywords: computationalism, functionalism, object)
 - yt_DYm7VBaEmHU @ 00:20:36 (keywords: consciousness, function, intelligence)
 - yt_DYm7VBaEmHU @ 00:20:01 (keywords: consciousness, Turing test)
+- web_cimc_ai_cimchypothesis_pdf @ p18 (keywords: coherence, contradictions, attention)
+- web_cimc_ai_cimchypothesis_pdf @ p21 (keywords: consciousness, second-order perception)
+- web_cimc_ai_cimchypothesis_pdf @ p23 (keywords: no Turing test, internal structure, validation)
+- web_arxiv_org_pdf_2512_01081 @ p1 (keywords: machine consciousness hypothesis, second-order perception)
 - yt_UkAOHrbcnAs @ 00:16:47 (keywords: consciousness, model, self model)
 - yt_UkAOHrbcnAs @ 00:19:11 (keywords: attention, consciousness, model)
 - yt_xthJ1R9Ifc0 @ 00:09:57 (keywords: mechanism, phenomenology)

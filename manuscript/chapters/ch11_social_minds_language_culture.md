@@ -1,5 +1,7 @@
 # Chapter 11: Social Minds, Language, Culture
 
+<!-- chapter_keywords: social, language, culture, norm, coordination, contract -->
+
 ## Motivation / puzzle
 [BACH] Minds do not develop in isolation. Humans become minds in a social world of other agents, language, and norms. The puzzle is how individual control systems extend into collective structures that shape what individuals can think, value, and do. <!-- src: yt_CcQMYNi9a2w @ 00:06:04 -->
 

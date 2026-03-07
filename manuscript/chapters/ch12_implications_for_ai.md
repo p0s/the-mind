@@ -1,12 +1,14 @@
 # Chapter 12: Implications for AI
 
+<!-- chapter_keywords: alignment, ethics, intelligence, value, agency -->
+
 ## Motivation / puzzle
 [BACH] If minds are model-building control systems, then artificial minds are possible in principle. The puzzle is not whether machines can be useful, but what kind of agency and consciousness we may bring into the world and how to integrate it into human society without collapsing human agency. <!-- src: yt_DYm7VBaEmHU @ 00:32:23 -->
 
 [BACH] This topic invites two errors: panic and complacency. Panic treats AI as an inevitable apocalypse. Complacency treats AI as mere automation. A control framing emphasizes agency: systems that can model, plan, and learn values will become participants in the causal fabric of society. <!-- src: yt_DYm7VBaEmHU @ 00:03:18 -->
 
 ## Definitions introduced or refined
-[BACH] <!-- src: yt_DYm7VBaEmHU @ 00:32:23 -->
+[BACH] <!-- src: yt_DYm7VBaEmHU @ 00:32:23; web_cimc_ai_cimchypothesis_pdf @ p21-22; web_arxiv_org_pdf_2512_01081 @ p15 -->
 - Artificial agent: a machine-implemented control system that builds models and selects actions under constraints.
 - Artificial sentience: the possibility that an artificial agent has experience if the relevant functional organization is implemented.
 - Alignment: shaping artificial agents so their learned values and policies remain compatible with human flourishing and governance constraints.
@@ -49,13 +51,13 @@
 [SYNTH] "Personal AI" is not automatically emancipatory. It can be an empowerment tool or an instrument of capture, depending on its objectives, its coupling to reward infrastructures, and who controls updates and deployment.
 
 ### Machine consciousness as an engineering research program
-[BACH] If consciousness is a functional organization, then machine consciousness becomes a question about reproducing that organization. This is why it is framed as a hypothesis and an experiment rather than as a debate about words. The question is not "can a machine be conscious in principle?" but "what architectures yield the observer-stabilization and coherence effects associated with consciousness?" <!-- src: yt_DYm7VBaEmHU @ 00:32:23 -->
+[BACH] If consciousness is treated as a functional organization (second-order perception + coherence control), then machine consciousness becomes a question about whether that organization can be implemented in artificial substrates. This is why it is framed as a hypothesis and an experiment rather than as a debate about words: the question is not "can a machine be conscious in principle?" but "what architectures yield the observer-stabilization and coherence effects associated with consciousness?" <!-- src: web_cimc_ai_cimchypothesis_pdf @ p21-22; web_arxiv_org_pdf_2512_01081 @ p7; yt_DYm7VBaEmHU @ 00:32:23 -->
 
-[BACH] One proposal for making this an empirical project is to treat “tests for consciousness” as modular: define phenomenology, define functionality, describe the implementation space, identify the search procedure, and specify success criteria for what counts as a valid demonstration. <!-- src: yt_9LtKJ2k8UyM @ 00:02:05 -->
+[BACH] One proposal for making this an empirical project is to treat “tests for consciousness” as explicit validation programs: specify the hypothesized organization, design environments/tasks that should elicit it, and precommit to success criteria for what would count as evidence. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p22-23; web_arxiv_org_pdf_2512_01081 @ p7 -->
 
 [BACH] Consciousness may “ignite”: below a threshold it is absent, above it it is present, even if lucidity admits degrees once it is present. The threshold is treated as an open empirical question about which architectural moving parts are required. <!-- src: yt_y0txHUVZF5I @ 01:27:34 -->
 
-[BACH] This also implies a particular epistemic posture. Consciousness is not something one can establish from behavior alone, because behavior can be produced by many internal organizations. If artificial systems become conscious, it will likely be discovered by interpreting internal structure and by noticing the emergence of self-relation and intrinsic regulation, not by passing a conversational benchmark. <!-- src: yt_DYm7VBaEmHU @ 00:20:36 -->
+[BACH] This also implies a particular epistemic posture. Consciousness is not something one can establish from behavior alone, because behavior can be produced by many internal organizations. If artificial systems become conscious, it will likely be discovered by interpreting internal structure and by noticing the emergence of self-relation and intrinsic regulation, not by passing a conversational benchmark. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p22-23; web_arxiv_org_pdf_2512_01081 @ p19-20; yt_DYm7VBaEmHU @ 00:20:36 -->
 
 [SYNTH] This is also why multi-agent and social framing matters. Conscious agents are participants in norm-governed systems. If we bring them into the world, we will need institutions that can handle new kinds of agency and new kinds of vulnerability (including potential suffering).
 
@@ -88,6 +90,10 @@
 - yt_DYm7VBaEmHU @ 00:32:23 (keywords: machine consciousness hypothesis)
 - yt_9LtKJ2k8UyM @ 00:02:05 (keywords: consciousness, testability, phenomenology)
 - yt_y0txHUVZF5I @ 01:27:34 (keywords: consciousness, lucidity, threshold)
+- web_cimc_ai_cimchypothesis_pdf @ p21-22 (keywords: machine consciousness hypothesis, second-order perception)
+- web_cimc_ai_cimchypothesis_pdf @ p22-23 (keywords: consciousness test, internal structure, validation)
+- web_arxiv_org_pdf_2512_01081 @ p7 (keywords: testing, experimental validation, artificial substrates)
+- web_arxiv_org_pdf_2512_01081 @ p19-20 (keywords: multi-level adequacy, criteria, testability)
 - ccc_38c3_self_models_of_loving_grace @ 00:37:31 (keywords: agent, consciousness, intelligence)
 - yt_3MkJEGE9GRY @ 00:05:51 (keywords: intelligence, model)
 - yt_3MkJEGE9GRY @ 00:07:51 (keywords: intelligence, model)

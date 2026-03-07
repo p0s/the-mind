@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "the-mind"
+version = "0.0.0"
+description = "Source-grounded, auditable model of mind (repo tooling meta-package)."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+# Developer tooling (optional; the repo primarily uses stdlib scripts + CI).
+dev = [
+  "ruff>=0.5",
+]
+
+# Local-only extraction tooling (not required for public builds).
+local = [
+  "faster-whisper>=1.0",
+  "numpy>=1.26",
+  "yt-dlp>=2024.0",
+]
+
+[tool.setuptools.packages.find]
+include = ["the_mind*"]
+

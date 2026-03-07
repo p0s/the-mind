@@ -1,5 +1,7 @@
 # Chapter 2: Models and Representation
 
+<!-- chapter_keywords: world model, world-model, representation, model, prediction, simulate, simulation -->
+
 ## Motivation / puzzle
 [BACH] A mind does not have direct access to reality. It has signals. If it acted on signals alone, it would behave like a reactive device. The distinctive feature of mind is that it controls the future, and future control requires a model: a way to represent what is not currently observed, what might happen next, and what would happen under counterfactual actions. <!-- src: yt_UkAOHrbcnAs @ 00:24:59 -->
 
@@ -8,7 +10,7 @@
 [BACH] We will use "knowledge" in a control-first sense: we do not begin with privileged access to the essences of things. We begin with observations and constraints, and we construct objects as stable roles inside models that let us predict and control. <!-- src: yt_UkAOHrbcnAs @ 00:24:59 -->
 
 ## Definitions introduced or refined
-[BACH] <!-- src: yt_UkAOHrbcnAs @ 00:24:59 -->
+[BACH] <!-- src: yt_UkAOHrbcnAs @ 00:24:59; web_cimc_ai_cimchypothesis_pdf @ p16 -->
 - Representation: an internal structure that stands in for something else in a way that supports inference for control.
 - Model: a representation with dynamics; it can be advanced, updated, and queried.
 - World-model: the integrated model of the environment and its causal regularities, at the resolution required for the agent's control.
@@ -17,6 +19,7 @@
 - Simulation: running the model forward to generate counterfactual trajectories (including imagined perceptions and imagined actions).
 - Prediction: generating expectations for upcoming observations or state transitions; the prediction can be implicit (as in perception) or explicit (as in planning).
 - Invariance: a stable pattern at some level of description that remains useful for prediction/control even as lower-level details change.
+- Realness: a representational feature that marks some model contents as currently the case (as confirmed by ongoing perception), not merely imagined.
 
 [SYNTH] A model is not defined by truth alone. It is defined by usability: what it allows the system to predict, compress, and control. Even a physically "wrong" model can be functionally adequate if it preserves the right invariances at the system's scale.
 
@@ -25,7 +28,7 @@
 
 [BACH] Mechanism: a model can be implemented in many ways. In nervous systems, it can be distributed across circuits whose state evolves by learned dynamics. In machines, it can be implemented by explicit simulators, learned networks, or hybrids. The mechanism matters for efficiency and limitations, but the function is the same: convert past interaction into structured expectations. <!-- src: yt_UkAOHrbcnAs @ 00:24:59 -->
 
-[BACH] Phenomenology: perception is not raw input. It is the model settling into an interpretation of input. The "realness" of the world in experience is the stability of the interpretation: when the model is coherent enough to support action, the world is present. <!-- src: yt_UkAOHrbcnAs @ 00:24:59 -->
+[BACH] Phenomenology: perception is not raw input. It is the model settling into an interpretation of input. In this framing, "realness" is treated as a representational feature: the model tags some contents as *currently the case* (phenomenal reality = sensory content currently being confirmed), rather than as merely imagined or hypothetical. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p16; yt_UkAOHrbcnAs @ 00:24:59 -->
 
 [BACH] This also clarifies the sense in which mental objects are "virtual": they exist as causal patterns at a particular level of abstraction. A person is not visible in a microscope image of neurons, just as Minecraft is not visible in a microscope image of transistors. Yet both are real insofar as they are implemented as stable causal structure at an appropriate level of description. <!-- src: yt_DYm7VBaEmHU @ 00:08:24 -->
 
@@ -151,6 +154,7 @@ flowchart TB
 - yt_34VOI_oo-qM @ 00:12:50 (keywords: model, self model, simulation)
 - yt_34VOI_oo-qM @ 00:25:22 (keywords: consciousness, simulate, simulation)
 - ccc_37c3_12167_synthetic_sentience @ 00:18:19 (keywords: model, world model)
+- web_cimc_ai_cimchypothesis_pdf @ p16 (keywords: realness, phenomenal reality, perception)
 
 ## Open questions / tensions
 [OPEN]

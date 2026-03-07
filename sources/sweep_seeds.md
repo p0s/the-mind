@@ -37,3 +37,7 @@ Template:
 | youtube_search | `query="Joscha Bach Vortrag"` | `yt-dlp` + `python3 scripts/import_youtube_sources.py` | German-language: talks/lectures |
 | youtube_search | `query="Joscha Bach Interview deutsch"` | `yt-dlp` + `python3 scripts/import_youtube_sources.py` | German-language: interviews |
 | web_sitemap | `https://bach.ai/sitemap.xml` | `python3 scripts/import_bach_ai_sitemap.py` | stable index; complements search |
+| substack_archive | `https://cimcai.substack.com/archive` | `python3 scripts/import_substack_archive.py` | CIMC publication archive |
+| substack_archive | `https://joscha.substack.com/archive` | `python3 scripts/import_substack_archive.py` | Joscha Bach publication archive |
+| web_urls | `https://machine-consciousness.ai/` | `python3 scripts/import_web_urls.py` | MC0001 site / event info |
+| web_urls | `https://tedai-vienna.ted.com/tedai-vienna-talks/https-embed-ted-com-talks-joscha-bach-if-a-machine-became-conscious-how-would-we-know` | `python3 scripts/import_web_urls.py` | listing for “If a machine became conscious, how would we know?” |
