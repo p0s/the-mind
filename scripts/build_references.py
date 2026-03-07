@@ -21,7 +21,7 @@ CHAPTERS_DIR = ROOT / "manuscript" / "chapters"
 OUT = ROOT / "manuscript" / "references.md"
 
 
-ANCHOR_RX = re.compile(r"^- ([^\s]+) @ (\d{2}:\d{2}:\d{2}) \(keywords: (.*)\)$")
+ANCHOR_RX = re.compile(r"^- ([^\s]+) @ ([^\s]+) \(keywords: (.*)\)$")
 
 
 def load_sources(path: Path) -> Dict[str, Dict[str, str]]:
@@ -55,7 +55,7 @@ def main() -> int:
     parts: List[str] = []
     parts.append("# References")
     parts.append("")
-    parts.append("Endnotes are keyed to the manuscript anchors: source id + timecode.")
+    parts.append("Endnotes are keyed to the manuscript anchors: source id + locator.")
     parts.append("")
 
     for ch_path in chapters:

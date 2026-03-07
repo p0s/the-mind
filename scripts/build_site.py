@@ -13,7 +13,7 @@ Pages:
 - claims/
 - sources/
 
-The site keeps provenance as *links to original sources* (URL + timecode).
+The site keeps provenance as *links to original sources* (URL + locator).
 """
 
 from __future__ import annotations
@@ -31,7 +31,8 @@ from typing import Dict, Iterable, List, Optional, Tuple
 from urllib.parse import urljoin
 
 from _core.provenance import strip_src_comment_eol
-from _core.sources import infer_presentation_format, load_sources_csv, timecoded_url
+from _core.locators import normalize_locator
+from _core.sources import infer_presentation_format, load_sources_csv, located_url
 from _core.timecodes import seconds_to_hhmmss
 
 
@@ -54,7 +55,7 @@ DEFAULT_SITE_BASE_URL = "https://the-mind.xyz/"
 
 
 TAG_RX = re.compile(r"^\[(BACH|SYNTH|NOTE|OPEN)\]\s*", re.IGNORECASE)
-SRC_ITEM_RX = re.compile(r"^([a-z0-9_\-]+)\s+@\s+(\d{2}:\d{2}:\d{2}(?:[\\.,]\d{1,3})?)\b(.*)$", re.IGNORECASE)
+SRC_ITEM_RX = re.compile(r"^([a-z0-9_\-]+)\s+@\s+([^\s]+)\b(.*)$", re.IGNORECASE)
 
 _BACH_TIME_S_CACHE: Dict[str, Optional[int]] = {}
 
@@ -96,20 +97,20 @@ def bach_time_seconds(source_id: str) -> Optional[int]:
     return secs
 
 
-def render_cite_link(source_id: str, timecode: str, sources: Dict[str, Dict[str, str]], *, show_time: bool) -> Optional[str]:
+def render_cite_link(source_id: str, locator: str, sources: Dict[str, Dict[str, str]], *, show_time: bool) -> Optional[str]:
     meta = sources.get(source_id, {})
     url = (meta.get("url") or "").strip()
     if not url:
         return None
 
-    tc = (timecode or "").strip().replace(",", ".")
-    href = timecoded_url(url, tc)
+    loc = normalize_locator(locator)
+    href = located_url(url, loc)
 
     fmt = infer_presentation_format(meta)
     title = re.sub(r"\s+", " ", (meta.get("title") or "").strip()) or source_id
     label = f"{fmt}: {title}"
 
-    tooltip_lines = [f"{fmt}: {title}", f"{source_id} @ {tc}"]
+    tooltip_lines = [f"{fmt}: {title}", f"{source_id} @ {loc}"]
     bach_s = bach_time_seconds(source_id)
     if bach_s is not None:
         tooltip_lines.append(f"Bach time: {seconds_to_hhmmss(bach_s)} (approx)")
@@ -119,7 +120,7 @@ def render_cite_link(source_id: str, timecode: str, sources: Dict[str, Dict[str,
         f'<a class="cite" href="{escape_attr(href)}" target="_blank" rel="noopener noreferrer" title="{escape_attr(tooltip)}">{escape(label)}</a>'
     )
     if show_time:
-        return a + f'<span class="cite_time"> @ {escape(tc)}</span>'
+        return a + f'<span class="cite_time"> @ {escape(loc)}</span>'
     return a
 
 
@@ -133,8 +134,8 @@ def linkify_source_ref(text: str, sources: Dict[str, Dict[str, str]], *, root: s
     m = SRC_ITEM_RX.match(text.strip())
     if not m:
         return None
-    sid, tc, rest = m.groups()
-    linked = render_cite_link(sid, tc, sources, show_time=True)
+    sid, loc, rest = m.groups()
+    linked = render_cite_link(sid, loc, sources, show_time=True)
     if not linked:
         return None
     # Keep any trailing details (e.g. "(keywords: ...)") readable and searchable.

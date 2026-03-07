@@ -35,6 +35,15 @@ class TestSiteMarkdown(unittest.TestCase):
         self.assertEqual(blocks[0].text, "Hello")
         self.assertEqual(blocks[0].anchors, (("yt_abc", "00:01:02"), ("ccc_def", "00:03:04")))
 
+    def test_parses_pdf_page_locator_anchor(self) -> None:
+        md = "[BACH] Hello <!-- src: web_x @ p16 -->\n"
+        blocks = build_site.parse_blocks(md)
+        self.assertEqual(len(blocks), 1)
+        self.assertEqual(blocks[0].kind, "para")
+        self.assertEqual(blocks[0].tag, "BACH")
+        self.assertEqual(blocks[0].text, "Hello")
+        self.assertEqual(blocks[0].anchors, (("web_x", "p16"),))
+
     def test_list_can_carry_anchor_from_tag_line(self) -> None:
         md = "\n".join(
             [
@@ -95,4 +104,3 @@ class TestSiteMarkdown(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

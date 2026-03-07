@@ -28,7 +28,7 @@ CHAPTER_KEYWORDS_RX = re.compile(r"^\s*<!--\s*chapter_keywords:\s*.*?-->\s*$", r
 CH_TITLE_RX = re.compile(r"^#\s+Chapter\s+\d+:\s*(.+?)\s*$", re.IGNORECASE)
 ANCHOR_HEADING = "## Anchors (sources + timecodes)"
 ANCHOR_HEADING_OUT = "## References"
-ANCHOR_KEYWORDS_RX = re.compile(r"^(\s*-\s+[^\s]+\s+@\s+\d{2}:\d{2}:\d{2})\s+\(keywords:.*\)\s*$", re.IGNORECASE)
+ANCHOR_KEYWORDS_RX = re.compile(r"^(\s*-\s+[^\s]+\s+@\s+[^\s]+)\s+\(keywords:.*\)\s*$", re.IGNORECASE)
 
 
 def chapter_title(text: str, fallback: str) -> str:

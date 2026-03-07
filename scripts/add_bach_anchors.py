@@ -28,7 +28,7 @@ CHAPTERS_DIR = ROOT / "manuscript" / "chapters"
 
 
 ANCHOR_RX = re.compile(
-    r"^\s*-\s+([a-z0-9_\-]+)\s+@\s+(\d{2}:\d{2}:\d{2})\s+\(keywords:\s*(.*?)\)\s*$",
+    r"^\s*-\s+([a-z0-9_\-]+)\s+@\s+([^\s]+)\s+\(keywords:\s*(.*?)\)\s*$",
     re.IGNORECASE,
 )
 BACH_LINE_RX = re.compile(r"^\[BACH\]")
@@ -60,7 +60,7 @@ STOPWORDS = {
 @dataclass(frozen=True)
 class Anchor:
     source_id: str
-    timecode: str
+    locator: str
     keywords: List[str]
 
 
@@ -100,8 +100,8 @@ def load_chapter_anchors(lines: List[str]) -> List[Anchor]:
         m = ANCHOR_RX.match(line)
         if not m:
             continue
-        sid, tc, kws = m.groups()
-        anchors.append(Anchor(sid, tc, tokenize_keywords(kws)))
+        sid, loc, kws = m.groups()
+        anchors.append(Anchor(sid, loc, tokenize_keywords(kws)))
     return anchors
 
 
@@ -186,7 +186,7 @@ def process_chapter(path: Path) -> Tuple[bool, int, int]:
             continue
         ctx = context_for_bach_line(lines, i)
         a, meta = choose_anchor_with_confidence(ctx, anchors)
-        suffix = " " + format_src_comment([(a.source_id, a.timecode)], meta=meta or None)
+        suffix = " " + format_src_comment([(a.source_id, a.locator)], meta=meta or None)
         lines[i] = line.rstrip() + suffix
         anchored += 1
         changed = True

@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Tuple
 
 from _core.notes_tokens import parse_notes_kv
+from _core.locators import normalize_locator, valid_locator
 from _core.sources import load_sources_csv
 
 
@@ -26,8 +27,7 @@ CHAPTERS_DIR = ROOT / "manuscript" / "chapters"
 @dataclass(frozen=True)
 class Segment:
     source_id: str
-    start: str
-    end: str
+    locator: str
     keywords: Tuple[str, ...]
     published_date: str
     tier: str
@@ -52,7 +52,7 @@ def iter_segments(
     include_web: bool,
     keep_only: bool,
 ) -> Iterable[Segment]:
-    rx = re.compile(r"^- \[(\d{2}:\d{2}:\d{2})-(\d{2}:\d{2}:\d{2})\] keywords: (.+)$")
+    rx = re.compile(r"^- \[(.+?)\]\s+keywords:\s*(.+)$", re.IGNORECASE)
     for path in sorted(notes_dir.glob("*.md")):
         sid = path.stem
         meta = sources.get(sid, {})
@@ -68,11 +68,21 @@ def iter_segments(
             m = rx.match(line.strip())
             if not m:
                 continue
-            start, end, keys = m.groups()
+            span, keys = m.groups()
+            span = (span or "").strip()
+            if re.match(r"^\d{2}:\d{2}:\d{2}", span):
+                # Time ranges: [HH:MM:SS-HH:MM:SS] -> anchor at start
+                start = span.split("-", 1)[0].strip()
+                locator = normalize_locator(start)
+            else:
+                # Page locators: [p16] or [p19-20]
+                locator = normalize_locator(span)
+            if not valid_locator(locator):
+                continue
             kw = tuple(k.strip() for k in keys.split(",") if k.strip())
             if not kw:
                 continue
-            yield Segment(sid, start, end, kw, published, tier)
+            yield Segment(sid, locator, kw, published, tier)
 
 
 def pick_segments(
@@ -91,7 +101,7 @@ def pick_segments(
         score = len(hits)
         scored.append((tier_weight.get(seg.tier, 1), score, parse_date_key(seg.published_date), seg))
 
-    scored.sort(key=lambda x: (-x[0], -x[1], -x[2][0], -x[2][1], -x[2][2], x[3].start))
+    scored.sort(key=lambda x: (-x[0], -x[1], -x[2][0], -x[2][1], -x[2][2], x[3].locator))
 
     picked: List[Segment] = []
     per_source: Dict[str, int] = {}
@@ -115,7 +125,7 @@ def update_chapter(path: Path, anchors: List[Segment]) -> None:
         lines = [header]
         for seg in anchors:
             kw = ", ".join(seg.keywords)
-            lines.append(f"- {seg.source_id} @ {seg.start} (keywords: {kw})")
+            lines.append(f"- {seg.source_id} @ {seg.locator} (keywords: {kw})")
         replacement = "\n".join(lines) + "\n"
 
     pattern = re.compile(r"## Anchors \(sources \+ timecodes\)\n.*?(?=\n## |\Z)", re.S)

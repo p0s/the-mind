@@ -17,6 +17,21 @@ class TestProvenance(unittest.TestCase):
         self.assertEqual(c.refs, (("yt_abc", "00:01:02"),))
         self.assertEqual(c.meta_dict, {})
 
+    def test_parse_single_pdf_page_ref(self) -> None:
+        c = parse_src_comment_payload("web_x @ p16")
+        assert c is not None
+        self.assertEqual(c.refs, (("web_x", "p16"),))
+
+    def test_parse_single_pdf_page_ref_normalizes(self) -> None:
+        c = parse_src_comment_payload("web_x @ P.016")
+        assert c is not None
+        self.assertEqual(c.refs, (("web_x", "p16"),))
+
+    def test_parse_single_pdf_page_range_normalizes(self) -> None:
+        c = parse_src_comment_payload("web_x @ p19–20")
+        assert c is not None
+        self.assertEqual(c.refs, (("web_x", "p19-20"),))
+
     def test_parse_multi_ref_with_meta(self) -> None:
         c = parse_src_comment_payload("yt_abc @ 00:01:02; ccc_def @ 00:03:04 | auto=needs_review score=0")
         assert c is not None
@@ -45,7 +60,10 @@ class TestProvenance(unittest.TestCase):
         s = format_src_comment([("yt_abc", "00:01:02"), ("ccc_def", "00:03:04")], meta={"auto": "needs_review", "score": "0"})
         self.assertEqual(s, "<!-- src: yt_abc @ 00:01:02; ccc_def @ 00:03:04 | auto=needs_review score=0 -->")
 
+    def test_format_normalizes_pdf_locator(self) -> None:
+        s = format_src_comment([("web_x", "P.016")])
+        self.assertEqual(s, "<!-- src: web_x @ p16 -->")
+
 
 if __name__ == "__main__":
     unittest.main()
-

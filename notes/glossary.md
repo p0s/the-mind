@@ -10,7 +10,7 @@ Template (copy/paste for new terms):
 - Related: <comma-separated related terms>
 - Common confusion: <common misreadings>
 - Sources:
-  - <source_id> @ <HH:MM:SS>
+  - <source_id> @ <locator>
 
 ## Computationalist functionalism
 - Id: TERM-0001
@@ -123,6 +123,8 @@ Template (copy/paste for new terms):
 - Sources:
   - ccc_37c3_12167_synthetic_sentience @ 00:11:15
   - yt_DYm7VBaEmHU @ 00:20:01
+  - web_cimc_ai_cimchypothesis_pdf @ p21
+  - web_arxiv_org_pdf_2512_01081 @ p1
 
 ## Phenomenology
 - Id: TERM-0014
@@ -181,6 +183,7 @@ Template (copy/paste for new terms):
 - Sources:
   - yt_DYm7VBaEmHU @ 00:27:12
   - ccc_37c3_12167_synthetic_sentience @ 00:11:15
+  - web_cimc_ai_cimchypothesis_pdf @ p18
 
 ## Observer
 - Id: TERM-0018
@@ -199,6 +202,8 @@ Template (copy/paste for new terms):
 - Sources:
   - ccc_37c3_12167_synthetic_sentience @ 00:40:15
   - ccc_38c3_self_models_of_loving_grace @ 00:09:02
+  - web_cimc_ai_cimchypothesis_pdf @ p21
+  - web_arxiv_org_pdf_2512_01081 @ p1
 
 ## Third-order perception
 - Id: TERM-0020
@@ -322,6 +327,8 @@ Template (copy/paste for new terms):
 - Common confusion: treating it as a claim that current AI is conscious; in this framing it is a testable architectural program.
 - Sources:
   - yt_DYm7VBaEmHU @ 00:32:23
+  - web_cimc_ai_cimchypothesis_pdf @ p21
+  - web_arxiv_org_pdf_2512_01081 @ p15
 
 ## Mind
 - Id: TERM-0033
@@ -778,3 +785,36 @@ Template (copy/paste for new terms):
 - Sources:
   - ccc_35c3_10030_the_ghost_in_the_machine @ 00:04:02
   - ccc_37c3_12167_synthetic_sentience @ 00:17:39
+
+## Psyche
+- Id: TERM-0094
+- Working meaning: We will use "Psyche" to mean: The representational structure combining a personal self and motivational "strings" (interests) within a mind-model of self, interests, and world; spanning conscious and unconscious parts of an agent's cognitive architecture.
+- Related: self-model, motivation, valence, emotion, consciousness.
+- Common confusion: treating psyche as a metaphysical soul, or as identical to conscious experience alone.
+- Sources:
+  - web_cimc_ai_cimchypothesis_pdf @ p14
+
+## Realness
+- Id: TERM-0095
+- Working meaning: We will use "Realness" to mean: A representational feature dimension that marks content as "currently the case" (distinguishing ideas from hallucinations of factuality).
+- Related: representation, perception, phenomenal reality, consciousness.
+- Common confusion: treating realness as an intrinsic property of the world rather than a feature of the model.
+- Sources:
+  - web_cimc_ai_cimchypothesis_pdf @ p16
+
+## Phenomenal reality
+- Id: TERM-0096
+- Working meaning: We will use "Phenomenal reality" to mean: Sensory representation that is currently being confirmed (a mode of conscious content experienced as "real now").
+- Related: realness, perception, consciousness, representation.
+- Common confusion: equating phenomenal reality with objective reality; or treating all conscious content (e.g., imagination) as phenomenally real.
+- Sources:
+  - web_cimc_ai_cimchypothesis_pdf @ p16
+
+## Genesis hypothesis
+- Id: TERM-0097
+- Working meaning: We will use "Genesis hypothesis" to mean: The conjecture that consciousness plays an instrumental role early in development by helping create and maintain complex, coherent models of reality and selfhood (a learning scaffold rather than an end-product).
+- Related: machine consciousness hypothesis, learning scaffold, self-organization, consciousness.
+- Common confusion: treating it as a purely cultural or narrative claim; it is framed here as an algorithmic/developmental role.
+- Sources:
+  - web_cimc_ai_cimchypothesis_pdf @ p19
+  - web_cimc_ai_cimchypothesis_pdf @ p21

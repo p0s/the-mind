@@ -8,7 +8,7 @@
 [BACH] The puzzle at the end is not "did we solve consciousness?" but "did we replace confusion with structure?" If the framework is correct, many philosophical disputes were mis-framed: they were arguments about words and categories rather than about architectures. <!-- src: yt_DYm7VBaEmHU @ 00:27:12 -->
 
 ## Definitions (compressed recap)
-[BACH] <!-- src: yt_uc112kET-i0 @ 00:02:07 -->
+[BACH] <!-- src: yt_uc112kET-i0 @ 00:02:07; web_cimc_ai_cimchypothesis_pdf @ p21; web_arxiv_org_pdf_2512_01081 @ p1 -->
 - Mind: an adaptive control organization that builds and uses models to regulate the future under constraints.
 - Model / representation: constructed internal structure used for prediction, simulation, and control.
 - Valence / value: the control/evaluative machinery that makes some futures preferable; value as learned predictive structure, reward as learning signal.
@@ -19,7 +19,7 @@
 ## What this framing clarifies
 [BACH] It clarifies why "mind" and "consciousness" can be discussed without supernatural residue: they are functional organizations realized by mechanisms. It clarifies why the self can be real and not fundamental: it is implemented as a model, not as a physics-level entity. It clarifies why value is hard: values are learned control structures embedded in messy reward infrastructures, not crisp utility functions. <!-- src: yt_uc112kET-i0 @ 00:02:07 -->
 
-[BACH] It also clarifies why performance is a misleading proxy. Intelligence tests and behavioral benchmarks measure what a system can do, not how it is organized. Consciousness, in this framing, is not a score; it is a hypothesis about internal structure and self-relation. <!-- src: yt_DYm7VBaEmHU @ 00:20:01 -->
+[BACH] It also clarifies why performance is a misleading proxy. Intelligence tests and behavioral benchmarks measure what a system can do, not how it is organized. Consciousness, in this framing, is not a score; it is a hypothesis about internal structure and self-relation. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p22-23; yt_DYm7VBaEmHU @ 00:20:01 -->
 
 [SYNTH] The practical virtue of the framework is that it encourages architectural thinking:
 - What models does the system maintain?
@@ -53,4 +53,7 @@ This completes the dependency spine from models to social minds and treats selfh
 - yt_dW5uZLCm0Tg @ 00:10:33 (keywords: attention)
 - yt_DYm7VBaEmHU @ 00:27:12 (keywords: consciousness, coherence)
 - yt_DYm7VBaEmHU @ 00:20:01 (keywords: consciousness, Turing test)
+- web_cimc_ai_cimchypothesis_pdf @ p21 (keywords: consciousness, second-order perception, phenomenology)
+- web_cimc_ai_cimchypothesis_pdf @ p22-23 (keywords: consciousness, Turing test, internal structure)
+- web_arxiv_org_pdf_2512_01081 @ p1 (keywords: machine consciousness hypothesis, second-order perception)
 - yt_4kZE479isH8 @ 00:52:19 (keywords: silicon golems, extend agency)

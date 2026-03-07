@@ -18,7 +18,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Sequence, Set, Tuple
 
 from _core.sources import load_source_ids as core_load_source_ids
-from _core.timecodes import valid_timecode
+from _core.locators import normalize_locator, valid_locator
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -34,7 +34,7 @@ FIELD_RX = re.compile(r"^- ([A-Za-z ][A-Za-z ]+):\s*(.*)$")
 NESTED_BULLET_RX = re.compile(r"^\s{2,}-\s+(.+?)\s*$")
 
 SRC_ITEM_RX = re.compile(
-    r"^([a-z0-9_\-]+)\s+@\s*(\d{2}:\d{2}:\d{2}(?:[.,]\d{1,3})?)\s*$",
+    r"^([a-z0-9_\-]+)\s+@\s*([^\s]+)\s*$",
     re.IGNORECASE,
 )
 
@@ -172,7 +172,7 @@ def lint_claims(path: Path, *, source_ids: Set[str]) -> List[LintError]:
                         LintError(
                             path,
                             i,
-                            f"{cid}: support item must be '<source_id> @ <HH:MM:SS>' (got: {item!r}).",
+                            f"{cid}: support item must be '<source_id> @ <locator>' (got: {item!r}).",
                             item,
                         )
                     )
@@ -180,8 +180,9 @@ def lint_claims(path: Path, *, source_ids: Set[str]) -> List[LintError]:
                 sid, tc = m2.group(1), m2.group(2).replace(",", ".")
                 if sid not in source_ids:
                     errors.append(LintError(path, i, f"{cid}: unknown source_id '{sid}' (not in sources/sources.csv).", item))
-                if not valid_timecode(tc):
-                    errors.append(LintError(path, i, f"{cid}: invalid timecode '{tc}' (expected HH:MM:SS).", item))
+                loc = normalize_locator(tc)
+                if not valid_locator(loc):
+                    errors.append(LintError(path, i, f"{cid}: invalid locator '{tc}' (expected HH:MM:SS[.mmm] or pN[-M]).", item))
 
         deps_line, dep_items = extract_nested_list(body, field_name="Dependencies")
         if deps_line is not None:
@@ -262,7 +263,7 @@ def lint_glossary(path: Path, *, source_ids: Set[str]) -> List[LintError]:
                         LintError(
                             path,
                             i,
-                            f"{term_id}: source item must be '<source_id> @ <HH:MM:SS>' (got: {item!r}).",
+                            f"{term_id}: source item must be '<source_id> @ <locator>' (got: {item!r}).",
                             item,
                         )
                     )
@@ -270,8 +271,9 @@ def lint_glossary(path: Path, *, source_ids: Set[str]) -> List[LintError]:
                 sid, tc = m4.group(1), m4.group(2).replace(",", ".")
                 if sid not in source_ids:
                     errors.append(LintError(path, i, f"{term_id}: unknown source_id '{sid}' (not in sources/sources.csv).", item))
-                if not valid_timecode(tc):
-                    errors.append(LintError(path, i, f"{term_id}: invalid timecode '{tc}' (expected HH:MM:SS).", item))
+                loc = normalize_locator(tc)
+                if not valid_locator(loc):
+                    errors.append(LintError(path, i, f"{term_id}: invalid locator '{tc}' (expected HH:MM:SS[.mmm] or pN[-M]).", item))
 
     return errors
 

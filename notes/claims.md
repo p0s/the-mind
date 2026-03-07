@@ -6,7 +6,7 @@ Template (copy/paste for new claims):
 - Status: candidate | verified | contested
 - Confidence: low | medium | high
 - Supports:
-  - <source_id> @ <HH:MM:SS>
+  - <source_id> @ <locator>
 - Dependencies: (optional)
   - CLM-XXXX
 - Notes: (optional)
@@ -78,6 +78,9 @@ Template (copy/paste for new claims):
 - Supports:
   - ccc_37c3_12167_synthetic_sentience @ 00:11:15
   - ccc_38c3_self_models_of_loving_grace @ 00:10:34
+  - web_cimc_ai_cimchypothesis_pdf @ p18
+  - web_cimc_ai_cimchypothesis_pdf @ p21
+  - web_arxiv_org_pdf_2512_01081 @ p20
 - Notes:
   - Often described as a conductor role.
 
@@ -87,6 +90,8 @@ Template (copy/paste for new claims):
 - Supports:
   - yt_dW5uZLCm0Tg @ 00:34:08
   - yt_MxYMW1RqdgQ @ 00:31:19
+  - web_cimc_ai_cimchypothesis_pdf @ p21
+  - web_arxiv_org_pdf_2512_01081 @ p1
 - Notes:
   - Connect to observer construction.
 
@@ -95,6 +100,8 @@ Template (copy/paste for new claims):
 - Confidence: medium
 - Supports:
   - yt_DYm7VBaEmHU @ 00:20:01
+  - web_cimc_ai_cimchypothesis_pdf @ p23
+  - web_arxiv_org_pdf_2512_01081 @ p20
 - Notes:
   - Contrast with the Turing test.
 
@@ -113,6 +120,7 @@ Template (copy/paste for new claims):
   - yt_DYm7VBaEmHU @ 00:18:17
   - yt_34VOI_oo-qM @ 00:27:38
   - ccc_38c3_self_models_of_loving_grace @ 00:10:34
+  - web_cimc_ai_cimchypothesis_pdf @ p19-20
 - Notes:
   - Hypothesis-level claim.
 
@@ -121,6 +129,8 @@ Template (copy/paste for new claims):
 - Confidence: medium
 - Supports:
   - yt_DYm7VBaEmHU @ 00:32:23
+  - web_cimc_ai_cimchypothesis_pdf @ p21-22
+  - web_arxiv_org_pdf_2512_01081 @ p23
 - Notes:
   - Separate biological and machine hypotheses.
 
@@ -167,6 +177,8 @@ Template (copy/paste for new claims):
 - Supports:
   - yt_DYm7VBaEmHU @ 00:20:01
   - yt_9LtKJ2k8UyM @ 00:02:05
+  - web_cimc_ai_cimchypothesis_pdf @ p21
+  - web_arxiv_org_pdf_2512_01081 @ p20
 - Notes:
   - Central methodological rule.
 
@@ -175,6 +187,8 @@ Template (copy/paste for new claims):
 - Confidence: low
 - Supports:
   - yt_DYm7VBaEmHU @ 00:01:37
+  - web_cimc_ai_cimchypothesis_pdf @ p17
+  - web_arxiv_org_pdf_2512_01081 @ p20
 - Notes:
   - Needs careful wording to avoid overclaim.
 
@@ -201,6 +215,7 @@ Template (copy/paste for new claims):
 - Supports:
   - yt_DYm7VBaEmHU @ 00:26:51
   - yt_DYm7VBaEmHU @ 00:27:12
+  - web_cimc_ai_cimchypothesis_pdf @ p18
 - Notes:
   - This is a functional claim about what consciousness does in the architecture.
 
@@ -210,6 +225,7 @@ Template (copy/paste for new claims):
 - Supports:
   - yt_DYm7VBaEmHU @ 00:27:12
   - ccc_37c3_12167_synthetic_sentience @ 00:11:15
+  - web_cimc_ai_cimchypothesis_pdf @ p18
 - Notes:
   - Often expressed with the "conductor" metaphor.
 
@@ -236,6 +252,7 @@ Template (copy/paste for new claims):
 - Supports:
   - yt_DYm7VBaEmHU @ 00:16:38
   - ccc_37c3_12167_synthetic_sentience @ 00:40:15
+  - web_cimc_ai_cimchypothesis_pdf @ p16
 - Notes:
   - Phrase carefully: the ordering is a pedagogical device, not a formal theory of levels.
 
@@ -269,6 +286,7 @@ Template (copy/paste for new claims):
 - Status: verified
 - Confidence: medium
 - Supports:
+  - web_cimc_ai_cimchypothesis_pdf @ p18
   - yt_34VOI_oo-qM @ 00:19:16
   - ccc_38c3_self_models_of_loving_grace @ 00:10:34
   - yt_dW5uZLCm0Tg @ 00:41:09
@@ -282,6 +300,7 @@ Template (copy/paste for new claims):
   - yt_34VOI_oo-qM @ 00:19:16
   - yt_DYm7VBaEmHU @ 00:30:34
   - yt_y0txHUVZF5I @ 00:00:18
+  - web_cimc_ai_cimchypothesis_pdf @ p21
 - Notes:
   - "Nowness" is a modeled present, not a metaphysical property of time.
 
@@ -446,6 +465,7 @@ Template (copy/paste for new claims):
 - Confidence: low
 - Supports:
   - yt_9LtKJ2k8UyM @ 00:02:05
+  - web_arxiv_org_pdf_2512_01081 @ p20
 - Notes:
   - This is a methodological proposal: it structures what "testable" could mean without committing to a single theory.
 

@@ -4,7 +4,7 @@ import re
 from dataclasses import dataclass
 from typing import Dict, List, Optional, Sequence, Tuple
 
-from _core.timecodes import normalize_timecode
+from _core.locators import normalize_locator, valid_locator
 
 
 SOURCE_ID_RX = re.compile(r"^[a-z0-9_\-]+$", re.IGNORECASE)
@@ -12,14 +12,14 @@ _SRC_COMMENT_ANY_RX = re.compile(r"<!--\s*src:\s*.*?-->", re.IGNORECASE)
 _SRC_COMMENT_EOL_RX = re.compile(r"<!--\s*src:\s*(.*?)-->\s*$", re.IGNORECASE)
 
 _SRC_REF_RX = re.compile(
-    r"^\s*([a-z0-9_\-]+)\s*@\s*(\d{2}:\d{2}:\d{2}(?:[.,]\d{1,3})?)\s*$",
+    r"^\s*([a-z0-9_\-]+)\s*@\s*(.+?)\s*$",
     re.IGNORECASE,
 )
 
 
 @dataclass(frozen=True)
 class SrcComment:
-    refs: Tuple[Tuple[str, str], ...]  # (source_id, timecode)
+    refs: Tuple[Tuple[str, str], ...]  # (source_id, locator)
     meta: Tuple[Tuple[str, str], ...]  # key-value tokens (stable order)
 
     @property
@@ -36,8 +36,10 @@ def parse_src_ref(token: str) -> Optional[Tuple[str, str]]:
     if not m:
         return None
     sid = m.group(1).strip()
-    tc = normalize_timecode(m.group(2))
-    return (sid, tc)
+    loc = normalize_locator(m.group(2))
+    if not valid_locator(loc):
+        return None
+    return (sid, loc)
 
 
 def parse_src_comment_payload(payload: str) -> Optional[SrcComment]:
@@ -116,11 +118,10 @@ def format_src_comment(
     """
     Format a canonical `<!-- src: ... -->` comment.
     """
-    parts = [f"{sid} @ {normalize_timecode(tc)}" for sid, tc in refs]
+    parts = [f"{sid} @ {normalize_locator(loc)}" for sid, loc in refs]
     inner = "; ".join(parts)
     meta = meta or {}
     if meta:
         meta_txt = " ".join([f"{k}={v}" for k, v in sorted(meta.items(), key=lambda kv: kv[0].lower())])
         inner = f"{inner} | {meta_txt}"
     return f"<!-- src: {inner} -->"
-

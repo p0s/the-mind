@@ -8,7 +8,7 @@ For LLMs, this is the core distinction: fluent description is evidence of a stro
 
 We will use **qualia** to mean: the qualitative character of experience, what a state is like from the inside. <!-- src: yt_CcQMYNi9a2w @ 01:58:03 -->
 
-We will use **consciousness** to mean: a functional interface that stabilizes and coordinates mental contents, often framed as second-order perception (perception of perception). <!-- src: yt_DYm7VBaEmHU @ 00:20:01 -->
+We will use **consciousness** to mean: a functional interface that stabilizes and coordinates mental contents, often framed as second-order perception (perception of perception). <!-- src: web_cimc_ai_cimchypothesis_pdf @ p21; web_arxiv_org_pdf_2512_01081 @ p1 -->
 
 We will use **artificial sentience** to mean: possible machine experience if the relevant organization is implemented (self-modeling, coherence stabilization, observer construction). <!-- src: ccc_38c3_self_models_of_loving_grace @ 00:37:31 -->
 
@@ -32,13 +32,13 @@ Current LLM behavior can simulate an experiencing interaction partner, including
 
 Likewise, some agent-like behavior can be a simulated agent layer on top of next-token prediction, rather than a persistent self-regulating controller with intrinsic stakes. <!-- src: yt_3MkJEGE9GRY @ 01:06:10 -->
 
-This is why there is no easy behavioral shortcut: passing conversational tests does not settle whether the internal architecture implements the relevant organization for consciousness or qualia. <!-- src: yt_DYm7VBaEmHU @ 00:20:01 -->
+This is why there is no easy behavioral shortcut: passing conversational tests does not settle whether the internal architecture implements the relevant organization for consciousness or qualia. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p22-23; web_arxiv_org_pdf_2512_01081 @ p19-20 -->
 
 ## When it becomes an empirical question
 
 The machine-consciousness framing says the open question is architectural: does the system implement the "dream within the dream," a model of the act of perceiving that stabilizes an observer perspective? <!-- src: yt_O5hymlaldf0 @ 00:01:58 -->
 
-A practical research path is to test this in modules: specify phenomenology, specify functionality, specify implementation/search space, and define success criteria in advance. <!-- src: yt_9LtKJ2k8UyM @ 00:02:05 -->
+A practical research path is to treat testing as an explicit validation program: specify the hypothesized organization, design environments/tasks that should elicit it, and precommit to success criteria for what would count as evidence. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p22-23; web_arxiv_org_pdf_2512_01081 @ p7 -->
 
 ## Provisional answer
 
@@ -52,7 +52,11 @@ Qualia remains an open, architecture-dependent question that turns on internal o
 - yt_3MkJEGE9GRY @ 01:05:40
 - yt_3MkJEGE9GRY @ 01:06:10
 - yt_CcQMYNi9a2w @ 01:58:03
-- yt_DYm7VBaEmHU @ 00:20:01
+- web_cimc_ai_cimchypothesis_pdf @ p21
+- web_cimc_ai_cimchypothesis_pdf @ p22-23
+- web_arxiv_org_pdf_2512_01081 @ p1
+- web_arxiv_org_pdf_2512_01081 @ p7
+- web_arxiv_org_pdf_2512_01081 @ p19-20
 - yt_DYm7VBaEmHU @ 00:30:34
 - ccc_38c3_self_models_of_loving_grace @ 00:37:31
 - yt_dW5uZLCm0Tg @ 00:49:17
@@ -60,4 +64,3 @@ Qualia remains an open, architecture-dependent question that turns on internal o
 - yt_xthJ1R9Ifc0 @ 00:06:05
 - ccc_37c3_12167_synthetic_sentience @ 00:17:39
 - yt_O5hymlaldf0 @ 00:01:58
-- yt_9LtKJ2k8UyM @ 00:02:05

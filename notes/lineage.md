@@ -40,4 +40,4 @@ It is intentionally incomplete and will grow as additional sources are processed
 
 ## Candidates to add (needs anchors)
 
-As we process sources, add entries here the first time they are noticed, then later move them into the sections above once they have timecoded anchors and a short explanation of the role they play.
+As we process sources, add entries here the first time they are noticed, then later move them into the sections above once they have anchored locators and a short explanation of the role they play.
