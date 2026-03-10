@@ -316,6 +316,37 @@ body {
 .navdetails > a { padding-left: 22px; }
 .navdetails[open] { padding-bottom: 2px; }
 
+.navsummary--linked {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.navsummary--linked::after {
+  content: none;
+}
+.navsummary--linked > a {
+  flex: 1 1 auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.navsummary--linked > a:hover,
+.navsummary--linked > a[aria-current="page"] {
+  background: transparent;
+  border-color: transparent;
+}
+.navsummary__chevron {
+  flex: 0 0 auto;
+  opacity: 0.55;
+}
+.navdetails[open] .navsummary__chevron::before {
+  content: "▾";
+}
+.navsummary__chevron::before {
+  content: "▸";
+}
+
 .main { min-width: 0; }
 .paper {
   background: var(--paper);

@@ -6,8 +6,8 @@ Source of truth: site/home.md
 
 Rationale:
 - Keep GitHub README and the built site Home page in sync.
-- Rewrite site-relative links (reader/index.html, etc.) to the GitHub Pages URL
-  so the README links work on GitHub without committing dist/.
+- Rewrite site-relative links to the GitHub Pages URL so the README works on
+  GitHub without committing dist/.
 
 Override:
 - Set THE_MIND_SITE_BASE_URL to rewrite links against a custom site base URL
@@ -92,8 +92,12 @@ def rewrite_links_for_readme(md: str, pages_base: Optional[str]) -> str:
             label, href = m.group(1), m.group(2).strip()
             if href.startswith(("http://", "https://", "mailto:", "#")):
                 return m.group(0)
-            # Treat repo-relative links as site-relative in the canonical Home.
-            abs_url = urljoin(pages_base, href.lstrip("./"))
+            rel = href
+            if href.startswith("/"):
+                rel = href.lstrip("/")
+            else:
+                rel = href.lstrip("./")
+            abs_url = urljoin(pages_base, rel)
             return f"[{label}]({abs_url})"
 
         out_lines.append(LINK_RX.sub(repl, line))

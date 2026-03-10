@@ -4,9 +4,9 @@ Lint provenance / citation syntax (Option 1).
 
 Contract:
 - Prose citations are hidden HTML comments at end of line:
-    <!-- src: <source_id> @ <HH:MM:SS> -->
+    <!-- src: <source_id> @ <locator> -->
 - List citations are visible and start the list item:
-    - <source_id> @ <HH:MM:SS> ...
+    - <source_id> @ <locator> ...
 - In manuscript chapters, the "Anchors (sources + timecodes)" section requires
   "(keywords: ...)" tails for anchor bullets (used by scripts/add_bach_anchors.py).
 
@@ -38,26 +38,30 @@ NOTES = [
 HOME = ROOT / "site" / "home.md"
 
 
+TIMECODE_RX = r"\d{2}:\d{2}:\d{2}(?:[.,]\d{1,3})?"
+PAGE_LOCATOR_RX = r"p\d+(?:-\d+)?"
+LOCATOR_RX = rf"(?:{TIMECODE_RX}|{PAGE_LOCATOR_RX})"
+
 SRC_COMMENT_CANON_RX = re.compile(
-    r"<!--\s*src:\s*([a-z0-9_\-]+)\s*@\s*(\d{2}:\d{2}:\d{2}(?:[.,]\d{1,3})?)\s*-->\s*$",
+    rf"<!--\s*src:\s*([a-z0-9_\-]+)\s*@\s*({LOCATOR_RX})\s*-->\s*$",
     re.IGNORECASE,
 )
 SRC_COMMENT_ANY_RX = re.compile(r"<!--\s*src:\s*.*?-->", re.IGNORECASE)
 
 LIST_CITE_RX = re.compile(
-    r"^\s*(?:-|\*|\+|\d+\.)\s+([a-z0-9_\-]+)\s+@\s*(\d{2}:\d{2}:\d{2}(?:[.,]\d{1,3})?)\b",
+    rf"^\s*(?:-|\*|\+|\d+\.)\s+([a-z0-9_\-]+)\s+@\s*({LOCATOR_RX})\b",
     re.IGNORECASE,
 )
 
 # Any visible "source_id @ timecode" token (used to catch stray prose citations).
 VISIBLE_CITE_TOKEN_RX = re.compile(
-    r"\b([a-z0-9_\-]+)\s+@\s*(\d{2}:\d{2}:\d{2}(?:[.,]\d{1,3})?)\b",
+    rf"\b([a-z0-9_\-]+)\s+@\s*({LOCATOR_RX})\b",
     re.IGNORECASE,
 )
 
 CHAPTER_ANCHOR_HEADING = "## Anchors (sources + timecodes)"
 CHAPTER_ANCHOR_ITEM_RX = re.compile(
-    r"^\s*-\s+([a-z0-9_\-]+)\s+@\s*(\d{2}:\d{2}:\d{2})\s+\(keywords:\s*.+\)\s*$",
+    rf"^\s*-\s+([a-z0-9_\-]+)\s+@\s*({LOCATOR_RX})\s+\(keywords:\s*.+\)\s*$",
     re.IGNORECASE,
 )
 
@@ -85,16 +89,36 @@ def load_source_ids() -> Set[str]:
 
 
 def valid_timecode(tc: str) -> bool:
-    m = re.match(r"^(\d{2}):(\d{2}):(\d{2})(?:[.,](\d{1,3}))?$", (tc or "").strip())
+    m = re.match(rf"^({TIMECODE_RX})$", (tc or "").strip())
     if not m:
         return False
-    _h, mm, ss, ms = m.groups()
+    m2 = re.match(r"^(\d{2}):(\d{2}):(\d{2})(?:[.,](\d{1,3}))?$", (tc or "").strip())
+    if not m2:
+        return False
+    _h, mm, ss, ms = m2.groups()
     try:
         if int(mm) >= 60 or int(ss) >= 60:
             return False
         if ms is not None and int(ms) >= 1000:
             return False
     except Exception:
+        return False
+    return True
+
+
+def valid_locator(locator: str) -> bool:
+    loc = (locator or "").strip().replace("–", "-").replace("—", "-")
+    if valid_timecode(loc):
+        return True
+    m = re.match(r"^[Pp]\.?\s*(\d+)(?:\s*-\s*(\d+))?$", loc)
+    if not m:
+        return False
+    start_s, end_s = m.groups()
+    start = int(start_s)
+    end = int(end_s) if end_s else None
+    if start <= 0:
+        return False
+    if end is not None and end < start:
         return False
     return True
 
@@ -131,7 +155,7 @@ def lint_file(path: Path, *, source_ids: Set[str]) -> List[LintError]:
                 LintError(
                     path,
                     i,
-                    "Do not use <!-- src: ... --> inside list items; use '- <source_id> @ <HH:MM:SS>' instead.",
+                    "Do not use <!-- src: ... --> inside list items; use '- <source_id> @ <locator>' instead.",
                     line,
                 )
             )
@@ -144,16 +168,16 @@ def lint_file(path: Path, *, source_ids: Set[str]) -> List[LintError]:
                     LintError(
                         path,
                         i,
-                        "Non-canonical src comment; must be '... <!-- src: <source_id> @ <HH:MM:SS> -->' at end of line.",
+                        "Non-canonical src comment; must be '... <!-- src: <source_id> @ <locator> -->' at end of line.",
                         line,
                     )
                 )
             else:
-                sid, tc = m.group(1), m.group(2).replace(",", ".")
+                sid, loc = m.group(1), m.group(2).replace(",", ".")
                 if sid not in source_ids:
                     errors.append(LintError(path, i, f"Unknown source_id '{sid}' (not in sources/sources.csv).", line))
-                if not valid_timecode(tc):
-                    errors.append(LintError(path, i, f"Invalid timecode '{tc}' (expected HH:MM:SS).", line))
+                if not valid_locator(loc):
+                    errors.append(LintError(path, i, f"Invalid locator '{loc}' (expected HH:MM:SS or pN / pN-M).", line))
                 # Ensure there's only one src comment on the line.
                 if len(SRC_COMMENT_ANY_RX.findall(line)) > 1:
                     errors.append(LintError(path, i, "Multiple src comments on one line; use exactly one.", line))
@@ -161,11 +185,11 @@ def lint_file(path: Path, *, source_ids: Set[str]) -> List[LintError]:
         # Validate list citation items (visible form).
         m_list = LIST_CITE_RX.match(line)
         if m_list:
-            sid, tc = m_list.group(1), m_list.group(2).replace(",", ".")
+            sid, loc = m_list.group(1), m_list.group(2).replace(",", ".")
             if sid not in source_ids:
                 errors.append(LintError(path, i, f"Unknown source_id '{sid}' (not in sources/sources.csv).", line))
-            if not valid_timecode(tc):
-                errors.append(LintError(path, i, f"Invalid timecode '{tc}' (expected HH:MM:SS).", line))
+            if not valid_locator(loc):
+                errors.append(LintError(path, i, f"Invalid locator '{loc}' (expected HH:MM:SS or pN / pN-M).", line))
 
         # Enforce chapter anchors list format (keywords tail required).
         if in_chapter_anchors and line.lstrip().startswith("- "):
@@ -175,16 +199,16 @@ def lint_file(path: Path, *, source_ids: Set[str]) -> List[LintError]:
                     LintError(
                         path,
                         i,
-                        "Chapter anchor bullets must be '- <source_id> @ <HH:MM:SS> (keywords: ...)' (used by add_bach_anchors.py).",
+                        "Chapter anchor bullets must be '- <source_id> @ <locator> (keywords: ...)' (used by add_bach_anchors.py).",
                         line,
                     )
                 )
             else:
-                sid, tc = m_anchor.group(1), m_anchor.group(2)
+                sid, loc = m_anchor.group(1), m_anchor.group(2)
                 if sid not in source_ids:
                     errors.append(LintError(path, i, f"Unknown source_id '{sid}' (not in sources/sources.csv).", line))
-                if not valid_timecode(tc):
-                    errors.append(LintError(path, i, f"Invalid timecode '{tc}' (expected HH:MM:SS).", line))
+                if not valid_locator(loc):
+                    errors.append(LintError(path, i, f"Invalid locator '{loc}' (expected HH:MM:SS or pN / pN-M).", line))
 
         # Catch stray visible cite tokens in prose (not a list item, not in a src comment).
         # Only flag tokens whose source_id is known.
@@ -192,15 +216,15 @@ def lint_file(path: Path, *, source_ids: Set[str]) -> List[LintError]:
         if not LIST_CITE_RX.match(without_comments):
             for m_vis in VISIBLE_CITE_TOKEN_RX.finditer(without_comments):
                 sid = m_vis.group(1)
-                tc = m_vis.group(2).replace(",", ".")
+                loc = m_vis.group(2).replace(",", ".")
                 if sid not in source_ids:
                     continue
-                if valid_timecode(tc):
+                if valid_locator(loc):
                     errors.append(
                         LintError(
                             path,
                             i,
-                            "Visible 'source_id @ timecode' in prose; use a hidden end-of-line comment instead: <!-- src: ... -->.",
+                            "Visible 'source_id @ locator' in prose; use a hidden end-of-line comment instead: <!-- src: ... -->.",
                             line,
                         )
                     )
@@ -213,7 +237,7 @@ def lint_file(path: Path, *, source_ids: Set[str]) -> List[LintError]:
                     LintError(
                         path,
                         i,
-                        "[BACH] lines must include a canonical end-of-line src comment: <!-- src: <source_id> @ <HH:MM:SS> -->.",
+                        "[BACH] lines must include a canonical end-of-line src comment: <!-- src: <source_id> @ <locator> -->.",
                         line,
                     )
                 )

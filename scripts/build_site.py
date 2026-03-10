@@ -1,19 +1,26 @@
 #!/usr/bin/env python3
 """
-Build a static site from the manuscript + knowledge base.
+Build the public V2 static site plus a lightly linked V1 archive.
 
 Outputs to ./dist/ (gitignored). No transcript text is read or emitted.
 Optionally, local diarization metadata may be read to enrich cite tooltips.
 
-Pages:
+Public V2 pages:
 - index.html
-- blog/ (one page per blog post + an index)
-- reader/ (single-page view of the whole book)
+- guide/
+- questions/ (+ one page per question)
+- map/
 - glossary/
 - claims/
 - sources/
+- further-reading/
+- archive/
+- about/
 
-The site keeps provenance as *links to original sources* (URL + timecode).
+Archive:
+- reader/ (legacy V1 single-page reader)
+
+The site keeps provenance as links to original sources (URL + locator).
 """
 
 from __future__ import annotations
@@ -39,23 +46,32 @@ ASSETS_DIR = ROOT / "site" / "assets"
 HOME_MD = ROOT / "site" / "home.md"
 
 CHAPTERS_DIR = ROOT / "manuscript" / "chapters"
-BLOG_ROOT_DIR = ROOT / "content" / "blog"
-BLOG_INDEX_MD = BLOG_ROOT_DIR / "index.md"
-BLOG_POSTS_DIR = BLOG_ROOT_DIR / "posts"
-GLOSSARY_MD = ROOT / "notes" / "glossary.md"
-CLAIMS_MD = ROOT / "notes" / "claims.md"
-LINEAGE_MD = ROOT / "notes" / "lineage.md"
+GUIDE_MD = ROOT / "content" / "guide" / "index.md"
+QUESTIONS_DIR = ROOT / "content" / "questions"
+QUESTIONS_INDEX_MD = QUESTIONS_DIR / "index.md"
+ARCHIVE_MD = ROOT / "content" / "archive" / "index.md"
+PUBLIC_GLOSSARY_MD = ROOT / "content" / "glossary" / "index.md"
+PUBLIC_CLAIMS_MD = ROOT / "content" / "claims" / "index.md"
+BACKEND_GLOSSARY_MD = ROOT / "notes" / "glossary.md"
+BACKEND_CLAIMS_MD = ROOT / "notes" / "claims.md"
+DOC_SOURCES_MD = ROOT / "docs" / "sources.md"
+FURTHER_READING_MD = ROOT / "docs" / "further_reading.md"
 SOURCES_CSV = ROOT / "sources" / "sources.csv"
 SPEAKERS_DIR = ROOT / "transcripts" / "_speakers"
 DEFAULT_SITE_BASE_URL = "https://the-mind.xyz/"
 
 
 TAG_RX = re.compile(r"^\[(BACH|SYNTH|NOTE|OPEN)\]\s*", re.IGNORECASE)
+TIMECODE_RX = r"\d{2}:\d{2}:\d{2}(?:[\\.,]\d{1,3})?"
+PAGE_LOCATOR_RX = r"p\d+(?:-\d+)?"
+LOCATOR_RX = rf"(?:{TIMECODE_RX}|{PAGE_LOCATOR_RX})"
 SRC_RX = re.compile(
-    r"<!--\s*src:\s*([a-z0-9_\\-]+)\s*@\s*(\d{2}:\d{2}:\d{2}(?:[\\.,]\d{1,3})?)\s*-->",
+    rf"<!--\s*src:\s*([a-z0-9_\\-]+)\s*@\s*({LOCATOR_RX})\s*-->",
     re.IGNORECASE,
 )
-SRC_ITEM_RX = re.compile(r"^([a-z0-9_\-]+)\s+@\s+(\d{2}:\d{2}:\d{2}(?:[\\.,]\d{1,3})?)\b(.*)$", re.IGNORECASE)
+SRC_COMMENT_RX = re.compile(r"<!--\s*src:\s*([^>]+?)\s*-->", re.IGNORECASE)
+SRC_REF_IN_COMMENT_RX = re.compile(rf"([a-z0-9_\-]+)\s*@\s*({LOCATOR_RX})", re.IGNORECASE)
+SRC_ITEM_RX = re.compile(rf"^([a-z0-9_\-]+)\s+@\s+({LOCATOR_RX})\b(.*)$", re.IGNORECASE)
 
 
 def parse_timecode_to_seconds(tc: str) -> Optional[int]:
@@ -88,6 +104,48 @@ def timecoded_url(url: str, timecode: str) -> str:
         return f"{u}{join}t={sec}"
 
     return u
+
+
+def normalize_locator(locator: str) -> str:
+    loc = (locator or "").strip().replace("–", "-").replace("—", "-")
+    if not loc:
+        return loc
+    if re.match(rf"^{TIMECODE_RX}$", loc, re.IGNORECASE):
+        return loc.replace(",", ".")
+    m = re.match(r"^[Pp]\.?\s*(\d+)(?:\s*-\s*(\d+))?$", loc)
+    if m:
+        start, end = m.groups()
+        return f"p{start}-{end}" if end else f"p{start}"
+    return loc
+
+
+def located_url(url: str, locator: str) -> str:
+    loc = normalize_locator(locator)
+    if re.match(rf"^{TIMECODE_RX}$", loc, re.IGNORECASE):
+        return timecoded_url(url, loc)
+    m = re.match(r"^p(\d+)(?:-(\d+))?$", loc, re.IGNORECASE)
+    if m:
+        page = m.group(1)
+        return f"{url.strip()}#page={page}"
+    return url.strip()
+
+
+def parse_src_comment_refs(body: str) -> List[Tuple[str, str]]:
+    refs: List[Tuple[str, str]] = []
+    for sid, loc in SRC_REF_IN_COMMENT_RX.findall(body or ""):
+        refs.append((sid, normalize_locator(loc)))
+    return refs
+
+
+def extract_src_comment_refs(text: str) -> Tuple[str, List[Tuple[str, str]]]:
+    refs: List[Tuple[str, str]] = []
+
+    def repl(m: re.Match[str]) -> str:
+        refs.extend(parse_src_comment_refs(m.group(1)))
+        return ""
+
+    cleaned = SRC_COMMENT_RX.sub(repl, text or "")
+    return cleaned.strip(), refs
 
 
 ALLOWED_PRESENTATION_FORMATS = {"talk", "interview", "essay"}
@@ -202,20 +260,20 @@ def bach_time_seconds(source_id: str) -> Optional[int]:
     return secs
 
 
-def render_cite_link(source_id: str, timecode: str, sources: Dict[str, Dict[str, str]], *, show_time: bool) -> Optional[str]:
+def render_cite_link(source_id: str, locator: str, sources: Dict[str, Dict[str, str]], *, show_time: bool) -> Optional[str]:
     meta = sources.get(source_id, {})
     url = (meta.get("url") or "").strip()
     if not url:
         return None
 
-    tc = (timecode or "").strip().replace(",", ".")
-    href = timecoded_url(url, tc)
+    loc = normalize_locator(locator)
+    href = located_url(url, loc)
 
     fmt = infer_presentation_format(meta)
     title = re.sub(r"\s+", " ", (meta.get("title") or "").strip()) or source_id
     label = f"{fmt}: {title}"
 
-    tooltip_lines = [f"{fmt}: {title}", f"{source_id} @ {tc}"]
+    tooltip_lines = [f"{fmt}: {title}", f"{source_id} @ {loc}"]
     bach_s = bach_time_seconds(source_id)
     if bach_s is not None:
         tooltip_lines.append(f"Bach time: {seconds_to_hhmmss(bach_s)} (approx)")
@@ -225,13 +283,73 @@ def render_cite_link(source_id: str, timecode: str, sources: Dict[str, Dict[str,
         f'<a class="cite" href="{escape_attr(href)}" target="_blank" rel="noopener noreferrer" title="{escape_attr(tooltip)}">{escape(label)}</a>'
     )
     if show_time:
-        return a + f'<span class="cite_time"> @ {escape(tc)}</span>'
+        return a + f'<span class="cite_time"> @ {escape(loc)}</span>'
     return a
 
 
-def linkify_source_ref(text: str, sources: Dict[str, Dict[str, str]]) -> Optional[str]:
+def render_cite_group(source_id: str, locators: List[str], sources: Dict[str, Dict[str, str]], *, show_time: bool) -> Optional[str]:
+    meta = sources.get(source_id, {})
+    url = (meta.get("url") or "").strip()
+    if not url or not locators:
+        return None
+
+    normalized = []
+    seen = set()
+    for loc in locators:
+        norm = normalize_locator(loc)
+        if not norm or norm in seen:
+            continue
+        seen.add(norm)
+        normalized.append(norm)
+    if not normalized:
+        return None
+
+    href = located_url(url, normalized[0])
+    fmt = infer_presentation_format(meta)
+    title = re.sub(r"\s+", " ", (meta.get("title") or "").strip()) or source_id
+    label = f"{fmt}: {title}"
+    locator_text = ", ".join(normalized)
+
+    tooltip_lines = [f"{fmt}: {title}", f"{source_id} @ {locator_text}"]
+    bach_s = bach_time_seconds(source_id)
+    if bach_s is not None:
+        tooltip_lines.append(f"Bach time: {seconds_to_hhmmss(bach_s)} (approx)")
+    tooltip = " | ".join(tooltip_lines)
+
+    a = (
+        f'<a class="cite" href="{escape_attr(href)}" target="_blank" rel="noopener noreferrer" title="{escape_attr(tooltip)}">{escape(label)}</a>'
+    )
+    if show_time or len(normalized) > 1:
+        return a + f'<span class="cite_time"> @ {escape(locator_text)}</span>'
+    return a
+
+
+def render_cite_refs(
+    refs: List[Tuple[str, str]],
+    sources: Dict[str, Dict[str, str]],
+    *,
+    show_time: bool,
+) -> str:
+    grouped: List[Tuple[str, List[str]]] = []
+    order: Dict[str, int] = {}
+    for sid, loc in refs:
+        if sid not in order:
+            order[sid] = len(grouped)
+            grouped.append((sid, [loc]))
+            continue
+        grouped[order[sid]][1].append(loc)
+
+    rendered: List[str] = []
+    for sid, locators in grouped:
+        html = render_cite_group(sid, locators, sources, show_time=show_time)
+        if html:
+            rendered.append(html)
+    return " ".join(rendered)
+
+
+def linkify_source_ref(text: str, sources: Dict[str, Dict[str, str]], *, root: str) -> Optional[str]:
     """
-    Turn "source_id @ HH:MM:SS ..." into a link to the canonical URL (+ timecode).
+    Turn "source_id @ <locator> ..." into a link to the canonical URL (+ locator).
 
     This is primarily for "Anchors (sources + timecodes)" lists, but it also
     helps on glossary/claims pages where we cite with the same syntax.
@@ -239,12 +357,12 @@ def linkify_source_ref(text: str, sources: Dict[str, Dict[str, str]]) -> Optiona
     m = SRC_ITEM_RX.match(text.strip())
     if not m:
         return None
-    sid, tc, rest = m.groups()
-    linked = render_cite_link(sid, tc, sources, show_time=True)
+    sid, loc, rest = m.groups()
+    linked = render_cite_link(sid, loc, sources, show_time=True)
     if not linked:
         return None
     # Keep any trailing details (e.g. "(keywords: ...)") readable and searchable.
-    tail = inline_format(rest) if rest else ""
+    tail = inline_format(rest, root=root) if rest else ""
     return linked + tail
 
 
@@ -302,7 +420,64 @@ def escape_attr(s: str) -> str:
     return html.escape(s, quote=True)
 
 
-def inline_format(s: str) -> str:
+CLM_ID_RX = re.compile(r"\bCLM-(\d{4})\b", re.IGNORECASE)
+TERM_ID_RX = re.compile(r"\bTERM-(\d{4})\b", re.IGNORECASE)
+
+
+def normalize_site_href(href: str, *, root: str) -> str:
+    raw = (href or "").strip()
+    if not raw or raw.startswith(("http://", "https://", "mailto:", "#")):
+        return raw
+
+    if raw.startswith(("./", "../")):
+        return raw
+
+    # Treat leading-slash links as site-root links and rewrite them relative
+    # to the current page depth so the static build works on nested routes.
+    path = raw[1:] if raw.startswith("/") else raw
+    query = ""
+    fragment = ""
+    if "#" in path:
+        path, fragment = path.split("#", 1)
+        fragment = "#" + fragment
+    if "?" in path:
+        path, query = path.split("?", 1)
+        query = "?" + query
+
+    path = path.lstrip("./")
+    if not path:
+        return root.rstrip("/") + "/" + query + fragment
+    if not path.endswith("/") and not Path(path).suffix:
+        path += "/"
+    if path.endswith("/"):
+        path += "index.html"
+    return root + path + query + fragment
+
+
+def page_root(href: str) -> str:
+    rel = (href or "").strip().lstrip("./")
+    if not rel:
+        return "./"
+    parts = [p for p in rel.split("/") if p]
+    depth = max(0, len(parts) - 1)
+    if depth <= 0:
+        return "./"
+    return "../" * depth
+
+
+def markdown_title(md: str, fallback: str) -> str:
+    h1 = next((l[2:].strip() for l in md.splitlines() if l.startswith("# ")), "")
+    title = re.sub(r"\s+", " ", h1 or fallback).strip()
+    return title or fallback
+
+
+def read_markdown_or_missing(path: Path, fallback_title: str) -> str:
+    if path.exists():
+        return path.read_text(encoding="utf-8", errors="replace")
+    return f"# {fallback_title}\n\n_{fallback_title} content missing: {path.relative_to(ROOT)}._\n"
+
+
+def inline_format(s: str, *, root: str) -> str:
     # Conservative inline formatting:
     # - Escape text
     # - Protect code/links from emphasis processing
@@ -320,9 +495,10 @@ def inline_format(s: str) -> str:
 
     # [text](url)
     def make_anchor(label: str, href: str) -> str:
+        norm_href = normalize_site_href(href, root=root)
         # `href` is already escaped except for quotes (escape() uses quote=False).
-        href_attr = href.replace('"', "&quot;").replace("'", "&#x27;")
-        if href.startswith(("http://", "https://")):
+        href_attr = norm_href.replace('"', "&quot;").replace("'", "&#x27;")
+        if norm_href.startswith(("http://", "https://")):
             return f'<a href="{href_attr}" target="_blank" rel="noopener noreferrer">{label}</a>'
         return f'<a href="{href_attr}">{label}</a>'
 
@@ -332,6 +508,18 @@ def inline_format(s: str) -> str:
     s = re.sub(
         r"(?<![\"'=])(https?://[^\s<>()]+)",
         lambda m: stash(make_anchor(m.group(1), m.group(1))),
+        s,
+    )
+
+    # Cross-link stable knowledge-base IDs.
+    s = re.sub(
+        CLM_ID_RX,
+        lambda m: stash(make_anchor(m.group(0), f"{root}claims/index.html#clm-{m.group(1)}")),
+        s,
+    )
+    s = re.sub(
+        TERM_ID_RX,
+        lambda m: stash(make_anchor(m.group(0), f"{root}glossary/index.html#term-{m.group(1)}")),
         s,
     )
 
@@ -349,7 +537,7 @@ def inline_format(s: str) -> str:
 
 def strip_md_for_search(s: str) -> str:
     s = TAG_RX.sub("", s)
-    s = SRC_RX.sub("", s)
+    s = SRC_COMMENT_RX.sub("", s)
     s = re.sub(r"`([^`]+)`", r"\1", s)
     s = re.sub(r"\*\*([^*]+)\*\*", r"\1", s)
     s = re.sub(r"(?<!\w)\*([^*\n]+?)\*(?!\w)", r"\1", s)
@@ -376,7 +564,8 @@ class Block:
     items: Optional[List[str]] = None  # for lists
     code_lang: str = ""
     code: str = ""
-    anchor: Optional[Tuple[str, str]] = None  # (source_id, timecode)
+    anchor: Optional[Tuple[str, str]] = None  # (source_id, locator)
+    anchors: Optional[List[Tuple[str, str]]] = None
 
 
 def parse_blocks(md: str) -> List[Block]:
@@ -402,16 +591,24 @@ def parse_blocks(md: str) -> List[Block]:
         text = " ".join([p.strip() for p in cur_para]).strip()
         tag = pending_tag
         anchor = pending_anchor
+        anchors: List[Tuple[str, str]] = [anchor] if anchor else []
         pending_tag = ""
         pending_anchor = None
 
-        # Extract inline anchor if present.
-        m = SRC_RX.search(text)
-        if m:
-            anchor = (m.group(1), m.group(2).replace(",", "."))
-            text = SRC_RX.sub("", text).strip()
+        text, inline_refs = extract_src_comment_refs(text)
+        if inline_refs:
+            anchor = inline_refs[0]
+            anchors = inline_refs
 
-        blocks.append(Block(kind="para", tag=tag, text=text, anchor=anchor))
+        blocks.append(
+            Block(
+                kind="para",
+                tag=tag,
+                text=text,
+                anchor=anchor,
+                anchors=anchors or None,
+            )
+        )
         cur_para = []
 
     def flush_list() -> None:
@@ -420,6 +617,7 @@ def parse_blocks(md: str) -> List[Block]:
             return
         tag = pending_tag
         anchor = pending_anchor
+        anchors: Optional[List[Tuple[str, str]]] = [anchor] if anchor else None
         pending_tag = ""
         pending_anchor = None
         blocks.append(
@@ -430,6 +628,7 @@ def parse_blocks(md: str) -> List[Block]:
                 ordered=cur_list_ordered,
                 items=cur_list[:],
                 anchor=anchor,
+                anchors=anchors,
             )
         )
         cur_list = []
@@ -493,10 +692,9 @@ def parse_blocks(md: str) -> List[Block]:
             tag = m.group(1).upper()
             rest = TAG_RX.sub("", rest).strip()
             # Extract anchor comment from remainder (even if remainder is otherwise empty).
-            m2 = SRC_RX.search(rest)
-            if m2:
-                pending_anchor = (m2.group(1), m2.group(2).replace(",", "."))
-                rest = SRC_RX.sub("", rest).strip()
+            rest, inline_refs = extract_src_comment_refs(rest)
+            if inline_refs:
+                pending_anchor = inline_refs[0]
             if not rest:
                 pending_tag = tag
                 continue
@@ -519,6 +717,11 @@ def parse_blocks(md: str) -> List[Block]:
             flush_quote()
             cur_list.append(m_ol.group(1).strip())
             cur_list_ordered = True
+            continue
+
+        # Support a simple wrapped continuation line inside the current list item.
+        if cur_list and re.match(r"^\s{2,}\S", line):
+            cur_list[-1] = cur_list[-1].rstrip() + "\n" + line.strip()
             continue
 
         # Blockquotes (epigraph-style; keep line breaks)
@@ -549,15 +752,54 @@ def parse_blocks(md: str) -> List[Block]:
     return blocks
 
 
-def blocks_to_html(blocks: List[Block], sources: Dict[str, Dict[str, str]], *, root: str) -> Tuple[str, str]:
+_CLAIM_HEAD_ID_RX = re.compile(r"^(CLM-\d{4})\b", re.IGNORECASE)
+_TERM_ID_ITEM_RX = re.compile(r"^Id:\s*(TERM-\d{4})\s*$", re.IGNORECASE)
+
+
+def blocks_to_html(
+    blocks: List[Block],
+    sources: Dict[str, Dict[str, str]],
+    *,
+    root: str,
+    page_kind: str = "",
+) -> Tuple[str, str]:
     parts: List[str] = []
     search_parts: List[str] = []
     seen_ids: Dict[str, int] = {}
 
-    for b in blocks:
+    glossary_heading_ids: Dict[int, str] = {}
+    if page_kind == "glossary":
+        for i, b in enumerate(blocks):
+            if b.kind != "heading" or b.level != 2:
+                continue
+            term_id = None
+            for j in range(i + 1, len(blocks)):
+                nxt = blocks[j]
+                if nxt.kind == "heading" and nxt.level == 2:
+                    break
+                if nxt.kind != "list":
+                    continue
+                for it in nxt.items or []:
+                    m = _TERM_ID_ITEM_RX.match((it or "").strip())
+                    if not m:
+                        continue
+                    term_id = m.group(1).lower()
+                    break
+                if term_id:
+                    break
+            if term_id:
+                glossary_heading_ids[i] = term_id
+
+    for i, b in enumerate(blocks):
         if b.kind == "heading":
-            txt = inline_format(b.text)
+            txt = inline_format(b.text, root=root)
             base = slugify(b.text)
+            if page_kind == "claims" and b.level == 2:
+                m = _CLAIM_HEAD_ID_RX.match((b.text or "").strip())
+                if m:
+                    base = m.group(1).lower()
+            if page_kind == "glossary" and b.level == 2:
+                base = glossary_heading_ids.get(i, base)
             n = seen_ids.get(base, 0)
             seen_ids[base] = n + 1
             hid = base if n == 0 else f"{base}-{n+1}"
@@ -568,10 +810,15 @@ def blocks_to_html(blocks: List[Block], sources: Dict[str, Dict[str, str]], *, r
             parts.append("<hr />")
             continue
         if b.kind == "blockquote":
-            lines = [ln for ln in b.text.split("\n")]
-            inner = "<br />".join([inline_format(ln) for ln in lines])
-            parts.append(f"<blockquote><p>{inner}</p></blockquote>")
-            search_parts.append(strip_md_for_search(b.text))
+            clean_text, refs = extract_src_comment_refs(b.text)
+            lines = [ln for ln in clean_text.split("\n")]
+            inner = "<br />".join([inline_format(ln, root=root) for ln in lines])
+            cite_html = ""
+            rendered_refs = render_cite_refs(refs, sources, show_time=False)
+            if rendered_refs:
+                cite_html = " " + rendered_refs
+            parts.append(f"<blockquote><p>{inner}{cite_html}</p></blockquote>")
+            search_parts.append(strip_md_for_search(clean_text))
             continue
         if b.kind == "code":
             if b.code_lang.strip().lower() == "mermaid":
@@ -590,15 +837,21 @@ def blocks_to_html(blocks: List[Block], sources: Dict[str, Dict[str, str]], *, r
             tag_list = "ol" if b.ordered else "ul"
             parts.append(f"<{tag_list}>")
             for it in b.items or []:
-                linked = linkify_source_ref(it, sources)
-                parts.append(f"<li>{linked or inline_format(it)}</li>")
-                search_parts.append(strip_md_for_search(it))
+                clean_item, item_refs = extract_src_comment_refs(it)
+                linked = linkify_source_ref(clean_item, sources, root=root)
+                if linked:
+                    rendered_item = linked
+                else:
+                    rendered_item = "<br />".join([inline_format(part, root=root) for part in clean_item.split("\n")])
+                rendered_refs = render_cite_refs(item_refs, sources, show_time=False)
+                if rendered_refs:
+                    rendered_item += " " + rendered_refs
+                parts.append(f"<li>{rendered_item}</li>")
+                search_parts.append(strip_md_for_search(clean_item))
             parts.append(f"</{tag_list}>")
-            if b.anchor:
-                sid, tc = b.anchor
-                rendered = render_cite_link(sid, tc, sources, show_time=False)
-                if rendered:
-                    parts.append(rendered)
+            rendered_refs = render_cite_refs(b.anchors or ([] if not b.anchor else [b.anchor]), sources, show_time=False)
+            if rendered_refs:
+                parts.append(rendered_refs)
             if b.tag:
                 parts.append(wrap_close)
             continue
@@ -608,13 +861,9 @@ def blocks_to_html(blocks: List[Block], sources: Dict[str, Dict[str, str]], *, r
             wrap_close = "</div>" if b.tag else ""
             if b.tag:
                 parts.append(wrap_open + f'<span class="pill">{escape(b.tag)}</span>')
-            txt = inline_format(b.text)
-            cite_html = ""
-            if b.anchor:
-                sid, tc = b.anchor
-                rendered = render_cite_link(sid, tc, sources, show_time=False)
-                if rendered:
-                    cite_html = " " + rendered
+            txt = inline_format(b.text, root=root)
+            rendered_refs = render_cite_refs(b.anchors or ([] if not b.anchor else [b.anchor]), sources, show_time=False)
+            cite_html = (" " + rendered_refs) if rendered_refs else ""
             parts.append(f"<p>{txt}{cite_html}</p>")
             if b.tag:
                 parts.append(wrap_close)
@@ -675,14 +924,45 @@ def render_page(
     )
 
 
-def build_nav(chapters: List[Tuple[str, str]], *, current_href: str, root: str) -> str:
-    # chapters: (anchor_id, title)
+def emit_markdown_page(
+    *,
+    out_dir: Path,
+    template: str,
+    sources: Dict[str, Dict[str, str]],
+    href: str,
+    title: str,
+    md: str,
+    page_kind: str,
+    base_url: str,
+    og_image_url: str,
+    nav_html: str,
+) -> Tuple[str, str]:
+    root = page_root(href)
+    html_body, text_body = blocks_to_html(parse_blocks(md), sources, root=root, page_kind=page_kind)
+    write(
+        out_dir / href,
+        render_page(
+            template,
+            title=title,
+            nav=nav_html,
+            content=html_body,
+            root=root,
+            page_id=slugify(href.replace("/index.html", "").replace("/", "-") or "home"),
+            page_url=absolute_page_url(base_url, href),
+            og_image_url=og_image_url,
+        ),
+    )
+    return html_body, text_body
+
+
+def build_nav(
+    question_pages: List[Tuple[str, str]],
+    *,
+    current_href: str,
+    root: str,
+) -> str:
     def is_current(href: str) -> bool:
-        if href == current_href:
-            return True
-        if href == "blog/index.html" and current_href.startswith("blog/"):
-            return True
-        return False
+        return href == current_href
 
     def a(href: str, label: str) -> str:
         cur = ' aria-current="page"' if is_current(href) else ""
@@ -691,25 +971,34 @@ def build_nav(chapters: List[Tuple[str, str]], *, current_href: str, root: str) 
     parts: List[str] = []
     parts.append('<div class="nav">')
     parts.append('<div class="navgroup">')
-    parts.append('<div class="navtitle">Core</div>')
+    parts.append('<div class="navtitle">Guide</div>')
     parts.append(a("index.html", "Home"))
-    parts.append(a("reader/index.html", "Reader"))
-    parts.append(a("blog/index.html", "Blog"))
-    kb_open = current_href.startswith(("glossary/", "claims/", "sources/", "lineage/"))
-    parts.append(f'<details class="navdetails"{" open" if kb_open else ""}>')
-    parts.append('<summary class="navsummary">Knowledge base</summary>')
-    parts.append(a("glossary/index.html", "Glossary"))
-    parts.append(a("claims/index.html", "Claims"))
-    parts.append(a("sources/index.html", "Sources"))
-    parts.append(a("lineage/index.html", "Lineage"))
+    parts.append(a("guide/index.html", "Guide"))
+    q_open = current_href.startswith("questions/")
+    parts.append(f'<details class="navdetails"{" open" if q_open else ""}>')
+    parts.append(
+        '<summary class="navsummary navsummary--linked">'
+        + a("questions/index.html", "Questions")
+        + '<span class="navsummary__chevron" aria-hidden="true"></span>'
+        + "</summary>"
+    )
+    for href, title in question_pages:
+        parts.append(a(href, title))
     parts.append("</details>")
     parts.append("</div>")
 
+    audit_open = current_href.startswith(("glossary/", "claims/", "sources/", "further-reading/"))
     parts.append('<div class="navgroup">')
-    parts.append('<div class="navtitle">Book</div>')
-    for anchor_id, t in chapters:
-        parts.append(a(f"reader/index.html#{anchor_id}", t))
+    parts.append('<div class="navtitle">Audit Layer</div>')
+    parts.append(f'<details class="navdetails"{" open" if audit_open else ""}>')
+    parts.append('<summary class="navsummary">Glossary And Sources</summary>')
+    parts.append(a("glossary/index.html", "Glossary"))
+    parts.append(a("claims/index.html", "Claims"))
+    parts.append(a("sources/index.html", "Sources"))
+    parts.append(a("further-reading/index.html", "Further Reading"))
+    parts.append("</details>")
     parts.append("</div>")
+
     parts.append("</div>")
     return "\n".join(parts)
 
@@ -802,237 +1091,131 @@ def main(argv: Optional[List[str]] = None) -> int:
         anchor_id = slugify(h1)
         chapter_pages.append((anchor_id, title, str(p), h1))
 
-    chapters_for_nav = [(anchor_id, title) for anchor_id, title, _src, _h1 in chapter_pages]
+    question_files = sorted([p for p in QUESTIONS_DIR.glob("*.md") if p.is_file() and p.name != "index.md"])
+    question_pages: List[Tuple[str, str, Path]] = []
+    for p in question_files:
+        md = p.read_text(encoding="utf-8", errors="replace")
+        question_pages.append((f"questions/{p.stem}/index.html", markdown_title(md, p.stem.replace("-", " ")), p))
+    question_nav = [(href, title) for href, title, _path in question_pages]
 
     search_index: List[Dict[str, str]] = []
     page_hrefs: List[str] = []
 
-    # Home (canonical source lives in site/home.md)
-    if HOME_MD.exists():
-        home_md = HOME_MD.read_text(encoding="utf-8", errors="replace")
-    else:
-        home_md = "# the-mind\n\n_Home content missing: site/home.md._\n"
-    home_html, home_text = blocks_to_html(parse_blocks(home_md), sources, root="./")
-    home_nav = build_nav(chapters_for_nav, current_href="index.html", root="./")
-    write(
-        out_dir / "index.html",
-        render_page(
-            template,
-            title="the-mind",
-            nav=home_nav,
-            content=home_html,
-            root="./",
-            page_id="home",
-            page_url=absolute_page_url(base_url, "index.html"),
+    def nav_for(href: str) -> str:
+        return build_nav(question_nav, current_href=href, root=page_root(href))
+
+    def emit(href: str, title: str, md: str, *, page_kind: str = "") -> None:
+        _html_body, text_body = emit_markdown_page(
+            out_dir=out_dir,
+            template=template,
+            sources=sources,
+            href=href,
+            title=title,
+            md=md,
+            page_kind=page_kind,
+            base_url=base_url,
             og_image_url=og_image_url,
-        ),
-    )
-    page_hrefs.append("index.html")
-    search_index.append({"href": "index.html", "title": "Home", "text": home_text})
-
-    # Reader (single page)
-    reader_parts = ["# Reader", "", "A single-page view of the whole book.", "", "## Table of contents", ""]
-    for anchor_id, title, _src_path, _h1 in chapter_pages:
-        reader_parts.append(f"- [{title}](#{anchor_id})")
-    reader_parts.append("")
-    reader_md = "\n".join(reader_parts) + "\n\n---\n\n" + "\n\n---\n\n".join(
-        [Path(src_path).read_text(encoding="utf-8", errors="replace").rstrip() for _anchor_id, _title, src_path, _h1 in chapter_pages]
-    )
-
-    reader_html, reader_text = blocks_to_html(parse_blocks(reader_md), sources, root="../")
-    nav = build_nav(chapters_for_nav, current_href="reader/index.html", root="../")
-    write(
-        out_dir / "reader" / "index.html",
-        render_page(
-            template,
-            title="Reader",
-            nav=nav,
-            content=reader_html,
-            root="../",
-            page_id="reader",
-            page_url=absolute_page_url(base_url, "reader/index.html"),
-            og_image_url=og_image_url,
-        ),
-    )
-    page_hrefs.append("reader/index.html")
-    search_index.append({"href": "reader/index.html", "title": "Reader", "text": reader_text})
-
-    # Blog index + pages
-    blog_files: List[Path] = []
-    if BLOG_POSTS_DIR.exists():
-        blog_files = sorted([p for p in BLOG_POSTS_DIR.glob("*.md") if p.is_file()])
-
-    blog_pages: List[Tuple[str, str, str]] = []  # (href, title, src_path)
-    for p in blog_files:
-        md = p.read_text(encoding="utf-8", errors="replace")
-        title_line = next((l[2:].strip() for l in md.splitlines() if l.startswith("# ")), p.stem)
-        title = re.sub(r"\s+", " ", title_line).strip()
-        href = f"blog/{p.stem}.html"
-        blog_pages.append((href, title, str(p)))
-
-    blog_index_parts: List[str] = []
-    if BLOG_INDEX_MD.exists():
-        blog_index_parts.extend(BLOG_INDEX_MD.read_text(encoding="utf-8", errors="replace").rstrip().splitlines())
-    else:
-        blog_index_parts.extend(["# Blog", "", "_Blog index missing._"])
-
-    blog_index_parts.extend(["", "## Posts", ""])
-    if blog_pages:
-        for href, title, _src_path in blog_pages:
-            blog_index_parts.append(f"- [{title}](./{Path(href).name})")
-    else:
-        blog_index_parts.append("_No posts yet._")
-
-    blog_index_md = "\n".join(blog_index_parts) + "\n"
-    blog_index_html, blog_index_text = blocks_to_html(parse_blocks(blog_index_md), sources, root="./")
-    blog_nav = build_nav(chapters_for_nav, current_href="blog/index.html", root="../")
-    write(
-        out_dir / "blog" / "index.html",
-        render_page(
-            template,
-            title="Blog",
-            nav=blog_nav,
-            content=blog_index_html,
-            root="../",
-            page_id="blog-index",
-            page_url=absolute_page_url(base_url, "blog/index.html"),
-            og_image_url=og_image_url,
-        ),
-    )
-    page_hrefs.append("blog/index.html")
-    search_index.append({"href": "blog/index.html", "title": "Blog", "text": blog_index_text})
-
-    for href, title, src_path in blog_pages:
-        md = Path(src_path).read_text(encoding="utf-8", errors="replace")
-        html_body, text_body = blocks_to_html(parse_blocks(md), sources, root="../")
-        nav = build_nav(chapters_for_nav, current_href=href, root="../")
-        write(
-            out_dir / href,
-            render_page(
-                template,
-                title=title,
-                nav=nav,
-                content=html_body,
-                root="../",
-                page_id=href,
-                page_url=absolute_page_url(base_url, href),
-                og_image_url=og_image_url,
-            ),
+            nav_html=nav_for(href),
         )
         page_hrefs.append(href)
         search_index.append({"href": href, "title": title, "text": text_body})
 
-    # Per-chapter search results that jump into the Reader.
-    for anchor_id, title, src_path, _h1 in chapter_pages:
-        md = Path(src_path).read_text(encoding="utf-8", errors="replace")
-        _html_body, text_body = blocks_to_html(parse_blocks(md), sources, root="../")
-        search_index.append({"href": f"reader/index.html#{anchor_id}", "title": title, "text": text_body})
+    emit("index.html", "the-mind", read_markdown_or_missing(HOME_MD, "the-mind"))
 
-    # Glossary
-    if GLOSSARY_MD.exists():
-        md = GLOSSARY_MD.read_text(encoding="utf-8", errors="replace")
-        html_body, text_body = blocks_to_html(parse_blocks(md), sources, root="../")
-        nav = build_nav(chapters_for_nav, current_href="glossary/index.html", root="../")
-        write(
-            out_dir / "glossary" / "index.html",
-            render_page(
-                template,
-                title="Glossary",
-                nav=nav,
-                content=html_body,
-                root="../",
-                page_id="glossary",
-                page_url=absolute_page_url(base_url, "glossary/index.html"),
-                og_image_url=og_image_url,
-            ),
+    guide_md = read_markdown_or_missing(GUIDE_MD, "Guide")
+    emit("guide/index.html", markdown_title(guide_md, "Guide"), guide_md)
+
+    questions_index_md = read_markdown_or_missing(QUESTIONS_INDEX_MD, "Questions")
+    emit("questions/index.html", markdown_title(questions_index_md, "Questions"), questions_index_md)
+
+    for href, title, path in question_pages:
+        emit(href, title, path.read_text(encoding="utf-8", errors="replace"))
+
+    archive_md = read_markdown_or_missing(ARCHIVE_MD, "Archive")
+    if chapter_pages and "(/reader/)" not in archive_md:
+        archive_md = archive_md.rstrip() + "\n\n## V1 reader\n\n- [Reader / V1 / source-grounded thesis](/reader/)\n"
+    emit("archive/index.html", markdown_title(archive_md, "Archive"), archive_md)
+
+    glossary_md_path = PUBLIC_GLOSSARY_MD if PUBLIC_GLOSSARY_MD.exists() else BACKEND_GLOSSARY_MD
+    if glossary_md_path.exists():
+        glossary_md = glossary_md_path.read_text(encoding="utf-8", errors="replace")
+        emit("glossary/index.html", markdown_title(glossary_md, "Glossary"), glossary_md, page_kind="glossary")
+
+    claims_md_path = PUBLIC_CLAIMS_MD if PUBLIC_CLAIMS_MD.exists() else BACKEND_CLAIMS_MD
+    if claims_md_path.exists():
+        claims_md = claims_md_path.read_text(encoding="utf-8", errors="replace")
+        emit("claims/index.html", markdown_title(claims_md, "Claims"), claims_md, page_kind="claims")
+
+    if DOC_SOURCES_MD.exists():
+        sources_md = DOC_SOURCES_MD.read_text(encoding="utf-8", errors="replace")
+    else:
+        keep = []
+        for sid, row in sources.items():
+            notes = (row.get("notes") or "")
+            if "curation_status=keep" in notes:
+                keep.append((sid, row))
+        keep.sort(key=lambda t: ((t[1].get("published_date") or ""), t[0]))
+        src_lines = ["# Sources", "", "Keystone/kept sources referenced by the project.", ""]
+        for sid, row in keep:
+            title = (row.get("title") or "").strip() or sid
+            url = (row.get("url") or "").strip()
+            date = (row.get("published_date") or "").strip()
+            creator = (row.get("creator_or_channel") or "").strip()
+            head = f"- `{sid}`"
+            if date:
+                head += f" ({date})"
+            head += f": {title}"
+            if creator:
+                head += f" — {creator}"
+            if url:
+                head += f" — [source]({url})"
+            src_lines.append(head)
+        sources_md = "\n".join(src_lines) + "\n"
+    emit("sources/index.html", markdown_title(sources_md, "Sources"), sources_md)
+
+    if FURTHER_READING_MD.exists():
+        further_reading_md = FURTHER_READING_MD.read_text(encoding="utf-8", errors="replace")
+        emit(
+            "further-reading/index.html",
+            markdown_title(further_reading_md, "Further reading"),
+            further_reading_md,
         )
-        page_hrefs.append("glossary/index.html")
-        search_index.append({"href": "glossary/index.html", "title": "Glossary", "text": text_body})
 
-    # Claims
-    if CLAIMS_MD.exists():
-        md = CLAIMS_MD.read_text(encoding="utf-8", errors="replace")
-        html_body, text_body = blocks_to_html(parse_blocks(md), sources, root="../")
-        nav = build_nav(chapters_for_nav, current_href="claims/index.html", root="../")
-        write(
-            out_dir / "claims" / "index.html",
-            render_page(
-                template,
-                title="Claims",
-                nav=nav,
-                content=html_body,
-                root="../",
-                page_id="claims",
-                page_url=absolute_page_url(base_url, "claims/index.html"),
-                og_image_url=og_image_url,
-            ),
+    # Reader (legacy V1 single-page archive)
+    if chapter_pages:
+        reader_parts = [
+            "# Reader / V1 / source-grounded thesis",
+            "",
+            "The earlier long-form, chapter-by-chapter walkthrough remains here as the archive destination.",
+            "",
+            "## Table of contents",
+            "",
+        ]
+        for anchor_id, title, _src_path, _h1 in chapter_pages:
+            reader_parts.append(f"- [{title}](#{anchor_id})")
+        reader_parts.append("")
+        reader_md = "\n".join(reader_parts) + "\n\n---\n\n" + "\n\n---\n\n".join(
+            [Path(src_path).read_text(encoding="utf-8", errors="replace").rstrip() for _anchor_id, _title, src_path, _h1 in chapter_pages]
         )
-        page_hrefs.append("claims/index.html")
-        search_index.append({"href": "claims/index.html", "title": "Claims", "text": text_body})
-
-    # Lineage
-    if LINEAGE_MD.exists():
-        md = LINEAGE_MD.read_text(encoding="utf-8", errors="replace")
-        html_body, text_body = blocks_to_html(parse_blocks(md), sources, root="../")
-        nav = build_nav(chapters_for_nav, current_href="lineage/index.html", root="../")
-        write(
-            out_dir / "lineage" / "index.html",
-            render_page(
-                template,
-                title="Lineage",
-                nav=nav,
-                content=html_body,
-                root="../",
-                page_id="lineage",
-                page_url=absolute_page_url(base_url, "lineage/index.html"),
-                og_image_url=og_image_url,
-            ),
-        )
-        page_hrefs.append("lineage/index.html")
-        search_index.append({"href": "lineage/index.html", "title": "Lineage", "text": text_body})
-
-    # Sources (keep-only)
-    keep = []
-    for sid, row in sources.items():
-        notes = (row.get("notes") or "")
-        if "curation_status=keep" in notes:
-            keep.append((sid, row))
-    keep.sort(key=lambda t: ((t[1].get("published_date") or ""), t[0]))
-
-    src_lines = ["# Sources", "", "Keystone/kept sources referenced by the manuscript.", ""]
-    for sid, row in keep:
-        title = (row.get("title") or "").strip() or sid
-        url = (row.get("url") or "").strip()
-        date = (row.get("published_date") or "").strip()
-        creator = (row.get("creator_or_channel") or "").strip()
-        head = f"- `{sid}`"
-        if date:
-            head += f" ({date})"
-        head += f": {title}"
-        if creator:
-            head += f" — {creator}"
-        if url:
-            head += f" — [source]({url})"
-        src_lines.append(head)
-    src_md = "\n".join(src_lines) + "\n"
-
-    src_html, src_text = blocks_to_html(parse_blocks(src_md), sources, root="../")
-    nav = build_nav(chapters_for_nav, current_href="sources/index.html", root="../")
-    write(
-        out_dir / "sources" / "index.html",
-        render_page(
-            template,
-            title="Sources",
-            nav=nav,
-            content=src_html,
-            root="../",
-            page_id="sources",
-            page_url=absolute_page_url(base_url, "sources/index.html"),
+        _html_body, reader_text = emit_markdown_page(
+            out_dir=out_dir,
+            template=template,
+            sources=sources,
+            href="reader/index.html",
+            title="Reader / V1",
+            md=reader_md,
+            page_kind="",
+            base_url=base_url,
             og_image_url=og_image_url,
-        ),
-    )
-    page_hrefs.append("sources/index.html")
-    search_index.append({"href": "sources/index.html", "title": "Sources", "text": src_text})
+            nav_html=nav_for("reader/index.html"),
+        )
+        page_hrefs.append("reader/index.html")
+        search_index.append({"href": "reader/index.html", "title": "Reader / V1", "text": reader_text})
+
+        for anchor_id, title, src_path, _h1 in chapter_pages:
+            md = Path(src_path).read_text(encoding="utf-8", errors="replace")
+            _html_body, text_body = blocks_to_html(parse_blocks(md), sources, root=page_root("reader/index.html"))
+            search_index.append({"href": f"reader/index.html#{anchor_id}", "title": title, "text": text_body})
 
     (out_dir / "search_index.json").write_text(json.dumps(search_index, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
     write_sitemap(out_dir, base_url, page_hrefs)
