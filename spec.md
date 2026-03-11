@@ -2,7 +2,7 @@
 
 ## Goal
 
-Build V2 of **the-mind** as a short, readable, source-grounded guide to mind, consciousness, self, and AI.
+Build V2 of **the-mind** as a short, readable, source-grounded explanation of mind, consciousness, self, and AI.
 
 The primary audience is the interested general reader. Technical readers and spiritual/contemplative readers should both find clear entry points, but the default writing target is: **an adult general reader who wants to understand their own mind and what AI changes about the question**.
 
@@ -27,7 +27,7 @@ External non-Bach sources may be linked in glossary / further reading when they 
 V2 has one public structure:
 
 1. **Home**
-2. **Guide** — one canonical guided path
+2. **How the Mind Works** — one canonical guided path
 3. **Questions** — short evergreen explainers
 4. **Archive** — a low-prominence note at the end of Home that links to V1 / long-form source-grounded thesis
 
@@ -39,8 +39,8 @@ Questions are evergreen pages, not news or journal entries.
 
 ## Content requirements
 
-### Guide
-The guide is the main product. It should explain, in plain but precise language:
+### How the Mind Works
+The main walkthrough is the main product. It should explain, in plain but precise language:
 
 - why experience is the strange part,
 - what a mind is,
@@ -125,7 +125,7 @@ Update `spec.md` in the same PR when any of the following changes:
 
 No silent drift:
 - if the content materially changes its meaning or structure, update the spec.
-- if new sources materially change core claims, update the glossary / claims / sources and then the guide/questions as needed.
+- if new sources materially change core claims, update the glossary / claims / sources and then the main walkthrough/questions as needed.
 
 ## Non-goals
 

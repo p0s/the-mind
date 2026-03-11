@@ -1,12 +1,12 @@
 # Further reading
 
-This page is for readers who want to go one layer deeper after the guide and question pages.
+This page is for readers who want to go one layer deeper after *How the Mind Works* and the question pages.
 
 ## Best single next step
 
 ### 1) Read the main essay
 - **Joscha Bach, Hikari Sorensen — *The Machine Consciousness Hypothesis***  
-  Best for: the whole V2 backbone in one place.
+  Best for: the whole backbone of the site in one place.
 
 ## If you want more on mind and AI
 

@@ -1,7 +1,7 @@
 # Glossary
 
 This glossary is intentionally short.
-It defines the terms that carry the most weight in V2.
+It defines the terms that carry the most weight across the site.
 
 ## Agency
 We will use **agency** to mean: the capacity of a system to regulate the future using models, rather than only reacting to the present. <!-- src: ccc_38c3_self_models_of_loving_grace @ 00:32:16 -->

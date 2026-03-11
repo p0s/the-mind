@@ -283,7 +283,7 @@ def render_cite_link(source_id: str, locator: str, sources: Dict[str, Dict[str, 
         f'<a class="cite" href="{escape_attr(href)}" target="_blank" rel="noopener noreferrer" title="{escape_attr(tooltip)}">{escape(label)}</a>'
     )
     if show_time:
-        return a + f'<span class="cite_time"> @ {escape(loc)}</span>'
+        return f'<span class="cite_ref">{a}<span class="cite_time">@ {escape(loc)}</span></span>'
     return a
 
 
@@ -320,7 +320,7 @@ def render_cite_group(source_id: str, locators: List[str], sources: Dict[str, Di
         f'<a class="cite" href="{escape_attr(href)}" target="_blank" rel="noopener noreferrer" title="{escape_attr(tooltip)}">{escape(label)}</a>'
     )
     if show_time or len(normalized) > 1:
-        return a + f'<span class="cite_time"> @ {escape(locator_text)}</span>'
+        return f'<span class="cite_ref">{a}<span class="cite_time">@ {escape(locator_text)}</span></span>'
     return a
 
 
@@ -909,6 +909,7 @@ def render_page(
     page_id: str,
     page_url: str,
     og_image_url: str,
+    body_class: str = "",
     extra_scripts: str = "",
 ) -> str:
     return (
@@ -919,7 +920,7 @@ def render_page(
         .replace("{{page_id}}", escape(page_id))
         .replace("{{page_url}}", escape_attr(page_url))
         .replace("{{og_image_url}}", escape_attr(og_image_url))
-        .replace("{{body_class}}", "")
+        .replace("{{body_class}}", escape(body_class))
         .replace("{{extra_scripts}}", extra_scripts)
     )
 
@@ -939,6 +940,7 @@ def emit_markdown_page(
 ) -> Tuple[str, str]:
     root = page_root(href)
     html_body, text_body = blocks_to_html(parse_blocks(md), sources, root=root, page_kind=page_kind)
+    body_class = "supports-annotations" if href == "reader/index.html" else ""
     write(
         out_dir / href,
         render_page(
@@ -950,6 +952,7 @@ def emit_markdown_page(
             page_id=slugify(href.replace("/index.html", "").replace("/", "-") or "home"),
             page_url=absolute_page_url(base_url, href),
             og_image_url=og_image_url,
+            body_class=body_class,
         ),
     )
     return html_body, text_body
@@ -971,15 +974,14 @@ def build_nav(
     parts: List[str] = []
     parts.append('<div class="nav">')
     parts.append('<div class="navgroup">')
-    parts.append('<div class="navtitle">Guide</div>')
+    parts.append('<div class="navtitle">Read</div>')
     parts.append(a("index.html", "Home"))
-    parts.append(a("guide/index.html", "Guide"))
+    parts.append(a("guide/index.html", "How the Mind Works"))
     q_open = current_href.startswith("questions/")
     parts.append(f'<details class="navdetails"{" open" if q_open else ""}>')
     parts.append(
         '<summary class="navsummary navsummary--linked">'
         + a("questions/index.html", "Questions")
-        + '<span class="navsummary__chevron" aria-hidden="true"></span>'
         + "</summary>"
     )
     for href, title in question_pages:
@@ -1122,8 +1124,8 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     emit("index.html", "the-mind", read_markdown_or_missing(HOME_MD, "the-mind"))
 
-    guide_md = read_markdown_or_missing(GUIDE_MD, "Guide")
-    emit("guide/index.html", markdown_title(guide_md, "Guide"), guide_md)
+    guide_md = read_markdown_or_missing(GUIDE_MD, "How the Mind Works")
+    emit("guide/index.html", markdown_title(guide_md, "How the Mind Works"), guide_md)
 
     questions_index_md = read_markdown_or_missing(QUESTIONS_INDEX_MD, "Questions")
     emit("questions/index.html", markdown_title(questions_index_md, "Questions"), questions_index_md)

@@ -181,6 +181,7 @@ function setupNavToggle() {
   });
 
   nav.addEventListener("click", (ev) => {
+    if (ev.defaultPrevented) return;
     const t = ev.target;
     if (t && t.closest && t.closest("a")) {
       setOpen(false);
@@ -201,6 +202,53 @@ function setupNavToggle() {
   });
 }
 
+function setupLinkedNavSummaries() {
+  const pageId = String(window.__PAGE_ID__ || "");
+  const isQuestionsPage = pageId === "questions" || pageId.startsWith("questions-");
+
+  document.querySelectorAll(".navsummary--linked > a").forEach((link) => {
+    link.addEventListener("click", (ev) => {
+      if (ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+
+      const details = link.closest("details");
+      if (!details) return;
+
+      if (details.open) {
+        ev.preventDefault();
+        details.open = false;
+        return;
+      }
+
+      if (isQuestionsPage) {
+        ev.preventDefault();
+        details.open = true;
+      }
+    });
+  });
+}
+
+function setupDesktopNavDefaults() {
+  const questions = document.querySelector(".navsummary--linked");
+  const details = questions ? questions.closest("details") : null;
+  if (!details) return;
+
+  const mq = window.matchMedia ? window.matchMedia("(min-width: 921px)") : null;
+  if (!mq) return;
+
+  function sync(open) {
+    if (open) details.open = true;
+  }
+
+  sync(mq.matches);
+
+  const onChange = (ev) => {
+    sync(ev.matches);
+  };
+
+  if (mq.addEventListener) mq.addEventListener("change", onChange);
+  else if (mq.addListener) mq.addListener(onChange);
+}
+
 function setupNavMetrics() {
   const topbar = document.querySelector(".topbar");
   if (!topbar) return;
@@ -219,6 +267,8 @@ function setupNavMetrics() {
 const ROOT = window.__SITE_ROOT__ || "./";
 setupNavMetrics();
 setupNavToggle();
+setupLinkedNavSummaries();
+setupDesktopNavDefaults();
 setupSearch(ROOT);
 setupTagToggle();
 setupThemeToggle();

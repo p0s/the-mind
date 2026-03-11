@@ -1,6 +1,6 @@
 # Claims
 
-This is the compact V2 claims ledger.
+This is the compact public claims ledger.
 It is intentionally short and public-facing.
 
 ## CLM-0001

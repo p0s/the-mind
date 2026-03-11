@@ -1,12 +1,12 @@
 # Sources
 
-This page lists the main sources used for V2.
+This page lists the main sources used across the site.
 
 ## Primary source
 
 ### `web_cimc_ai_cimchypothesis_pdf`
 **Joscha Bach, Hikari Sorensen — *The Machine Consciousness Hypothesis***  
-Role in V2:
+Best for:
 - main source for mind / self / consciousness distinctions,
 - phenomenology of consciousness,
 - coherence-function account,
@@ -18,44 +18,44 @@ Use this as the first deeper reading destination.
 ## Main supporting Bach sources
 
 ### `ccc_38c3_self_models_of_loving_grace`
-Role in V2:
+Best for:
 - agency and control,
 - model-based regulation,
 - multi-level governance,
 - self-model framing.
 
 ### `ccc_35c3_10030_the_ghost_in_the_machine`
-Role in V2:
+Best for:
 - valence,
 - reward / value / norms,
 - free will as control capacity,
 - compulsion.
 
 ### `ccc_37c3_12167_synthetic_sentience`
-Role in V2:
+Best for:
 - dreaming / simulation metaphor,
 - world-model framing,
 - virtualism-adjacent explanation.
 
 ### `yt_UkAOHrbcnAs`
-Role in V2:
+Best for:
 - self-model,
 - observer,
 - first-person structure.
 
 ### `yt_CcQMYNi9a2w`
-Role in V2:
+Best for:
 - self-model,
 - narrative,
 - qualitative experience.
 
 ### `yt_O5hymlaldf0`
-Role in V2:
+Best for:
 - “dream within the dream” framing for current AI limits.
 
 ## Historical / contextual works cited by the main paper
 
-These are not the main explanatory substrate of V2, but they are useful for deeper context.
+These are not the main explanatory substrate of the site, but they are useful for deeper context.
 
 - Aristotle — *De Anima*
 - Leibniz — *Monadology*

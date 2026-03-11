@@ -1,6 +1,6 @@
-# Guide: how mind, consciousness, and AI fit together
+# How the Mind Works
 
-This guide is for readers who want one clear path through the topic.
+This page is for readers who want one clear path through the topic.
 
 The central promise is simple: **start from the fact that experience exists, then explain what kind of system a mind must be, then ask what that means for AI**.
 
