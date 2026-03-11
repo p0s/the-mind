@@ -490,6 +490,15 @@ def inline_format(s: str, *, root: str) -> str:
         protected.append(fragment)
         return token
 
+    # ![alt](src)
+    def make_image(alt: str, src: str) -> str:
+        norm_src = normalize_site_href(src, root=root)
+        src_attr = norm_src.replace('"', "&quot;").replace("'", "&#x27;")
+        alt_attr = alt.replace('"', "&quot;").replace("'", "&#x27;")
+        return f'<img class="mdimg" src="{src_attr}" alt="{alt_attr}" loading="lazy" />'
+
+    s = re.sub(r"!\[([^\]]*)\]\(([^)]+)\)", lambda m: stash(make_image(m.group(1), m.group(2))), s)
+
     # `code`
     s = re.sub(r"`([^`]+)`", lambda m: stash(f"<code>{m.group(1)}</code>"), s)
 
@@ -530,8 +539,8 @@ def inline_format(s: str, *, root: str) -> str:
     s = re.sub(r"(?<!\w)_([^_\n]+?)_(?!\w)", lambda m: f"<em>{m.group(1)}</em>", s)
 
     # Restore protected fragments (code/links) after emphasis processing.
-    for idx, frag in enumerate(protected):
-        s = s.replace(f"@@FMT{idx}@@", frag)
+    for idx in range(len(protected) - 1, -1, -1):
+        s = s.replace(f"@@FMT{idx}@@", protected[idx])
     return s
 
 
@@ -997,16 +1006,16 @@ def build_nav(
     parts.append("</details>")
     parts.append("</div>")
 
-    audit_open = current_href.startswith(("glossary/", "claims/", "sources/", "further-reading/"))
+    refs_open = current_href.startswith(("glossary/", "claims/", "sources/"))
     parts.append('<div class="navgroup">')
-    parts.append('<div class="navtitle">Audit Layer</div>')
-    parts.append(f'<details class="navdetails"{" open" if audit_open else ""}>')
-    parts.append('<summary class="navsummary">Glossary And Sources</summary>')
+    parts.append('<div class="navtitle">Go Deeper</div>')
+    parts.append(f'<details class="navdetails"{" open" if refs_open else ""}>')
+    parts.append('<summary class="navsummary">Glossary, Claims, Sources</summary>')
     parts.append(a("glossary/index.html", "Glossary"))
     parts.append(a("claims/index.html", "Claims"))
     parts.append(a("sources/index.html", "Sources"))
-    parts.append(a("further-reading/index.html", "Further Reading"))
     parts.append("</details>")
+    parts.append(a("further-reading/index.html", "Further Reading"))
     parts.append("</div>")
 
     parts.append("</div>")

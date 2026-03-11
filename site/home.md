@@ -34,7 +34,7 @@ Then use the question pages:
 - [Does this kill spirituality?](/questions/does-this-kill-spirituality/)
 
 ### Go deeper
-If you want the audit layer and source trail:
+If you want definitions, source trail, and more reading:
 
 - [Glossary](/glossary/)
 - [Claims](/claims/)

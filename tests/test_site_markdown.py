@@ -105,6 +105,15 @@ class TestSiteMarkdown(unittest.TestCase):
         self.assertIn('href="../../guide/index.html"', html_body)
         self.assertIn('href="../../questions/what-is-a-mind/index.html"', html_body)
 
+    def test_renders_markdown_images(self) -> None:
+        html_body, _text = build_site.blocks_to_html(
+            build_site.parse_blocks("![Chooser](/assets/reading-ai.svg)\n"),
+            sources={},
+            root="../",
+        )
+        self.assertIn('class="mdimg"', html_body)
+        self.assertIn('src="../assets/reading-ai.svg"', html_body)
+
     def test_groups_same_source_citations_with_multiple_locators(self) -> None:
         md = "Hello <!-- src: web_x @ p16; web_x @ p18-19 -->\n"
         sources = {
@@ -131,6 +140,10 @@ class TestSiteMarkdown(unittest.TestCase):
         self.assertNotIn("Map", nav)
         self.assertNotIn("About", nav)
         self.assertNotIn("Archive", nav)
+        self.assertNotIn("Audit Layer", nav)
+        self.assertIn("Go Deeper", nav)
+        self.assertIn("Further Reading", nav)
+        self.assertIn("Glossary, Claims, Sources", nav)
 
     def test_mermaid_is_omitted_unless_enabled(self) -> None:
         md = "\n".join(

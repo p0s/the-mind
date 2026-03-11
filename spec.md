@@ -31,7 +31,7 @@ V2 has one public structure:
 3. **Questions** — short evergreen explainers
 4. **Archive** — a low-prominence note at the end of Home that links to V1 / long-form source-grounded thesis
 
-Home also serves as the orientation and project-framing layer. It should point readers toward the audit pages without requiring a separate “Map” page or “About” page. Archive should not be a primary navigation item.
+Home also serves as the orientation and project-framing layer. It should point readers toward the deeper reference pages without requiring a separate “Map” page or “About” page. Archive should not be a primary navigation item.
 
 Do **not** frame the public site as “book vs blog”.
 Do **not** make dated post-style content the default reading path.
@@ -64,8 +64,8 @@ The core question set for V2 is:
 
 Additional pages are fine later, but this set is the launch surface.
 
-### Audit layer
-The audit layer stays public but secondary. It should include:
+### Deeper Reference Pages
+The deeper reference pages stay public but secondary. They should include:
 
 - glossary,
 - concise claims ledger,

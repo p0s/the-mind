@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-labelledby="title desc">
+  <title id="title">Shortest serious path</title>
+  <desc id="desc">Three large stepping blocks with a single path line suggesting a clean sequence through the material.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f7f1e9"/>
+      <stop offset="100%" stop-color="#e8eeea"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="520" rx="28" fill="url(#bg)"/>
+  <rect x="110" y="280" width="150" height="110" rx="18" fill="#0b5a57"/>
+  <rect x="325" y="220" width="150" height="170" rx="18" fill="#7a3d28"/>
+  <rect x="540" y="150" width="150" height="240" rx="18" fill="#2b2926"/>
+  <path d="M130 170c98 16 160 34 225 88 66-62 134-82 286-112" fill="none" stroke="#0b5a57" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="130" cy="170" r="12" fill="#0b5a57"/>
+  <circle cx="355" cy="258" r="12" fill="#7a3d28"/>
+  <circle cx="641" cy="146" r="12" fill="#2b2926"/>
+</svg>

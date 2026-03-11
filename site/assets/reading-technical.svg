@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-labelledby="title desc">
+  <title id="title">Technical path</title>
+  <desc id="desc">A schematic grid with nodes, arrows, and test bars suggesting architecture and evaluation.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#edf1ee"/>
+      <stop offset="100%" stop-color="#f2ebe1"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="520" rx="28" fill="url(#bg)"/>
+  <g stroke="#c8d2cd" stroke-width="2">
+    <path d="M120 120h560M120 200h560M120 280h560M120 360h560"/>
+    <path d="M180 90v320M320 90v320M460 90v320M600 90v320"/>
+  </g>
+  <g fill="#0b5a57">
+    <circle cx="180" cy="200" r="18"/>
+    <circle cx="320" cy="280" r="18"/>
+    <circle cx="460" cy="160" r="18"/>
+    <circle cx="600" cy="260" r="18"/>
+  </g>
+  <g stroke="#7a3d28" stroke-width="6" stroke-linecap="round" fill="none">
+    <path d="M198 200h104"/>
+    <path d="M338 272l104-96"/>
+    <path d="M478 168l104 84"/>
+  </g>
+  <rect x="520" y="334" width="116" height="18" rx="9" fill="#2b2926"/>
+  <rect x="520" y="366" width="84" height="18" rx="9" fill="#7a3d28"/>
+  <rect x="520" y="398" width="144" height="18" rx="9" fill="#0b5a57"/>
+</svg>

@@ -271,6 +271,22 @@ function setupDesktopNavDefaults() {
   else if (mq.addListener) mq.addListener(onChange);
 }
 
+function setupChooserCards() {
+  const cards = document.querySelectorAll("#choose-your-next-step + ul li");
+  cards.forEach((card) => {
+    const link = card.querySelector("a");
+    if (!link) return;
+
+    card.addEventListener("click", (ev) => {
+      const target = ev.target;
+      if (target && target.closest && target.closest("a")) return;
+      const href = link.getAttribute("href");
+      if (!href) return;
+      window.location.href = href;
+    });
+  });
+}
+
 function setupNavMetrics() {
   const topbar = document.querySelector(".topbar");
   if (!topbar) return;
@@ -291,6 +307,7 @@ setupNavMetrics();
 setupNavToggle();
 setupLinkedNavSummaries();
 setupDesktopNavDefaults();
+setupChooserCards();
 setupSearch(ROOT);
 setupTagToggle();
 setupThemeToggle();
