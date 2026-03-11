@@ -49,9 +49,9 @@ That is the core issue. A system that talks expertly about inner life may still 
 
 ## The “dream within the dream” point
 
-A useful phrase from Bach’s talk ecology is the idea that current AI may generate dream-content without yet generating the **dream within the dream**.
+A useful phrase here is the idea that current AI may generate dream-content without yet generating the "dream within the dream". <!-- src: yt_O5hymlaldf0 @ 00:01:58 -->
 
-In other words, the system may generate world-like material, characters, voices, descriptions, and inner-monologue-like text — but the still-open question is whether there is a stabilized model of the act of perceiving, an observer-like presence to whom anything is present as present. <!-- src: yt_O5hymlaldf0 @ 00:01:58 -->
+In other words, the system may generate world-like material, characters, voices, descriptions, and inner-monologue-like text — but the still-open question is whether there is a stabilized model of the act of perceiving, an observer-like presence to whom anything is present as present. That is the distinction between simulated content and a system that is also modeling its own contact with that content. <!-- src: yt_O5hymlaldf0 @ 00:01:58 -->
 
 That is exactly the kind of distinction surface fluency cannot settle.
 

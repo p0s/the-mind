@@ -4,6 +4,10 @@ Consciousness is the fact that experience shows up at all.
 
 There is something it is like to be you right now. A present is happening. The world appears, and it appears from somewhere. That is the familiar part.
 
+One of the clearest short phrases for this is that consciousness creates a "bubble of nowness" that we inhabit. <!-- src: yt_9LtKJ2k8UyM @ 00:03:12 -->
+
+That phrase helps because it points at synchronization. A conscious present is not just a lot of information floating around; it is a stretch of time in which multiple contents count as present together for one system. <!-- src: yt_9LtKJ2k8UyM @ 00:03:12; web_cimc_ai_cimchypothesis_pdf @ p15-18 -->
+
 The difficult part is explaining how that can be true in a world made of mechanisms. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p1-3 -->
 
 ## Why the problem feels hard
@@ -61,7 +65,9 @@ Instead, it treats consciousness as doing concrete work. Alertness, sustained vi
 
 The key functional proposal is that consciousness is a **coherence-maximizing operation** on mental states. Different subsystems and partial models are active at once. Consciousness helps reduce contradiction among them so the whole mind can act more like one system. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p16-18 -->
 
-This is where the paper’s orchestra metaphor matters. If many processes are playing at once, consciousness is not another instrument. It is closer to the conductor that makes them hang together enough to produce meaningful action. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p17-18 -->
+That is why consciousness can also be described as the "conductor of a mental orchestra". <!-- src: ccc_37c3_12167_synthetic_sentience @ 00:11:15; web_cimc_ai_cimchypothesis_pdf @ p17-18 -->
+
+The point is not that there is a little person inside the brain waving a baton. The point is that many specialized processes need a coordination layer that makes their conflicts legible and negotiable at the level of the whole agent. <!-- src: ccc_37c3_12167_synthetic_sentience @ 00:11:15; web_cimc_ai_cimchypothesis_pdf @ p16-18 -->
 
 ## Mechanism: what kind of organization might do this
 
@@ -118,3 +124,5 @@ For this site, we will use **consciousness** to mean:
 - web_cimc_ai_cimchypothesis_pdf @ p12
 - web_cimc_ai_cimchypothesis_pdf @ p15-18
 - web_cimc_ai_cimchypothesis_pdf @ p20-23
+- ccc_37c3_12167_synthetic_sentience @ 00:11:15
+- yt_9LtKJ2k8UyM @ 00:03:12

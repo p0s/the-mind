@@ -36,7 +36,9 @@ This is why there is no easy behavioral shortcut: passing conversational tests d
 
 ## When it becomes an empirical question
 
-The machine-consciousness framing says the open question is architectural: does the system implement the "dream within the dream," a model of the act of perceiving that stabilizes an observer perspective? <!-- src: yt_O5hymlaldf0 @ 00:01:58 -->
+The shortest public handle for this is the "dream within the dream". <!-- src: yt_O5hymlaldf0 @ 00:01:58 -->
+
+The machine-consciousness framing says the open question is architectural: does the system implement a model of the act of perceiving that stabilizes an observer perspective, rather than merely generating world-like content? <!-- src: yt_O5hymlaldf0 @ 00:01:58; web_cimc_ai_cimchypothesis_pdf @ p21-23 -->
 
 A practical research path is to treat testing as an explicit validation program: specify the hypothesized organization, design environments/tasks that should elicit it, and precommit to success criteria for what would count as evidence. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p22-23; web_arxiv_org_pdf_2512_01081 @ p7 -->
 
