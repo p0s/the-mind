@@ -34,7 +34,7 @@ Then use the question pages:
 - [Does this kill spirituality?](https://p0s.github.io/the-mind/questions/does-this-kill-spirituality/)
 
 ### Go deeper
-If you want the audit layer and source trail:
+If you want definitions, source trail, and more reading:
 
 - [Glossary](https://p0s.github.io/the-mind/glossary/)
 - [Claims](https://p0s.github.io/the-mind/claims/)

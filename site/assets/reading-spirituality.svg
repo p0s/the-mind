@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-labelledby="title desc">
+  <title id="title">Spiritual experience and reality</title>
+  <desc id="desc">Layered horizon bands and a reflective figure suggesting contemplation without mystification.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f7f2ea"/>
+      <stop offset="100%" stop-color="#dde7e5"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="520" rx="28" fill="url(#bg)"/>
+  <path d="M80 350c90-46 192-62 320-50 112 10 214 2 320-28v138H80z" fill="#d8c5ad"/>
+  <path d="M80 386c104-38 214-48 330-34 116 14 220 10 310-12v112H80z" fill="#c9ddd7"/>
+  <circle cx="400" cy="186" r="72" fill="none" stroke="#0b5a57" stroke-width="8"/>
+  <circle cx="400" cy="186" r="30" fill="#7a3d28"/>
+  <path d="M400 256c-44 0-80 34-80 78v34h160v-34c0-44-36-78-80-78z" fill="#0b5a57"/>
+  <path d="M214 146c56-34 118-50 186-50s130 16 186 50" fill="none" stroke="#2b2926" stroke-width="4" stroke-dasharray="8 8"/>
+</svg>

@@ -1,65 +1,100 @@
 # Further reading
 
-This page is for readers who want to go one layer deeper after *How the Mind Works* and the question pages.
+If you are not sure where to go next, start from the sentence that feels closest to your view.
 
-## Best single next step
+A Bach-friendly reminder: experience is real, but it is not raw access to physics. The mind cannot model physical reality all at once, so meditation, dreaming, or spiritual intensity do not give you a God's-eye view of the universe. They reveal how experience is being organized from the inside. Bach's recurring example is dreaming: a dream can feel immediate and meaningful without being a direct readout of the external world; waking perception is more constrained, not less constructed. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p15-16; ccc_37c3_12167_synthetic_sentience @ 00:17:39 -->
 
-### 1) Read the main essay
-- **Joscha Bach, Hikari Sorensen — *The Machine Consciousness Hypothesis***  
-  Best for: the whole backbone of the site in one place.
+## Choose your next step
 
-## If you want more on mind and AI
+- ![Consciousness and science](/assets/reading-consciousness.svg)
+  [I think consciousness is too strange to fit inside science](#i-think-consciousness-is-too-strange-to-fit-inside-science)  
+  Start with the cleanest mechanistic path.
+- ![Spiritual experience and reality](/assets/reading-spirituality.svg)
+  [I think spiritual experience should reveal ultimate reality directly](#i-think-spiritual-experience-should-reveal-ultimate-reality-directly)  
+  Start with self, observer, and contemplative experience.
+- ![AI consciousness](/assets/reading-ai.svg)
+  [I think AI might already be conscious](#i-think-ai-might-already-be-conscious)  
+  Start with the architecture-vs-performance split.
+- ![Shortest serious path](/assets/reading-short-path.svg)
+  [I mostly want the shortest serious path](#i-mostly-want-the-shortest-serious-path)  
+  Start with the best three-step route.
+- ![Technical path](/assets/reading-technical.svg)
+  [I want the technical path](#i-want-the-technical-path)  
+  Start with testing, architecture, and computational framing.
 
-### 2) How to Build a Mind
-- Best for: the general project of mind as model-based agency.
+## I think consciousness is too strange to fit inside science
 
-### 3) From Computation to Consciousness
-- Best for: the bridge from computation to phenomenology.
+Start here if consciousness feels real enough to resist flat reductionism, but you want the strongest version of a mechanistic explanation.
 
-### 4) Synthetic Sentience
-- Best for: dreams, simulation, virtualism, and artificial sentience.
+- [What is consciousness?](/questions/what-is-consciousness/)  
+  Start with the shortest site page.
+- [The Machine Consciousness Hypothesis](https://cimc.ai/cimcHypothesis.pdf)  
+  The main essay: phenomenology, function, mechanism, and genesis in one place.
+- [The Machine Consciousness Hypothesis (Michigan Medicine talk)](https://www.youtube.com/watch?v=DYm7VBaEmHU)  
+  A spoken version if you prefer hearing the argument unfold.
+- [From Computation to Consciousness](https://media.ccc.de/v/31c3_-_6573_-_en_-_saal_2_-_201412281130_-_from_computation_to_consciousness_-_joscha)  
+  Useful if you want the older computation-to-mind bridge.
 
-### 5) The Ghost in the Machine
-- Best for: value, valence, norms, and free will as control capacity.
+## I think spiritual experience should reveal ultimate reality directly
 
-### 6) Self Models of Loving Grace
-- Best for: self-models, agency, and psychological development.
+Start here if your resistance is not to science, but to the idea that first-person experience could be "just a model."
 
-## If you want historical context
+- [Does this kill spirituality?](/questions/does-this-kill-spirituality/)  
+  The shortest bridge page.
+- [What is the self?](/questions/what-is-the-self/)  
+  Useful if the sticking point is observer, soul, or identity.
+- [The Machine Consciousness Hypothesis](https://cimc.ai/cimcHypothesis.pdf)  
+  Read the sections on presentness, observer-structure, and deconstruction of the self.
+- [Self Models of Loving Grace](https://media.ccc.de/v/38c3-self-models-of-loving-grace)  
+  Strong on self-models, agency, development, and inner life.
+- [Mind from Matter](https://www.youtube.com/watch?v=UkAOHrbcnAs)  
+  A good follow-up if you want the self-model argument in a more lecture-like format.
 
-### 7) Thomas Nagel — “What Is It Like to Be a Bat?”
-- Best for: why subjective experience became such a central philosophical problem.
+## I think AI might already be conscious
 
-### 8) David Chalmers — “Facing Up to the Problem of Consciousness”
-- Best for: the modern “hard problem” framing.
+Start here if present-day models already feel close enough to personhood that you want the sharpest non-handwavy test of that intuition.
 
-### 9) Aristotle — *De Anima*
-- Best for: an older way of thinking about soul / psyche as form or animating organization.
+- [Could AI be conscious?](/questions/could-ai-be-conscious/)  
+  The broad architectural question.
+- [Do LLMs have qualia?](/questions/do-llms-have-qualia/)  
+  The narrower "surface fluency is not enough" page.
+- [The Machine Consciousness Hypothesis](https://cimc.ai/cimcHypothesis.pdf)  
+  Read this for the "no Turing Test for consciousness" argument.
+- [The AI perspective on Consciousness](https://www.youtube.com/watch?v=xthJ1R9Ifc0)  
+  A direct Bach talk on the AI angle.
+- [Testing the Machine Consciousness Hypothesis](https://arxiv.org/pdf/2512.01081)  
+  A newer technical follow-up if you want explicit testing proposals.
 
-### 10) Leibniz — *Monadology* (the mill thought experiment)
-- Best for: an early statement of the explanatory gap intuition.
+## I mostly want the shortest serious path
 
-## If you want technical context
+Start here if you do not want a giant reading list and just want the cleanest next three moves.
 
-### 11) Christoph von der Malsburg — “The Coherence Definition of Consciousness”
-- Best for: the coherence framing behind the conductor-style account.
+1. [How the Mind Works](/guide/)
+2. [The Machine Consciousness Hypothesis](https://cimc.ai/cimcHypothesis.pdf)
+3. [The Ghost in the Machine](https://media.ccc.de/v/35c3-10030-the_ghost_in_the_machine)
 
-### 12) Chris Olah et al. — “Zoom In: An Introduction to Circuits”
-- Best for: mechanistic interpretability and the universality discussion referenced in the paper.
+If you want a fourth step, make it [Self Models of Loving Grace](https://media.ccc.de/v/38c3-self-models-of-loving-grace).
 
-## Suggested paths
+## I want the technical path
 
-### Path A — general reader
-1. Main essay  
-2. Ghost in the Machine  
-3. Self Models of Loving Grace
+Start here if you care less about worldview and more about architecture, testability, and computational framing.
 
-### Path B — AI reader
-1. Main essay  
-2. Synthetic Sentience  
-3. Olah et al. on circuits
+- [Testing the Machine Consciousness Hypothesis](https://arxiv.org/pdf/2512.01081)  
+  The best direct follow-up on what testing could look like.
+- [The AI perspective on Consciousness](https://www.youtube.com/watch?v=xthJ1R9Ifc0)  
+  Good on architecture and current AI limits.
+- [Synthetic Sentience](https://media.ccc.de/v/37c3-12167-synthetic_sentience)  
+  Strong on world-models, dreaming, and virtualism.
+- [We Are All Software](https://www.youtube.com/watch?v=34VOI_oo-qM)  
+  Useful if you want the software / abstraction framing stated directly.
 
-### Path C — contemplative / spiritual reader
-1. Main essay  
-2. Self Models of Loving Grace  
-3. Aristotle, then Nagel / Chalmers for contrast
+## If you want a few background texts
+
+These are not required, but they help if you want to understand the older philosophical terrain around the problem.
+
+- [David Chalmers — “Facing Up to the Problem of Consciousness”](https://consc.net/papers/facing.pdf)
+- [Thomas Nagel — “What Is It Like to Be a Bat?”](https://warwick.ac.uk/fac/soc/philosophy/people/zawidzki/teaching/wip/nagel_bat.pdf)
+- [Aristotle — *De Anima*](https://classics.mit.edu/Aristotle/soul.html)
+- [Leibniz — *Monadology*](https://en.wikisource.org/wiki/Monadology)
+- [Christoph von der Malsburg — “The Coherence Definition of Consciousness”](https://cogprints.org/126/1/1997-coherence-definition.pdf)
+- [Chris Olah et al. — “Zoom In: An Introduction to Circuits”](https://distill.pub/2020/circuits/zoom-in/)

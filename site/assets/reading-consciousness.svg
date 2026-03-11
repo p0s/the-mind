@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" role="img" aria-labelledby="title desc">
+  <title id="title">Consciousness and science</title>
+  <desc id="desc">An abstract eye-like diagram with layered rings and a bridge from experience to explanation.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5efe4"/>
+      <stop offset="100%" stop-color="#e8efe8"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="520" rx="28" fill="url(#bg)"/>
+  <ellipse cx="400" cy="260" rx="250" ry="140" fill="none" stroke="#0b5a57" stroke-width="8"/>
+  <ellipse cx="400" cy="260" rx="170" ry="92" fill="none" stroke="#7a3d28" stroke-width="6" stroke-dasharray="14 10"/>
+  <circle cx="400" cy="260" r="58" fill="#0b5a57"/>
+  <circle cx="400" cy="260" r="22" fill="#fbf8f2"/>
+  <path d="M120 260h110M570 260h110" stroke="#2b2926" stroke-width="4" stroke-linecap="round"/>
+  <path d="M240 120l52 42M560 120l-52 42M240 400l52-42M560 400l-52-42" stroke="#7a3d28" stroke-width="4" stroke-linecap="round"/>
+</svg>
