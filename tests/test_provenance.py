@@ -7,10 +7,22 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 
+import lint_provenance  # noqa: E402
 from _core.provenance import format_src_comment, parse_src_comment_payload, strip_src_comment_eol  # noqa: E402
 
 
 class TestProvenance(unittest.TestCase):
+    def test_accepts_timecode_locator(self) -> None:
+        self.assertTrue(lint_provenance.valid_locator("00:01:02"))
+
+    def test_accepts_pdf_page_locators(self) -> None:
+        self.assertTrue(lint_provenance.valid_locator("p16"))
+        self.assertTrue(lint_provenance.valid_locator("p19-20"))
+
+    def test_rejects_invalid_pdf_page_locators(self) -> None:
+        self.assertFalse(lint_provenance.valid_locator("p0"))
+        self.assertFalse(lint_provenance.valid_locator("p20-19"))
+
     def test_parse_single_ref(self) -> None:
         c = parse_src_comment_payload("yt_abc @ 00:01:02")
         assert c is not None
@@ -35,13 +47,7 @@ class TestProvenance(unittest.TestCase):
     def test_parse_multi_ref_with_meta(self) -> None:
         c = parse_src_comment_payload("yt_abc @ 00:01:02; ccc_def @ 00:03:04 | auto=needs_review score=0")
         assert c is not None
-        self.assertEqual(
-            c.refs,
-            (
-                ("yt_abc", "00:01:02"),
-                ("ccc_def", "00:03:04"),
-            ),
-        )
+        self.assertEqual(c.refs, (("yt_abc", "00:01:02"), ("ccc_def", "00:03:04")))
         self.assertEqual(c.meta_dict.get("auto"), "needs_review")
         self.assertEqual(c.meta_dict.get("score"), "0")
 
