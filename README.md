@@ -19,27 +19,27 @@ This site is built around those questions.
 ### How the Mind Works
 Read the short guided path first:
 
-- [How the Mind Works](/guide/)
+- [How the Mind Works](https://p0s.github.io/the-mind/guide/)
 
 ### Questions
 Then use the question pages:
 
-- [What is a mind?](/questions/what-is-a-mind/)
-- [What is consciousness?](/questions/what-is-consciousness/)
-- [Why do feelings matter?](/questions/why-do-feelings-matter/)
-- [What is the self?](/questions/what-is-the-self/)
-- [Is free will real?](/questions/is-free-will-real/)
-- [Could AI be conscious?](/questions/could-ai-be-conscious/)
-- [Do LLMs have qualia?](/questions/do-llms-have-qualia/)
-- [Does this kill spirituality?](/questions/does-this-kill-spirituality/)
+- [What is a mind?](https://p0s.github.io/the-mind/questions/what-is-a-mind/)
+- [What is consciousness?](https://p0s.github.io/the-mind/questions/what-is-consciousness/)
+- [Why do feelings matter?](https://p0s.github.io/the-mind/questions/why-do-feelings-matter/)
+- [What is the self?](https://p0s.github.io/the-mind/questions/what-is-the-self/)
+- [Is free will real?](https://p0s.github.io/the-mind/questions/is-free-will-real/)
+- [Could AI be conscious?](https://p0s.github.io/the-mind/questions/could-ai-be-conscious/)
+- [Do LLMs have qualia?](https://p0s.github.io/the-mind/questions/do-llms-have-qualia/)
+- [Does this kill spirituality?](https://p0s.github.io/the-mind/questions/does-this-kill-spirituality/)
 
 ### Go deeper
 If you want the audit layer and source trail:
 
-- [Glossary](/glossary/)
-- [Claims](/claims/)
-- [Sources](/sources/)
-- [Further reading](/further-reading/)
+- [Glossary](https://p0s.github.io/the-mind/glossary/)
+- [Claims](https://p0s.github.io/the-mind/claims/)
+- [Sources](https://p0s.github.io/the-mind/sources/)
+- [Further reading](https://p0s.github.io/the-mind/further-reading/)
 
 The first deeper stop should usually be the main essay:
 
@@ -69,7 +69,7 @@ The aim is to restate the framework clearly, preserve source grounding, and make
 
 V1 remains available as a lighter-footed archive:
 
-- [Archive / V1 / source-grounded thesis](/archive/)
+- [Archive / V1 / source-grounded thesis](https://p0s.github.io/the-mind/archive/)
 
 ---
 

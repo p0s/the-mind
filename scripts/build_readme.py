@@ -37,9 +37,12 @@ def parse_repo_slug(remote_url: str) -> Optional[Tuple[str, str]]:
         return None
 
     # git@github.com:owner/repo.git
-    m = re.match(r"^git@github\.com:([^/]+)/([^/]+?)(?:\.git)?$", u)
+    # Also accept local SSH host aliases such as github.com-personal.
+    m = re.match(r"^git@([^:]+):([^/]+)/([^/]+?)(?:\.git)?$", u)
     if m:
-        return m.group(1), m.group(2)
+        host, owner, repo = m.groups()
+        if host == "github.com" or host.startswith("github.com-"):
+            return owner, repo
 
     # https://github.com/owner/repo(.git)?
     m = re.match(r"^https?://github\.com/([^/]+)/([^/]+?)(?:\.git)?/?$", u)
