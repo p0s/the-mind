@@ -8,6 +8,10 @@ And yet, one of the strongest ideas in this framework is that the self is best u
 
 That can sound insulting at first, as if it meant the self is fake. It does not. It means the self is real as an implemented construct in the mind, rather than as a mysterious little entity behind experience. <!-- src: yt_UkAOHrbcnAs @ 00:16:47; yt_CcQMYNi9a2w @ 00:25:57 -->
 
+One compact line for this is that the self is a "story that the brain tells itself". <!-- src: yt_TvoIpLlwf8k @ 00:00:32 -->
+
+That sounds dismissive only if "story" means fiction. Here it means a compact, continuously updated model that binds memory, expectation, identity, and social role into one usable sense of "me". <!-- src: yt_TvoIpLlwf8k @ 00:00:32; yt_CcQMYNi9a2w @ 00:25:57 -->
+
 ## Why a mind needs a self-model
 
 A sophisticated controller has to model itself.
@@ -125,3 +129,4 @@ For this site, we will use **self** to mean:
 - web_cimc_ai_cimchypothesis_pdf @ p15-16
 - yt_UkAOHrbcnAs @ 00:16:47
 - yt_CcQMYNi9a2w @ 00:25:57
+- yt_TvoIpLlwf8k @ 00:00:32

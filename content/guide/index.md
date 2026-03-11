@@ -28,7 +28,11 @@ That is also why simple intelligence tests miss something. A system can be narro
 
 ## 3) Why the world you experience is already a model
 
-One of Bach’s recurring ideas is that experience is not a window cut directly into physics. It is a **constructed model under constraint**.
+One of the recurring ideas in this framework is that experience is not a window cut directly into physics. It is a **constructed model under constraint**.
+
+A useful way to picture this is the line that the world we experience is "a game engine generated in my own brain". <!-- src: yt_AQqb6nW9F6c @ 00:07:48; web_jimruttshow_blubrry_net_the_jim_rutt_show_transcripts_transcript_of_ep_334_worldviews_joscha_bach @ 00:00:00 -->
+
+That does not mean the world is fake. It means experience arrives as a rendered interface: a usable model full of objects, meanings, and affordances, continuously corrected by the world rather than copied from it raw. <!-- src: yt_AQqb6nW9F6c @ 00:07:48; web_cimc_ai_cimchypothesis_pdf @ p15 -->
 
 Perception is the mind generating a useful world, while being tightly constrained by sensory input. Imagination uses much of the same machinery with weaker constraint. Dreaming uses it with weaker constraint still. This does not mean waking life is “just a dream” in the cheap sense. It means the experienced world is an active construction rather than a passive copy. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p15; ccc_37c3_12167_synthetic_sentience @ 00:17:39 -->
 
@@ -74,6 +78,10 @@ The paper gives a three-part demand for any serious theory:
 
 ### Phenomenology
 Phenomenologically, consciousness is described as **second-order perception**: not only seeing the apple, but the fact that seeing is taking place now. It also includes the experience of present and presence, and sometimes the experience of being an observing self in a world. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p15; web_cimc_ai_cimchypothesis_pdf @ p20 -->
+
+A shorter public handle for this is a "bubble of nowness". <!-- src: yt_9LtKJ2k8UyM @ 00:03:12 -->
+
+That phrase is useful because it points at synchronization. Consciousness is the mode in which multiple signals hang together tightly enough to count as one lived present for one controller. <!-- src: yt_9LtKJ2k8UyM @ 00:03:12; web_cimc_ai_cimchypothesis_pdf @ p15-18 -->
 
 That already helps explain why consciousness feels different from mere information processing. It is not just that content exists in the system. It is that content is present to the system in a special way.
 
@@ -161,7 +169,10 @@ Here is the shortest version of the whole site:
 - web_cimc_ai_cimchypothesis_pdf @ p18-23
 - ccc_38c3_self_models_of_loving_grace @ 00:32:16
 - ccc_35c3_10030_the_ghost_in_the_machine @ 00:27:50
+- web_jimruttshow_blubrry_net_the_jim_rutt_show_transcripts_transcript_of_ep_334_worldviews_joscha_bach @ 00:00:00
 - yt_UkAOHrbcnAs @ 00:16:47
 - yt_CcQMYNi9a2w @ 00:25:57
 - ccc_37c3_12167_synthetic_sentience @ 00:17:39
 - yt_O5hymlaldf0 @ 00:01:58
+- yt_AQqb6nW9F6c @ 00:07:48
+- yt_9LtKJ2k8UyM @ 00:03:12

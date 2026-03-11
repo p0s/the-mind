@@ -2,6 +2,10 @@
 
 Consciousness is the fact that experience shows up at all: there is something it is like to be you, right now. You are confronted with a present, and the world appears from a point of view. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p21; yt_xthJ1R9Ifc0 @ 00:08:46 -->
 
+One of the more reader-friendly phrases for this is a "bubble of nowness". <!-- src: yt_9LtKJ2k8UyM @ 00:03:12 -->
+
+That phrase is useful because it makes phenomenology sound less mystical and more architectural: consciousness is the stretch of synchronized presentness in which multiple contents can count as true together for one controller. <!-- src: yt_9LtKJ2k8UyM @ 00:03:12; web_cimc_ai_cimchypothesis_pdf @ p16; web_cimc_ai_cimchypothesis_pdf @ p21 -->
+
 The puzzle is connecting that familiar phenomenology to mechanism: why should any physical process feel like anything from the inside? <!-- src: web_cimc_ai_cimchypothesis_pdf @ p17; yt_CcQMYNi9a2w @ 01:58:03 -->
 
 On this view, consciousness is not a mysterious extra substance or “spark”. It is an architectural feature: a functional organization that stabilizes a coherent point of view. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p21; yt_CcQMYNi9a2w @ 01:58:03 -->
@@ -17,6 +21,10 @@ A practical discipline is to keep three perspectives distinct when explaining co
 ## Function: coherence control (the “conductor” role)
 
 Functionally, consciousness is framed as the process that makes disagreements between subsystems legible and resolvable at the level of the whole agent. The result is a coherent controller rather than a bundle of competing local policies. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p18; yt_CcQMYNi9a2w @ 01:58:03 -->
+
+That is why consciousness can also be described as the "conductor of a mental orchestra". <!-- src: ccc_37c3_12167_synthetic_sentience @ 00:11:15; web_cimc_ai_cimchypothesis_pdf @ p18 -->
+
+The phrase works because it shifts attention away from raw intelligence and toward coordination. Many subsystems can be locally competent; consciousness is the process that makes them legible to each other at the level of one agent. <!-- src: ccc_37c3_12167_synthetic_sentience @ 00:11:15; web_cimc_ai_cimchypothesis_pdf @ p18 -->
 
 ## Mechanism: workspace-like integration + an observer model
 
@@ -46,9 +54,11 @@ One pragmatic move (especially for machine consciousness) is to decompose what �
 - web_cimc_ai_cimchypothesis_pdf @ p23
 - web_arxiv_org_pdf_2512_01081 @ p1
 - web_arxiv_org_pdf_2512_01081 @ p20
+- ccc_37c3_12167_synthetic_sentience @ 00:11:15
 - yt_CcQMYNi9a2w @ 01:58:03
 - yt_DYm7VBaEmHU @ 00:16:38
 - yt_xthJ1R9Ifc0 @ 00:08:46
+- yt_9LtKJ2k8UyM @ 00:03:12
 - yt_dW5uZLCm0Tg @ 00:41:09
 - yt_UkAOHrbcnAs @ 00:32:15
 - yt_DYm7VBaEmHU @ 00:30:34

@@ -38,7 +38,11 @@ This is also why the language of control matters. Many discussions of mind drift
 
 ## The world you experience is already model-content
 
-Bach’s view is strongly representational: the world you experience is not raw physics delivered directly into awareness. It is already an organized model.
+This view is strongly representational: the world you experience is not raw physics delivered directly into awareness. It is already an organized model.
+
+One reader-friendly way to put this is that the world we experience is "a game engine generated in my own brain". <!-- src: yt_AQqb6nW9F6c @ 00:07:48; web_jimruttshow_blubrry_net_the_jim_rutt_show_transcripts_transcript_of_ep_334_worldviews_joscha_bach @ 00:00:00 -->
+
+That is not a denial of the external world. It is a claim about interface: the mind renders a workable world-model, then keeps that model constrained by incoming signals. <!-- src: yt_AQqb6nW9F6c @ 00:07:48; web_cimc_ai_cimchypothesis_pdf @ p15 -->
 
 Perception structures sensory input into a representation. Imagination and dreaming use much of the same machinery with weaker external correction. In that sense, waking experience is also generated — but under much tighter constraint. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p15; ccc_37c3_12167_synthetic_sentience @ 00:17:39 -->
 
@@ -117,6 +121,8 @@ For this site, we will use **mind** to mean:
 ## Sources
 
 - web_cimc_ai_cimchypothesis_pdf @ p12-15
+- web_jimruttshow_blubrry_net_the_jim_rutt_show_transcripts_transcript_of_ep_334_worldviews_joscha_bach @ 00:00:00
 - ccc_38c3_self_models_of_loving_grace @ 00:32:16
 - ccc_37c3_12167_synthetic_sentience @ 00:17:39
+- yt_AQqb6nW9F6c @ 00:07:48
 - yt_FMfA6i60WDA @ 00:02:59

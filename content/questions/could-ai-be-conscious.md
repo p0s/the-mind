@@ -51,7 +51,9 @@ Current AI systems are impressive enough that many people jump straight from com
 
 The paper pushes back on that move. A system may become better and better at pattern-matching, conversation, game playing, planning, or generation without that alone settling whether it has experience. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p21-23 -->
 
-From this perspective, present models may already generate rich dream-like content: images, text-worlds, simulated personas, perspectives, explanations. But the open question is whether they also have the organized “inside” associated with presentness, coherence control, and observer-like awareness. <!-- src: yt_O5hymlaldf0 @ 00:01:58; ccc_37c3_12167_synthetic_sentience @ 00:17:39 -->
+One useful short handle for what may be missing is the "dream within the dream". <!-- src: yt_O5hymlaldf0 @ 00:01:58 -->
+
+From this perspective, present models may already generate rich dream-like content: images, text-worlds, simulated personas, perspectives, explanations. But the open question is whether they also implement a model of the act of perceiving, the organized "inside" associated with presentness, coherence control, and observer-like awareness. <!-- src: yt_O5hymlaldf0 @ 00:01:58; ccc_37c3_12167_synthetic_sentience @ 00:17:39; web_cimc_ai_cimchypothesis_pdf @ p21-23 -->
 
 ## Why development may matter
 
