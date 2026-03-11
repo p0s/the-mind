@@ -8,10 +8,11 @@ source_id+timecode to the canonical URL/title in sources/sources.csv.
 
 from __future__ import annotations
 
-import csv
 import re
 from pathlib import Path
 from typing import Dict, List, Tuple
+
+from _core.sources import load_sources_csv
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,17 +21,11 @@ CHAPTERS_DIR = ROOT / "manuscript" / "chapters"
 OUT = ROOT / "manuscript" / "references.md"
 
 
-ANCHOR_RX = re.compile(r"^- ([^\s]+) @ (\d{2}:\d{2}:\d{2}) \(keywords: (.*)\)$")
+ANCHOR_RX = re.compile(r"^- ([^\s]+) @ ([^\s]+) \(keywords: (.*)\)$")
 
 
 def load_sources(path: Path) -> Dict[str, Dict[str, str]]:
-    out: Dict[str, Dict[str, str]] = {}
-    with path.open("r", encoding="utf-8", newline="") as f:
-        for row in csv.DictReader(f):
-            sid = row.get("source_id", "").strip()
-            if sid:
-                out[sid] = dict(row)
-    return out
+    return load_sources_csv(path)
 
 
 def parse_chapter_anchors(text: str) -> List[Tuple[str, str, str]]:
@@ -60,7 +55,7 @@ def main() -> int:
     parts: List[str] = []
     parts.append("# References")
     parts.append("")
-    parts.append("Endnotes are keyed to the manuscript anchors: source id + timecode.")
+    parts.append("Endnotes are keyed to the manuscript anchors: source id + locator.")
     parts.append("")
 
     for ch_path in chapters:

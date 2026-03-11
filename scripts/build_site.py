@@ -538,6 +538,7 @@ def inline_format(s: str, *, root: str) -> str:
 def strip_md_for_search(s: str) -> str:
     s = TAG_RX.sub("", s)
     s = SRC_COMMENT_RX.sub("", s)
+    s = re.sub(r"<!--\s*chapter_keywords:\s*.*?-->", "", s, flags=re.IGNORECASE)
     s = re.sub(r"`([^`]+)`", r"\1", s)
     s = re.sub(r"\*\*([^*]+)\*\*", r"\1", s)
     s = re.sub(r"(?<!\w)\*([^*\n]+?)\*(?!\w)", r"\1", s)
@@ -578,6 +579,7 @@ def parse_blocks(md: str) -> List[Block]:
 
     pending_tag: str = ""
     pending_anchor: Optional[Tuple[str, str]] = None
+    pending_anchors: Optional[List[Tuple[str, str]]] = None
 
     cur_para: List[str] = []
     cur_list: List[str] = []
@@ -585,15 +587,16 @@ def parse_blocks(md: str) -> List[Block]:
     cur_quote: List[str] = []
 
     def flush_para() -> None:
-        nonlocal cur_para, pending_tag, pending_anchor
+        nonlocal cur_para, pending_tag, pending_anchor, pending_anchors
         if not cur_para:
             return
         text = " ".join([p.strip() for p in cur_para]).strip()
         tag = pending_tag
         anchor = pending_anchor
-        anchors: List[Tuple[str, str]] = [anchor] if anchor else []
+        anchors: List[Tuple[str, str]] = list(pending_anchors or ([] if not anchor else [anchor]))
         pending_tag = ""
         pending_anchor = None
+        pending_anchors = None
 
         text, inline_refs = extract_src_comment_refs(text)
         if inline_refs:
@@ -612,14 +615,15 @@ def parse_blocks(md: str) -> List[Block]:
         cur_para = []
 
     def flush_list() -> None:
-        nonlocal cur_list, cur_list_ordered, pending_tag, pending_anchor
+        nonlocal cur_list, cur_list_ordered, pending_tag, pending_anchor, pending_anchors
         if not cur_list:
             return
         tag = pending_tag
         anchor = pending_anchor
-        anchors: Optional[List[Tuple[str, str]]] = [anchor] if anchor else None
+        anchors: Optional[List[Tuple[str, str]]] = list(pending_anchors or ([] if not anchor else [anchor])) or None
         pending_tag = ""
         pending_anchor = None
+        pending_anchors = None
         blocks.append(
             Block(
                 kind="list",
@@ -643,6 +647,9 @@ def parse_blocks(md: str) -> List[Block]:
 
     for raw in lines:
         line = raw.rstrip("\n")
+
+        if line.strip().lower().startswith("<!-- chapter_keywords:"):
+            continue
 
         if in_code:
             if line.strip().startswith("```"):
@@ -695,6 +702,7 @@ def parse_blocks(md: str) -> List[Block]:
             rest, inline_refs = extract_src_comment_refs(rest)
             if inline_refs:
                 pending_anchor = inline_refs[0]
+                pending_anchors = inline_refs
             if not rest:
                 pending_tag = tag
                 continue

@@ -17,6 +17,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Sequence, Tuple
 
+from _core.notes_tokens import parse_notes_kv
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCES_CSV = ROOT / "sources" / "sources.csv"
@@ -46,19 +48,6 @@ class Entry:
 
 def eprint(*args: object) -> None:
     print(*args, file=sys.stderr)
-
-
-def parse_notes_kv(notes: str) -> Dict[str, str]:
-    out: Dict[str, str] = {}
-    for tok in (notes or "").split():
-        if "=" not in tok:
-            continue
-        k, v = tok.split("=", 1)
-        k = k.strip()
-        v = v.strip()
-        if k and v:
-            out[k] = v
-    return out
 
 
 def parse_int(v: str, default: int) -> int:

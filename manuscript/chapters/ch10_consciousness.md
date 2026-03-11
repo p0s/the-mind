@@ -1,5 +1,7 @@
 # Chapter 10: Consciousness
 
+<!-- chapter_keywords: consciousness, phenomenology, observer, experience -->
+
 ## Motivation / puzzle
 [BACH] Consciousness is a gap in the scientific worldview. The hard problem, in one formulation, is the explanatory gap between mechanism and experience: why should any physical process feel like something from the inside? <!-- src: yt_CcQMYNi9a2w @ 01:58:03 -->
 
@@ -8,10 +10,10 @@
 - Mechanism: what the brain is doing when a system is awake, asleep, dreaming, attentive, or dissociated.
 - Function: what consciousness does in the control architecture; how the system behaves differently when conscious processing is present.
 
-[BACH] The thesis explored here is not that consciousness is a magical essence. It is that consciousness is a functional organization that stabilizes coherence and, in doing so, generates the characteristic phenomenology of presence and self. <!-- src: yt_CcQMYNi9a2w @ 01:58:03 -->
+[BACH] The thesis explored here is not that consciousness is a magical essence. It is that consciousness is a functional organization that stabilizes coherence and, in doing so, generates the characteristic phenomenology of presence and self. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p21; yt_CcQMYNi9a2w @ 01:58:03 -->
 
 ## Definitions introduced or refined
-[BACH] <!-- src: yt_DYm7VBaEmHU @ 00:16:38 -->
+[BACH] <!-- src: web_cimc_ai_cimchypothesis_pdf @ p16; web_cimc_ai_cimchypothesis_pdf @ p21; yt_DYm7VBaEmHU @ 00:16:38 -->
 - Consciousness: a functional organization that stabilizes and coordinates mental contents into a coherent point of view.
 - Observer: a constructed reference frame that the system uses to stabilize perception and action; not a metaphysical entity.
 - Second-order perception: perception of perception; the system models the fact that it is observing.
@@ -20,9 +22,9 @@
 - First-person perspective: a representational mode in which consciousness is projected into the self/world boundary; a content/state, not a substrate property.
 
 ## Model (function + mechanism + phenomenology)
-[BACH] Function: consciousness acts like the conductor of a mental orchestra. Many subsystems produce partial interpretations and action tendencies. Conscious processing monitors them superficially, detects incoherence, and intervenes to restore global consistency. The output is a coherent agent rather than a bag of competing local behaviors. <!-- src: yt_CcQMYNi9a2w @ 01:58:03 -->
+[BACH] Function: consciousness acts like the conductor of a mental orchestra. Many subsystems produce partial interpretations and action tendencies. Conscious processing monitors them superficially, detects incoherence, and intervenes to restore global consistency. The output is a coherent agent rather than a bag of competing local behaviors. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p18; yt_CcQMYNi9a2w @ 01:58:03 -->
 
-[BACH] The conductor metaphor is not merely poetic. It points at a functional asymmetry: most subsystems are specialists (vision, language, emotion, habit, planning). They can be locally competent while disagreeing about what is going on and what should happen next. Consciousness, in this framing, is the system that makes disagreement legible and negotiable at the level of the whole agent. <!-- src: yt_CcQMYNi9a2w @ 01:58:03 -->
+[BACH] The conductor metaphor is not merely poetic. It points at a functional asymmetry: most subsystems are specialists (vision, language, emotion, habit, planning). They can be locally competent while disagreeing about what is going on and what should happen next. Consciousness, in this framing, is the system that makes disagreement legible and negotiable at the level of the whole agent. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p18; yt_CcQMYNi9a2w @ 01:58:03 -->
 
 [SYNTH] One way to make this functional claim testable (without pretending it is a benchmark) is to ask: what changes when conscious integration is present?
 - Conflicts become representable: incompatible policies and interpretations can be compared rather than merely competed.
@@ -32,15 +34,15 @@
 
 [SYNTH] None of these signatures uniquely define consciousness. They are functional pressures that any system must satisfy to behave like a coherent long-horizon agent. The proposal is that the organization that satisfies these pressures also yields the phenomenology of presence.
 
-[BACH] One way to make the machine-consciousness question more tractable is to treat “tests for consciousness” as modular: define phenomenology, define functionality, describe the implementation space, identify the search procedure, and specify success criteria for what counts as a valid demonstration. <!-- src: yt_9LtKJ2k8UyM @ 00:02:05 -->
+[BACH] One way to make the machine-consciousness question more tractable is to treat “tests for consciousness” as modular: define phenomenology, define functionality, describe the implementation space, identify the search procedure, and specify success criteria for what counts as a valid demonstration. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p22; web_arxiv_org_pdf_2512_01081 @ p20; yt_9LtKJ2k8UyM @ 00:02:05 -->
 
 [BACH] Mechanism: this can be implemented by workspace-like integration that allows selected content to be broadcast and reconciled. The details matter, but the key is the stabilizing loop: the system maintains a model of an observer that integrates the model's contents and keeps the overall process coherent. <!-- src: yt_UkAOHrbcnAs @ 00:32:15 -->
 
 [BACH] A workspace is not required to be a literal "place". It is the role of a mechanism that makes some contents globally available as inputs to many policies. This lets the system trade off constraints that no single subsystem could evaluate alone. <!-- src: yt_dW5uZLCm0Tg @ 00:41:09 -->
 
-[BACH] Phenomenology: the feeling of "now" is the phenomenology of the observer model being stabilized in real time. The system is confronted with presentness because the observer variable is updated as part of the stabilization loop. The first-person perspective arises because the model includes a vantage point from which perception is organized. <!-- src: yt_DYm7VBaEmHU @ 00:16:38 -->
+[BACH] Phenomenology: the feeling of "now" is the phenomenology of the observer model being stabilized in real time. The system is confronted with presentness because the observer variable is updated as part of the stabilization loop. The first-person perspective arises because the model includes a vantage point from which perception is organized. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p21; yt_DYm7VBaEmHU @ 00:16:38 -->
 
-[BACH] Second-order perception can be read as a stabilizing trick: the system represents not only contents, but the fact that contents are being represented. This creates a self-referential loop that keeps the observing process from dissolving. "Nowness" is how this stabilization appears from the inside: the coherence bubble in which the model is currently being synchronized. <!-- src: yt_DYm7VBaEmHU @ 00:30:34 -->
+[BACH] Second-order perception can be read as a stabilizing trick: the system represents not only contents, but the fact that contents are being represented. This creates a self-referential loop that keeps the observing process from dissolving. "Nowness" is how this stabilization appears from the inside: the coherence bubble in which the model is currently being synchronized. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p16; yt_DYm7VBaEmHU @ 00:30:34 -->
 
 [BACH] Consciousness may “ignite”: below a threshold it is absent, above it it is present, even if lucidity admits degrees once it is present. The threshold is treated as an open empirical question about how many moving parts and what kind of world-model organization are required. <!-- src: yt_y0txHUVZF5I @ 01:27:34 -->
 
@@ -59,7 +61,7 @@ flowchart TB
 
 [BACH] In this framing, the self is a fiction in the technical sense: a representational construct. It is a model of what it would be like if a unified entity existed behind behavior. The fiction is useful because it compresses control-relevant information and supports narrative coherence. It is not "false"; it is an instrument of control. <!-- src: yt_DYm7VBaEmHU @ 00:16:38 -->
 
-[BACH] This is also why there is "no easy test" for consciousness. A Turing-test style evaluation deliberately ignores implementation. It asks only whether behavior looks intelligent in discourse. Consciousness, by contrast, is a hypothesis about internal organization: whether the system stabilizes an observer model that integrates and regulates its own modeling. <!-- src: yt_DYm7VBaEmHU @ 00:20:01 -->
+[BACH] This is also why there is "no easy test" for consciousness. A Turing-test style evaluation deliberately ignores implementation. It asks only whether behavior looks intelligent in discourse. Consciousness, by contrast, is a hypothesis about internal organization: whether the system stabilizes an observer model that integrates and regulates its own modeling. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p23; yt_DYm7VBaEmHU @ 00:20:01 -->
 
 ### The dream within the dream (and why it matters)
 [BACH] A recurring metaphor in the cited sources is that the experienced world is a generated model: a "dream of reality". Perception is the model being clamped by input; imagination is the model running freer. If that is correct, then consciousness is not just "having a dream". It is having a dream that includes the act of dreaming: a model in which the system represents itself as perceiving. <!-- src: yt_O5hymlaldf0 @ 00:01:58 -->
@@ -76,9 +78,9 @@ flowchart TB
 [SYNTH] This is a delicate part of the framework. It is easy to turn into spiritual gloss. In the present framing it is strictly architectural: different self-model configurations yield different kinds of experience, stability, and suffering.
 
 ### Consciousness as a learning scaffold (genesis framing)
-[BACH] In the machine consciousness hypothesis, consciousness is framed not as a late byproduct of complexity but as an early scaffold for learning. On this view, consciousness is the simplest way to train a self-organizing brain into becoming a human-like mind: it stabilizes perception and agency early, making structured learning possible. <!-- src: yt_O5hymlaldf0 @ 00:01:58 -->
+[BACH] In the machine consciousness hypothesis, consciousness is framed not as a late byproduct of complexity but as an early scaffold for learning. On this view, consciousness is the simplest way to train a self-organizing brain into becoming a human-like mind: it stabilizes perception and agency early, making structured learning possible. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p19-20; yt_O5hymlaldf0 @ 00:01:58 -->
 
-[BACH] This reframes a common intuition. People often assume that consciousness appears only once the mind is already sophisticated. The genesis framing reverses the dependency: without consciousness, the system cannot reliably form the kind of structured world-model and self-model that later allow reason, language, and culture. <!-- src: yt_CcQMYNi9a2w @ 01:58:03 -->
+[BACH] This reframes a common intuition. People often assume that consciousness appears only once the mind is already sophisticated. The genesis framing reverses the dependency: without consciousness, the system cannot reliably form the kind of structured world-model and self-model that later allow reason, language, and culture. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p19; yt_CcQMYNi9a2w @ 01:58:03 -->
 
 ### Suffering as dysregulation at the self/world boundary
 [BACH] Suffering can be framed in control terms: conscious suffering happens at the boundary between world-model and self-model and indicates insufficient regulation. The proposed antidote is not suppression but better modeling and regulation: making the control problem explicit enough that the agent can decide what it cares about and how to act. <!-- src: yt_34VOI_oo-qM @ 00:45:15 -->
@@ -114,6 +116,14 @@ flowchart TB
 - Treating "it's all a model" as dismissive. In this framing, the model is what you live in; calling it a model does not make it unreal.
 
 ## Anchors (sources + timecodes)
+- web_cimc_ai_cimchypothesis_pdf @ p16 (keywords: realness, phenomenal reality, observer, second-order perception)
+- web_cimc_ai_cimchypothesis_pdf @ p18 (keywords: coherence, contradictions, attention, conductor)
+- web_cimc_ai_cimchypothesis_pdf @ p21 (keywords: phenomenology, functionality, presentness, second-order perception)
+- web_cimc_ai_cimchypothesis_pdf @ p22 (keywords: testing, search space, simulation, validation)
+- web_cimc_ai_cimchypothesis_pdf @ p23 (keywords: no Turing test, behavior, internal structure)
+- web_arxiv_org_pdf_2512_01081 @ p1 (keywords: machine consciousness hypothesis, second-order perception, substrate independence)
+- web_arxiv_org_pdf_2512_01081 @ p20 (keywords: multi-level adequacy, unity, reflexivity, temporality)
+- web_arxiv_org_pdf_2512_01081 @ p23 (keywords: minimal substrate, in-silico study, collective self-models)
 - yt_DYm7VBaEmHU @ 00:30:34 (keywords: consciousness, second-order perception)
 - yt_DYm7VBaEmHU @ 00:19:20 (keywords: consciousness, observer)
 - yt_DYm7VBaEmHU @ 00:16:38 (keywords: third-order perception, self, observer)

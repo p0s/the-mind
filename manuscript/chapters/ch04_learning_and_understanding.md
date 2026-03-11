@@ -1,5 +1,7 @@
 # Chapter 4: Learning and Understanding
 
+<!-- chapter_keywords: learning, compression, prediction error, reinforcement, understanding -->
+
 ## Motivation / puzzle
 [BACH] A mind is not a fixed program. It is a system that changes itself. The puzzle is how a finite agent can build models that generalize: how it compresses experience into concepts that remain useful outside the training context. <!-- src: yt_34VOI_oo-qM @ 00:42:06 -->
 

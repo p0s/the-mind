@@ -1,17 +1,20 @@
 # Chapter 13: Machine Dreams and Virtualism (Reality as a Model)
 
+<!-- chapter_keywords: dream, virtualism, simulation, constraint, reality, model, hallucination -->
+
 ## Motivation / puzzle
 [BACH] A deliberately provocative metaphor used in the cited sources is that the world we experience is a "dream". This is not a claim that the external world does not exist. It is a claim about how the mind relates to the external world. The mind does not experience physics directly; it experiences a constructed model that is constrained by physics. <!-- src: ccc_37c3_12167_synthetic_sentience @ 00:17:39 -->
 
 [BACH] The puzzle is why this metaphor is useful rather than merely poetic. If the experienced world is a generated model, then many old confusions become engineering questions: what is being generated, what constrains it, what stabilizes it, and what makes it coherent enough to be lived in? <!-- src: ccc_35c3_10030_the_ghost_in_the_machine @ 00:04:02 -->
 
 ## Definitions introduced or refined
-[BACH] <!-- src: yt_b6oekXIQ-LM @ 00:00:21 -->
+[BACH] <!-- src: yt_b6oekXIQ-LM @ 00:00:21; web_cimc_ai_cimchypothesis_pdf @ p16 -->
 - Dream (technical usage): generated model content that is experienced as a world; varying by how strongly it is constrained by sensory input.
 - Virtual: real as implemented causal structure at a level of abstraction, even if not fundamental in physics.
 - Virtualism: a perspective in which consciousness (and the experienced world) is treated as a simulation in an information-processing substrate.
 - Simulator: a runnable model that can generate counterfactual trajectories.
 - Constraint: an input or boundary condition that clamps the model (as perception clamps imagination).
+- Realness: a representational feature that marks some model contents as currently the case (phenomenal reality = sensory content currently being confirmed), not merely imagined.
 
 ## Model (function + mechanism + phenomenology)
 [BACH] Function: the mind exists to control the future. To control, it must model. A model that is good enough for control does not need to be a perfect copy; it needs to preserve invariances that matter for action. <!-- src: yt_FMfA6i60WDA @ 00:02:59 -->
@@ -20,7 +23,7 @@
 
 [SYNTH] One further interpretation is that dreaming is offline simulation: the model is allowed to explore trajectories that are normally suppressed by sensory correction. This can reveal inconsistencies, rehearse policies, and consolidate memory. Even if the details differ, the architectural point remains: a system that can simulate can use simulation both for planning (daydreaming) and for reorganization (sleep dreaming).
 
-[BACH] Phenomenology: this is why the world can feel immediately real. Realness is the stability of the interpretation. When the model is coherent enough to support action, the world is present. When coherence breaks, the world becomes strange: unreal, fragmented, or inconsistent. <!-- src: ccc_37c3_12167_synthetic_sentience @ 00:17:39 -->
+[BACH] Phenomenology: this is why the world can feel immediately real. Realness is treated as a representational feature that marks content as *currently the case*; phenomenal reality is sensory content currently being confirmed. When the model becomes weakly clamped or internally incoherent, that tag can fail, and experience becomes unreal, fragmented, or inconsistent. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p16; ccc_37c3_12167_synthetic_sentience @ 00:17:39 -->
 
 ### Illusion and hallucination as model failure modes
 [BACH] If experience is model content under constraint, then illusion and hallucination stop being exotic. An illusion is a case where the model settles on an interpretation that is locally coherent but mismatched to the external cause, often because the input is ambiguous and priors dominate. A hallucination is a case where internally generated content is insufficiently clamped by input. <!-- src: ccc_35c3_10030_the_ghost_in_the_machine @ 00:04:02 -->
@@ -90,6 +93,7 @@ flowchart TB
 - yt_O5hymlaldf0 @ 00:01:58 (keywords: dream within dream, observer)
 - yt_FMfA6i60WDA @ 00:02:59 (keywords: unified model, not classifiers)
 - yt_CcQMYNi9a2w @ 01:59:34 (keywords: dream, self, virtual)
+- web_cimc_ai_cimchypothesis_pdf @ p16 (keywords: realness, phenomenal reality, representation)
 
 ## Open questions / tensions
 [OPEN]

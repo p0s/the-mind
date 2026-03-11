@@ -24,8 +24,9 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
-from urllib.parse import urlparse
 from urllib.request import Request, urlopen
+
+from _core.sources import source_id_for_url
 
 
 CSV_FIELDS = [
@@ -47,13 +48,6 @@ def fetch_text(url: str) -> str:
     with urlopen(req, timeout=60) as resp:
         raw = resp.read()
     return raw.decode("utf-8", errors="replace")
-
-
-def sanitize_id_component(s: str) -> str:
-    s = (s or "").strip().lower()
-    s = re.sub(r"[^a-z0-9]+", "_", s)
-    return s.strip("_")
-
 
 def ymd_from_isoish(s: str) -> str:
     m = re.search(r"(\d{4}-\d{2}-\d{2})", s or "")
@@ -113,14 +107,6 @@ def extract_published_date(html_text: str) -> str:
             return d
 
     return ""
-
-
-def source_id_for_url(url: str) -> str:
-    p = urlparse(url)
-    host = sanitize_id_component((p.hostname or "web").replace("www.", ""))
-    path = sanitize_id_component(p.path.strip("/")) or "root"
-    return f"web_{host}_{path}"
-
 
 @dataclass(frozen=True)
 class WebRow:

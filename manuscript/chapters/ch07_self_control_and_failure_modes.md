@@ -1,5 +1,7 @@
 # Chapter 7: Self-Control and Failure Modes
 
+<!-- chapter_keywords: control, reward, value, policy, valence -->
+
 ## Motivation / puzzle
 [BACH] If minds are control systems, why do they so often fail to control themselves? People know what they should do and do something else. They form intentions and then watch themselves violate them. The puzzle is not merely moral weakness; it is architectural: multiple control loops compete for the same actuators and learning signals. <!-- src: ccc_38c3_self_models_of_loving_grace @ 00:32:16 -->
 
