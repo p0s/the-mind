@@ -14,6 +14,22 @@ Most people do not want a giant theory first. They want help with a few live que
 
 This site is built around those questions.
 
+## The core map
+
+The shortest version is:
+
+**Mind.** A mind is a model-building control system: it builds usable models so it can steer action, not just represent the world. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p12-13; ccc_38c3_self_models_of_loving_grace @ 00:32:16 -->
+
+**World.** The world you experience is model-content under constraint: corrected by reality, but not copied from physics raw. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p15; yt_AQqb6nW9F6c @ 00:07:48 -->
+
+**Feeling.** Feelings and valence are how things matter to the system; they shape attention, learning, and action. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p13; ccc_35c3_10030_the_ghost_in_the_machine @ 00:27:50 -->
+
+**Self.** The self is a model the system builds of itself as an agent with boundaries, concerns, and commitments. <!-- src: yt_UkAOHrbcnAs @ 00:16:47; yt_CcQMYNi9a2w @ 00:25:57 -->
+
+**Consciousness.** Consciousness is a special mode of organization in which content is present to the system and made more coherent for agency. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p15-18; web_cimc_ai_cimchypothesis_pdf @ p20 -->
+
+**AI.** Impressive output is not enough; the serious question is what internal organization would make experience a real hypothesis. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p21-23 -->
+
 ## Start here
 
 ### How the Mind Works

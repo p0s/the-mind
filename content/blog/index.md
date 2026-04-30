@@ -1,11 +1,15 @@
-# Blog
+# Short explainers
 
 Not affiliated with or endorsed by Joscha Bach.
 
-The blog is the short-form companion to the book.
+This is a legacy working area for short, evergreen explainers.
 
-Goal: write shorter, topic-focused posts (one question per post) that clarify the framework and common confusions, with citations that link back to the original sources (URLs + locators).
+The public V2 site should default to:
 
-The book (Reader) is the full, definition-first walkthrough. The blog is the “zoomed-in” layer: key questions, crisp definitions, and implications.
+- [How the Mind Works](/guide/)
+- [Questions](/questions/)
+- [Glossary](/glossary/)
+- [Claims](/claims/)
+- [Sources](/sources/)
 
-Most posts start from phenomenology (what it is like), then connect it to function + mechanism.
+If short explainers are reused, keep them evergreen, source-grounded, and aligned with the question pages. Do not frame the public site as book vs blog.
