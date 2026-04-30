@@ -2,7 +2,7 @@
 
 Free will is the everyday sense that you can steer: you can notice an impulse, choose against it, and act for a reason. The opposite experience is familiar too: “I couldn’t help it.” When those experiences are treated as metaphysical magic (uncaused choice, outside causality), the debate gets stuck.
 
-This post uses a deliberately deflationary framing: **free will is a control capacity**.
+This explainer uses a deliberately deflationary framing: **free will is a control capacity**.
 
 ## A working definition
 
@@ -39,7 +39,7 @@ Three levers show up repeatedly:
 
 This is not a self-help slogan; it is a statement about mechanisms. A mind does not choose actions from nowhere. It selects actions through competing policies activated by cues and modulated by value. Change the cues, and the competition changes. Change attention, and arbitration changes. Change commitments, and the admissible policy set changes.
 
-For the longer treatment (habits, commitments, and failure modes), see [Reader: “Free will as control capacity”](../reader/index.html#free-will-as-control-capacity-and-compulsion-as-its-opposite).
+For the public version of this argument, see [Is free will real?](/questions/is-free-will-real/).
 
 ## References
 
