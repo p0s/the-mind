@@ -6,21 +6,20 @@ Source of truth: site/home.md
 
 Rationale:
 - Keep GitHub README and the built site Home page in sync.
-- Rewrite site-relative links to the GitHub Pages URL so the README works on
+- Rewrite site-relative links to the public site URL so the README works on
   GitHub without committing dist/.
 
 Override:
 - Set THE_MIND_SITE_BASE_URL to rewrite links against a custom site base URL
-  (e.g. after moving to a custom domain).
+  for a preview or alternate deployment.
 """
 
 from __future__ import annotations
 
 import os
 import re
-import subprocess
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Optional
 from urllib.parse import urljoin
 
 
@@ -29,48 +28,13 @@ HOME_MD = ROOT / "site" / "home.md"
 README_MD = ROOT / "README.md"
 
 LINK_RX = re.compile(r"\[([^\]]+)\]\(([^)]+)\)")
+DEFAULT_SITE_BASE_URL = "https://the-mind.xyz/"
+NON_AFFILIATION_NOTE = "Not affiliated with or endorsed by Joscha Bach."
 
 
-def parse_repo_slug(remote_url: str) -> Optional[Tuple[str, str]]:
-    u = remote_url.strip()
-    if not u:
-        return None
-
-    # git@github.com:owner/repo.git
-    # Also accept local SSH host aliases such as github.com-personal.
-    m = re.match(r"^git@([^:]+):([^/]+)/([^/]+?)(?:\.git)?$", u)
-    if m:
-        host, owner, repo = m.groups()
-        if host == "github.com" or host.startswith("github.com-"):
-            return owner, repo
-
-    # https://github.com/owner/repo(.git)?
-    m = re.match(r"^https?://github\.com/([^/]+)/([^/]+?)(?:\.git)?/?$", u)
-    if m:
-        return m.group(1), m.group(2)
-
-    return None
-
-
-def github_pages_base_url() -> Optional[str]:
-    override = (os.environ.get("THE_MIND_SITE_BASE_URL") or "").strip()
-    if override:
-        return override if override.endswith("/") else override + "/"
-    try:
-        cp = subprocess.run(
-            ["git", "config", "--get", "remote.origin.url"],
-            cwd=str(ROOT),
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-    except Exception:
-        return None
-    slug = parse_repo_slug((cp.stdout or "").strip())
-    if not slug:
-        return None
-    owner, repo = slug
-    return f"https://{owner}.github.io/{repo}/"
+def site_base_url() -> str:
+    value = (os.environ.get("THE_MIND_SITE_BASE_URL") or "").strip() or DEFAULT_SITE_BASE_URL
+    return value if value.endswith("/") else value + "/"
 
 
 def rewrite_links_for_readme(md: str, pages_base: Optional[str]) -> str:
@@ -108,12 +72,17 @@ def rewrite_links_for_readme(md: str, pages_base: Optional[str]) -> str:
     return "\n".join(out_lines).rstrip() + "\n"
 
 
+def ensure_repo_non_affiliation_note(md: str) -> str:
+    if NON_AFFILIATION_NOTE in md:
+        return md.rstrip() + "\n"
+    return md.rstrip() + f"\n\n---\n\n{NON_AFFILIATION_NOTE}\n"
+
+
 def main() -> int:
     if not HOME_MD.exists():
         raise SystemExit(f"missing {HOME_MD}")
     src = HOME_MD.read_text(encoding="utf-8", errors="replace")
-    pages_base = github_pages_base_url()
-    out = rewrite_links_for_readme(src, pages_base)
+    out = ensure_repo_non_affiliation_note(rewrite_links_for_readme(src, site_base_url()))
     README_MD.write_text(out, encoding="utf-8")
     return 0
 

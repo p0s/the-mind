@@ -15,6 +15,23 @@ Best for:
 
 Use this as the first deeper reading destination.
 
+## Research-program context
+
+These official CIMC sources explain how the hypothesis is being developed into a broader research program. Use them for orientation, not as replacements for primary theory citations or as evidence that a system is conscious.
+
+### `web_cimc_ai_cimcwhitepaper_pdf`
+Best for:
+- CIMC’s official research program,
+- construction plus interpretive validation as a method,
+- research directions,
+- and ethics and stewardship context.
+
+### `web_cimc_ai_root`
+Best for:
+- CIMC’s mission and public orientation,
+- official links to current institute material,
+- and source-discovery context.
+
 ## Main supporting Bach sources
 
 ### `ccc_38c3_self_models_of_loving_grace`

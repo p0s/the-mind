@@ -3,6 +3,6 @@
   "private": true,
   "devDependencies": {
     "jsdom": "29.1.0",
-    "mermaid": "11.14.0"
+    "mermaid": "11.16.0"
   }
 }

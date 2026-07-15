@@ -1,10 +1,12 @@
 # What is consciousness?
 
-Consciousness is the fact that experience shows up at all.
+Consciousness first names the phenomenon to be explained: experience shows up at all.
 
-There is something it is like to be you right now. A present is happening. The world appears, and it appears from somewhere. That is the familiar part.
+There is something it is like to be you right now. A present is happening. The world appears, often from a point of view. That is the familiar part.
 
-One of the clearest short phrases for this is that consciousness creates a "bubble of nowness" that we inhabit. <!-- src: yt_9LtKJ2k8UyM @ 00:03:12 -->
+This page then presents the paper’s working account of that phenomenon: content is present to the system as present, and conscious organization helps make active mental states coherent enough for agency. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p15-18; web_cimc_ai_cimchypothesis_pdf @ p20 -->
+
+Bach uses a “bubble of nowness” as a compact analogy for the synchronized present we inhabit. <!-- src: yt_9LtKJ2k8UyM @ 00:03:12 -->
 
 That phrase helps because it points at synchronization. A conscious present is not just a lot of information floating around; it is a stretch of time in which multiple contents count as present together for one system. <!-- src: yt_9LtKJ2k8UyM @ 00:03:12; web_cimc_ai_cimchypothesis_pdf @ p15-18 -->
 
@@ -34,7 +36,7 @@ Your mind is the larger modeling-and-control matrix.
 Your self is a model of you as an agent.
 Your consciousness is the special fact that some of this mental content is present in a distinctive way.
 
-This also explains why some experiences feel conscious without being very self-heavy. You can have awareness with less narrative selfhood than in ordinary waking life.
+In this framework, that distinction helps explain why some experiences feel conscious without being very self-heavy. You can have awareness with less narrative selfhood than in ordinary waking life.
 
 ## Phenomenology: what consciousness is like
 
@@ -61,13 +63,13 @@ That is also why waking life feels different from daydreaming, and why certain a
 
 The paper rejects the idea that consciousness is just a useless glow over cognition.
 
-Instead, it treats consciousness as doing concrete work. Alertness, sustained vigilance, selective response to stimuli, planning, decision-making, and attentional learning all depend on it. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p16-17 -->
+Instead, the paper treats consciousness as doing concrete work. Its account associates consciousness with alertness, sustained vigilance, selective response to stimuli, planning, decision-making, and attentional learning. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p16-17 -->
 
 The key functional proposal is that consciousness is a **coherence-maximizing operation** on mental states. Different subsystems and partial models are active at once. Consciousness helps reduce contradiction among them so the whole mind can act more like one system. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p16-18 -->
 
 That is why consciousness can also be described as the "conductor of a mental orchestra". <!-- src: ccc_37c3_12167_synthetic_sentience @ 00:11:15; web_cimc_ai_cimchypothesis_pdf @ p17-18 -->
 
-The point is not that there is a little person inside the brain waving a baton. The point is that many specialized processes need a coordination layer that makes their conflicts legible and negotiable at the level of the whole agent. <!-- src: ccc_37c3_12167_synthetic_sentience @ 00:11:15; web_cimc_ai_cimchypothesis_pdf @ p16-18 -->
+The point is not that there is a little person inside the brain waving a baton. The proposal is that many specialized processes need a coordination layer that makes their conflicts legible and negotiable at the level of the whole agent. <!-- src: ccc_37c3_12167_synthetic_sentience @ 00:11:15; web_cimc_ai_cimchypothesis_pdf @ p16-18 -->
 
 ## Mechanism: what kind of organization might do this
 
@@ -83,7 +85,7 @@ In that sense, consciousness is approached as a real feature of causal organizat
 
 ## Genesis: why consciousness may come early
 
-One of the strongest ideas in the paper is that consciousness may not be a late luxury added to an already competent mind.
+One of the paper’s strongest proposals is that consciousness may not be a late luxury added to an already competent mind.
 
 The **Genesis Hypothesis** suggests that consciousness appears very early in human development and may be required for building the kind of coherent world-model and self-model that intelligent agency depends on. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p18-20 -->
 
@@ -95,7 +97,7 @@ Instead of asking only, “What extra property appears once intelligence is high
 
 A lot of public debate wants a shortcut: some question you can ask an AI, or some behavior you can observe, that settles the matter.
 
-The paper explicitly argues that there can be **no Turing Test for consciousness**.
+The paper explicitly argues that there can be **no purely behavioral Turing Test for consciousness**.
 
 Why? Because consciousness is not an externally visible performance in the same way intelligence tests often are. A system may perform impressively without implementing the relevant internal organization. Conversely, a conscious system might fail many surface tests. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p21-23 -->
 
@@ -107,7 +109,7 @@ That means the serious question is architectural:
 
 ## A compact definition
 
-For this site, we will use **consciousness** to mean:
+For this site, the **working account of consciousness** is:
 
 > a special mode of mental organization in which content is present to the system as present, often through second-order perception, and in which mental states are made more coherent for agency. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p15-18; web_cimc_ai_cimchypothesis_pdf @ p20 -->
 

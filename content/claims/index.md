@@ -3,8 +3,19 @@
 This is the compact public claims ledger.
 It is intentionally short and public-facing.
 
+## Evidence legend
+
+- **Primary paper:** a claim, definition, model, or argument drawn from *The Machine Consciousness Hypothesis*.
+- **Supporting source:** a talk or interview used to clarify or extend a formulation.
+- **Project synthesis:** this site’s source-grounded bridge across one or more passages.
+- **Open question:** the sources and current evidence do not settle the matter.
+
+“Supports” identifies provenance and argumentative support. It does not by itself mean independent replication, empirical validation, or scientific consensus.
+
 ## CLM-0001
 **Mind is best modeled as a model-building control system, not merely as passive representation or as explicit reasoning.**
+
+Basis: **Project synthesis** from the primary paper and a supporting source.
 
 Supports:
 - web_cimc_ai_cimchypothesis_pdf @ p12-15
@@ -13,11 +24,15 @@ Supports:
 ## CLM-0002
 **Consciousness is not synonymous with self, mind, or intellect.**
 
+Basis: **Primary paper**.
+
 Supports:
 - web_cimc_ai_cimchypothesis_pdf @ p12
 
 ## CLM-0003
 **The contents of consciousness include percepts, feelings, thoughts, imaginations, and intuitions.**
+
+Basis: **Primary paper**.
 
 Supports:
 - web_cimc_ai_cimchypothesis_pdf @ p13
@@ -25,11 +40,15 @@ Supports:
 ## CLM-0004
 **The psyche can be described as a personal self plus motivational “strings” within a mind that models self, interests, and world.**
 
+Basis: **Primary paper**.
+
 Supports:
 - web_cimc_ai_cimchypothesis_pdf @ p13
 
 ## CLM-0005
 **Consciousness can be described phenomenologically as second-order perception: the experience that representation is taking place now, including present and presence, and sometimes an observing self in a world.**
+
+Basis: **Primary paper**; this is a proposed phenomenological account.
 
 Supports:
 - web_cimc_ai_cimchypothesis_pdf @ p15-16
@@ -38,17 +57,23 @@ Supports:
 ## CLM-0006
 **Realness is a representational feature: the representation of something currently being the case.**
 
+Basis: **Primary paper**.
+
 Supports:
 - web_cimc_ai_cimchypothesis_pdf @ p15
 
 ## CLM-0007
 **Consciousness appears to serve concrete functions and can be modeled as a coherence-maximizing operation on mental states.**
 
+Basis: **Primary paper**; this is a functional proposal.
+
 Supports:
 - web_cimc_ai_cimchypothesis_pdf @ p16-18
 
 ## CLM-0008
 **Directed attention is part of how consciousness orchestrates the mind’s active contents.**
+
+Basis: **Primary paper**; this is a functional proposal.
 
 Supports:
 - web_cimc_ai_cimchypothesis_pdf @ p16-18
@@ -57,17 +82,23 @@ Supports:
 ## CLM-0009
 **The Genesis Hypothesis says consciousness may arise early in development and help create coherent world- and self-models, rather than appearing only as a late byproduct of intelligence.**
 
+Basis: **Primary paper**; this is explicitly a hypothesis.
+
 Supports:
 - web_cimc_ai_cimchypothesis_pdf @ p18-20
 
 ## CLM-0010
 **There can be no purely behavioral Turing Test for consciousness, because consciousness is not just externally visible performance but a particular internal organization.**
 
+Basis: **Primary paper**; this is an argument, not a validation result.
+
 Supports:
 - web_cimc_ai_cimchypothesis_pdf @ p21-23
 
 ## CLM-0011
 **The Machine Consciousness Hypothesis treats machine consciousness as a serious empirical possibility, but does not imply that present computers are conscious.**
+
+Basis: **Primary paper**; this is explicitly a hypothesis.
 
 Supports:
 - web_cimc_ai_cimchypothesis_pdf @ p6-8
@@ -76,12 +107,16 @@ Supports:
 ## CLM-0012
 **Free will is better framed as a control capacity — the ability to act from endorsed higher-order commitments — rather than as magic outside causality.**
 
+Basis: **Project synthesis** from supporting sources.
+
 Supports:
 - ccc_35c3_10030_the_ghost_in_the_machine @ 00:36:40
 - ccc_38c3_self_models_of_loving_grace @ 00:32:16
 
 ## CLM-0013
 **The self is a model of the agent used for self-prediction, governance, and coordination.**
+
+Basis: **Project synthesis** from supporting sources.
 
 Supports:
 - yt_UkAOHrbcnAs @ 00:16:47
@@ -90,11 +125,17 @@ Supports:
 ## CLM-0014
 **Some contemplative reports can be interpreted as changes in self-modeling and observer-construction rather than as evidence against all mechanistic explanation.**
 
+Basis: **Project synthesis** from the primary paper.
+
 Supports:
 - web_cimc_ai_cimchypothesis_pdf @ p15-16
 
 ## CLM-0015
 **Current LLM fluency and self-report style do not by themselves establish qualia.**
+
+Basis: **Project synthesis** from the primary paper and supporting sources.
+
+Open question: Whether any present LLM has qualia remains an **Open question**.
 
 Supports:
 - web_cimc_ai_cimchypothesis_pdf @ p21-23

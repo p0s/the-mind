@@ -579,13 +579,28 @@ img {
   color: var(--muted);
   font-size: 12px;
 }
-.footer__meta { font-family: var(--mono); }
+.footer__meta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+}
+.footer__link { color: inherit; }
+.footer__link:hover { color: var(--ink0); }
+
+.source-list .cite {
+  max-width: 100%;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
 
 @media (max-width: 920px) {
   .topbar__brand { flex-basis: 100%; }
   .topbar__tools { flex-basis: 100%; justify-content: flex-start; }
   .layout { grid-template-columns: 1fr; }
   .btn--nav { display: inline-flex; }
+  .btn--icon { width: 44px; height: 44px; }
   .sidenav {
     display: none;
     position: fixed;

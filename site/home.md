@@ -4,6 +4,8 @@
 
 This site explains mind, consciousness, self, and AI in plain language, while staying close to Joscha Bach’s public work. The main source is the essay *The Machine Consciousness Hypothesis*. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p6; web_cimc_ai_cimchypothesis_pdf @ p20-23 -->
 
+**Start here:** [Read How the Mind Works](/guide/).
+
 Most people do not want a giant theory first. They want help with a few live questions:
 
 - Why is there an inner world at all?
@@ -16,7 +18,7 @@ This site is built around those questions.
 
 ## The core map
 
-The shortest version is:
+This is the framework’s working map, not a list of settled empirical facts. The shortest version is:
 
 **Mind.** A mind is a model-building control system: it builds usable models so it can steer action, not just represent the world. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p12-13; ccc_38c3_self_models_of_loving_grace @ 00:32:16 -->
 
@@ -36,6 +38,12 @@ The shortest version is:
 Read the short guided path first:
 
 - [How the Mind Works](/guide/)
+
+### Choose a path
+
+- **Understand your experience:** [How the Mind Works](/guide/) → [consciousness](/questions/what-is-consciousness/) → [self](/questions/what-is-the-self/) → [free will](/questions/is-free-will-real/)
+- **Ask about AI:** [How the Mind Works](/guide/) → [Could AI be conscious?](/questions/could-ai-be-conscious/) → [Do LLMs have qualia?](/questions/do-llms-have-qualia/)
+- **Start from meditation, religion, or spirituality:** [How the Mind Works](/guide/) → [What is the self?](/questions/what-is-the-self/) → [Does this kill spirituality?](/questions/does-this-kill-spirituality/)
 
 ### Questions
 Then use the question pages:
@@ -61,18 +69,11 @@ The first deeper stop should usually be the main essay:
 
 - [Joscha Bach, Hikari Sorensen — The Machine Consciousness Hypothesis](https://cimc.ai/cimcHypothesis.pdf)
 
-## Three ways into the site
-
-If you are mainly here as a person trying to understand your own experience, start with **How the Mind Works** and then read **consciousness**, **self**, and **free will**.
-
-If you are mainly here for AI, start with **How the Mind Works** and then read **Could AI be conscious?** and **Do LLMs have qualia?**
-
-If you are mainly here from meditation, religion, or spirituality, start with **How the Mind Works** and then read **What is the self?** and **Does this kill spirituality?**
-
 ## About the citations
 
-Public pages stay readable, but they keep source anchors lightly rendered.
-The audit pages are there when you want to trace definitions and claims back to the underlying sources.
+Public pages stay readable, but they keep source anchors lightly rendered. The hypothesis paper is the primary source; talks and interviews are supporting sources used for clarification; some bridges are project synthesis; and unresolved points are named as open questions.
+
+A citation shows where a claim or formulation comes from. It does not by itself establish independent empirical validation or scientific consensus. The audit pages are there when you want to inspect that distinction and trace definitions and claims back to the underlying sources.
 
 ## About this project
 
@@ -86,7 +87,3 @@ The aim is to restate the framework clearly, preserve source grounding, and make
 V1 remains available as a lighter-footed archive:
 
 - [Archive / V1 / source-grounded thesis](/archive/)
-
----
-
-Not affiliated with or endorsed by Joscha Bach.

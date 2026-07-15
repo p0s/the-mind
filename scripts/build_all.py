@@ -30,6 +30,7 @@ def main() -> int:
     run("scripts/build_book_public_md.py")
     run("scripts/export_blog_posts.py")
     run("scripts/build_site.py", "--out", "dist")
+    run("scripts/check_site_links.py", "--dir", "dist")
     return 0
 
 

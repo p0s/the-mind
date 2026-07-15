@@ -6,6 +6,7 @@ Quick progress snapshot for the project (safe to run; no network).
 from __future__ import annotations
 
 import csv
+import re
 from collections import Counter
 from pathlib import Path
 
@@ -18,10 +19,21 @@ CLAIMS_MD = ROOT / "notes" / "claims.md"
 GLOSSARY_MD = ROOT / "notes" / "glossary.md"
 CHAPTERS_DIR = ROOT / "manuscript" / "chapters"
 
+CLAIM_HEADING_RX = re.compile(r"^##\s+CLM-\d{4}(?=\s|:|$)", re.MULTILINE)
+GLOSSARY_ID_RX = re.compile(r"^\s*-\s+Id:\s+TERM-\d{4}\s*$", re.MULTILINE | re.IGNORECASE)
+
 
 def count_words(path: Path) -> int:
     txt = path.read_text(encoding="utf-8", errors="replace")
     return len(txt.split())
+
+
+def count_claim_headings(text: str) -> int:
+    return len(CLAIM_HEADING_RX.findall(text))
+
+
+def count_glossary_id_fields(text: str) -> int:
+    return len(GLOSSARY_ID_RX.findall(text))
 
 
 def main() -> int:
@@ -58,8 +70,8 @@ def main() -> int:
     speaker_files = sorted(p for p in SPEAKERS_DIR.glob("*.speakers.json")) if SPEAKERS_DIR.exists() else []
 
     # claims/glossary counts
-    claims = sum(1 for line in CLAIMS_MD.read_text(encoding="utf-8", errors="replace").splitlines() if line.startswith("## CLM-"))
-    terms = sum(1 for line in GLOSSARY_MD.read_text(encoding="utf-8", errors="replace").splitlines() if line.startswith("## "))
+    claims = count_claim_headings(CLAIMS_MD.read_text(encoding="utf-8", errors="replace"))
+    terms = count_glossary_id_fields(GLOSSARY_MD.read_text(encoding="utf-8", errors="replace"))
 
     # manuscript words
     chapter_paths = sorted(CHAPTERS_DIR.glob("ch*.md"))
@@ -95,4 +107,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-
