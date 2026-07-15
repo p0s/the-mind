@@ -63,7 +63,8 @@
 
         <div class="search">
           <input id="searchInput" class="search__input" type="search" placeholder="Search…" aria-label="Search the site" autocomplete="off" />
-          <div id="searchResults" class="search__results" hidden></div>
+          <div id="searchStatus" class="search__live" role="status" aria-live="polite" aria-atomic="true"></div>
+          <div id="searchResults" class="search__results" aria-busy="false" hidden></div>
         </div>
 
         <button id="toggleTags" class="btn" type="button" title="Toggle internal annotations">

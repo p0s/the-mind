@@ -32,12 +32,26 @@ function renderHits(container, hits) {
     .join("");
 }
 
+function renderSearchPending(container) {
+  container.innerHTML = '<div class="search__status" aria-hidden="true">Searching…</div>';
+}
+
+function setSearchBusy(container, busy) {
+  container.setAttribute("aria-busy", busy ? "true" : "false");
+}
+
+function setSearchStatus(container, message) {
+  if (container) container.textContent = message;
+}
+
 function setupSearch(root) {
   const input = document.getElementById("searchInput");
   const results = document.getElementById("searchResults");
+  const status = document.getElementById("searchStatus");
   if (!input || !results) return;
 
   const getSearchIndex = window.MindSearch.createCachedLoader(() => loadSearchIndex(root));
+  let searchIndexReady = false;
   let lastQ = "";
   let inputRevision = 0;
 
@@ -59,37 +73,67 @@ function setupSearch(root) {
     const revision = ++inputRevision;
     let q = window.MindSearch.normalize(input.value);
     if (!q) {
+      setSearchBusy(results, false);
+      setSearchStatus(status, "");
       hide();
       lastQ = "";
       return;
     }
 
+    if (!searchIndexReady) {
+      setSearchBusy(results, true);
+      if (!results.querySelector(".search__status")) renderSearchPending(results);
+      setSearchStatus(status, "Searching…");
+      show();
+    }
+
     try {
       const index = await getSearchIndex();
+      searchIndexReady = true;
       q = window.MindSearch.normalize(input.value);
       if (revision !== inputRevision) return;
       if (!q) {
+        setSearchBusy(results, false);
+        setSearchStatus(status, "");
         hide();
         lastQ = "";
         return;
       }
-      if (q === lastQ && !results.hidden) return;
+      if (q === lastQ && !results.hidden) {
+        setSearchBusy(results, false);
+        return;
+      }
       lastQ = q;
       const hits = window.MindSearch.rankSearchIndex(index || [], q);
       show();
       renderHits(results, hits);
+      setSearchBusy(results, false);
+      setSearchStatus(status, hits.length ? "Search complete." : "No search results.");
     } catch (error) {
       q = window.MindSearch.normalize(input.value);
-      if (revision !== inputRevision || !q) return;
+      if (revision !== inputRevision) return;
+      if (!q) {
+        setSearchBusy(results, false);
+        setSearchStatus(status, "");
+        hide();
+        lastQ = "";
+        return;
+      }
       lastQ = "";
       show();
       results.innerHTML = '<div class="hit"><div class="hit__title">Search unavailable.</div></div>';
+      setSearchBusy(results, false);
+      setSearchStatus(status, "Search unavailable.");
     }
   });
 
   input.addEventListener("keydown", (ev) => {
     if (ev.key === "Escape") {
+      inputRevision += 1;
       input.value = "";
+      lastQ = "";
+      setSearchBusy(results, false);
+      setSearchStatus(status, "");
       hide();
       input.blur();
     }
