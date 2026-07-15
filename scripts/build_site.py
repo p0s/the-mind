@@ -38,6 +38,9 @@ from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple
 from urllib.parse import urljoin
 
+from _core.locators import normalize_locator
+from _core.sources import located_url, whole_source_locator_label
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -59,6 +62,12 @@ FURTHER_READING_MD = ROOT / "docs" / "further_reading.md"
 SOURCES_CSV = ROOT / "sources" / "sources.csv"
 SPEAKERS_DIR = ROOT / "transcripts" / "_speakers"
 DEFAULT_SITE_BASE_URL = "https://the-mind.xyz/"
+STABLE_CITATION_LABELS = {
+    "web_cimc_ai_cimchypothesis_pdf": "Primary paper: Machine Consciousness Hypothesis",
+    "web_cimc_ai_cimcwhitepaper_pdf": "Program context: CIMC Research Program Whitepaper",
+}
+ACTIVE_SEARCH_PRIORITY = 1
+ARCHIVE_SEARCH_PRIORITY = 0
 
 
 TAG_RX = re.compile(r"^\[(BACH|SYNTH|NOTE|OPEN)\]\s*", re.IGNORECASE)
@@ -72,62 +81,6 @@ SRC_RX = re.compile(
 SRC_COMMENT_RX = re.compile(r"<!--\s*src:\s*([^>]+?)\s*-->", re.IGNORECASE)
 SRC_REF_IN_COMMENT_RX = re.compile(rf"([a-z0-9_\-]+)\s*@\s*({LOCATOR_RX})", re.IGNORECASE)
 SRC_ITEM_RX = re.compile(rf"^([a-z0-9_\-]+)\s+@\s+({LOCATOR_RX})\b(.*)$", re.IGNORECASE)
-
-
-def parse_timecode_to_seconds(tc: str) -> Optional[int]:
-    m = re.match(r"^(\d{2}):(\d{2}):(\d{2})(?:[\\.,](\d{1,3}))?$", tc.strip())
-    if not m:
-        return None
-    h, mm, ss, _ms = m.groups()
-    return int(h) * 3600 + int(mm) * 60 + int(ss)
-
-
-def timecoded_url(url: str, timecode: str) -> str:
-    sec = parse_timecode_to_seconds(timecode)
-    if sec is None:
-        return url
-    u = url.strip()
-    if not u:
-        return u
-
-    # YouTube
-    if "youtube.com/watch" in u:
-        join = "&" if "?" in u else "?"
-        return f"{u}{join}t={sec}s"
-    if "youtu.be/" in u:
-        join = "&" if "?" in u else "?"
-        return f"{u}{join}t={sec}"
-
-    # media.ccc.de commonly supports ?t=SECONDS
-    if "media.ccc.de" in u:
-        join = "&" if "?" in u else "?"
-        return f"{u}{join}t={sec}"
-
-    return u
-
-
-def normalize_locator(locator: str) -> str:
-    loc = (locator or "").strip().replace("–", "-").replace("—", "-")
-    if not loc:
-        return loc
-    if re.match(rf"^{TIMECODE_RX}$", loc, re.IGNORECASE):
-        return loc.replace(",", ".")
-    m = re.match(r"^[Pp]\.?\s*(\d+)(?:\s*-\s*(\d+))?$", loc)
-    if m:
-        start, end = m.groups()
-        return f"p{start}-{end}" if end else f"p{start}"
-    return loc
-
-
-def located_url(url: str, locator: str) -> str:
-    loc = normalize_locator(locator)
-    if re.match(rf"^{TIMECODE_RX}$", loc, re.IGNORECASE):
-        return timecoded_url(url, loc)
-    m = re.match(r"^p(\d+)(?:-(\d+))?$", loc, re.IGNORECASE)
-    if m:
-        page = m.group(1)
-        return f"{url.strip()}#page={page}"
-    return url.strip()
 
 
 def parse_src_comment_refs(body: str) -> List[Tuple[str, str]]:
@@ -223,6 +176,15 @@ def seconds_to_hhmmss(total_s: int) -> str:
     return f"{h:02d}:{m:02d}:{s:02d}"
 
 
+def citation_label(source_id: str, meta: Dict[str, str]) -> str:
+    stable = STABLE_CITATION_LABELS.get(source_id)
+    if stable:
+        return stable
+    fmt = infer_presentation_format(meta)
+    title = re.sub(r"\s+", " ", (meta.get("title") or "").strip()) or source_id
+    return f"{fmt}: {title}"
+
+
 def bach_time_seconds(source_id: str) -> Optional[int]:
     """
     Optional local-only enrichment: approximate total seconds attributed to Joscha Bach.
@@ -260,6 +222,14 @@ def bach_time_seconds(source_id: str) -> Optional[int]:
     return secs
 
 
+def citation_locator_text(source_id: str, locators: List[str]) -> str:
+    """Format public locator text without overstating contract placeholders."""
+    placeholders = [whole_source_locator_label(source_id, loc) for loc in locators]
+    if not any(placeholders):
+        return "@ " + ", ".join(locators)
+    return ", ".join(label or f"@ {loc}" for loc, label in zip(locators, placeholders))
+
+
 def render_cite_link(source_id: str, locator: str, sources: Dict[str, Dict[str, str]], *, show_time: bool) -> Optional[str]:
     meta = sources.get(source_id, {})
     url = (meta.get("url") or "").strip()
@@ -267,13 +237,14 @@ def render_cite_link(source_id: str, locator: str, sources: Dict[str, Dict[str, 
         return None
 
     loc = normalize_locator(locator)
-    href = located_url(url, loc)
+    href = located_url(url, loc, source_id=source_id)
 
-    fmt = infer_presentation_format(meta)
     title = re.sub(r"\s+", " ", (meta.get("title") or "").strip()) or source_id
-    label = f"{fmt}: {title}"
+    fmt = infer_presentation_format(meta)
+    label = citation_label(source_id, meta)
 
-    tooltip_lines = [f"{fmt}: {title}", f"{source_id} @ {loc}"]
+    locator_text = citation_locator_text(source_id, [loc])
+    tooltip_lines = [f"{fmt}: {title}", f"{source_id} — {locator_text}"]
     bach_s = bach_time_seconds(source_id)
     if bach_s is not None:
         tooltip_lines.append(f"Bach time: {seconds_to_hhmmss(bach_s)} (approx)")
@@ -282,8 +253,8 @@ def render_cite_link(source_id: str, locator: str, sources: Dict[str, Dict[str, 
     a = (
         f'<a class="cite" href="{escape_attr(href)}" target="_blank" rel="noopener noreferrer" title="{escape_attr(tooltip)}">{escape(label)}</a>'
     )
-    if show_time:
-        return f'<span class="cite_ref">{a}<span class="cite_time">@ {escape(loc)}</span></span>'
+    if show_time or whole_source_locator_label(source_id, loc):
+        return f'<span class="cite_ref">{a}<span class="cite_time">{escape(locator_text)}</span></span>'
     return a
 
 
@@ -304,13 +275,13 @@ def render_cite_group(source_id: str, locators: List[str], sources: Dict[str, Di
     if not normalized:
         return None
 
-    href = located_url(url, normalized[0])
-    fmt = infer_presentation_format(meta)
+    href = located_url(url, normalized[0], source_id=source_id)
     title = re.sub(r"\s+", " ", (meta.get("title") or "").strip()) or source_id
-    label = f"{fmt}: {title}"
-    locator_text = ", ".join(normalized)
+    fmt = infer_presentation_format(meta)
+    label = citation_label(source_id, meta)
+    locator_text = citation_locator_text(source_id, normalized)
 
-    tooltip_lines = [f"{fmt}: {title}", f"{source_id} @ {locator_text}"]
+    tooltip_lines = [f"{fmt}: {title}", f"{source_id} — {locator_text}"]
     bach_s = bach_time_seconds(source_id)
     if bach_s is not None:
         tooltip_lines.append(f"Bach time: {seconds_to_hhmmss(bach_s)} (approx)")
@@ -319,8 +290,8 @@ def render_cite_group(source_id: str, locators: List[str], sources: Dict[str, Di
     a = (
         f'<a class="cite" href="{escape_attr(href)}" target="_blank" rel="noopener noreferrer" title="{escape_attr(tooltip)}">{escape(label)}</a>'
     )
-    if show_time or len(normalized) > 1:
-        return f'<span class="cite_ref">{a}<span class="cite_time">@ {escape(locator_text)}</span></span>'
+    if show_time or len(normalized) > 1 or any(whole_source_locator_label(source_id, loc) for loc in normalized):
+        return f'<span class="cite_ref">{a}<span class="cite_time">{escape(locator_text)}</span></span>'
     return a
 
 
@@ -807,10 +778,14 @@ def blocks_to_html(
             if term_id:
                 glossary_heading_ids[i] = term_id
 
+    in_sources_section = page_kind == "sources"
+
     for i, b in enumerate(blocks):
         if b.kind == "heading":
             txt = inline_format(b.text, root=root)
             base = slugify(b.text)
+            if b.level <= 2:
+                in_sources_section = page_kind == "sources" or (b.level == 2 and base == "sources")
             if page_kind == "claims" and b.level == 2:
                 m = _CLAIM_HEAD_ID_RX.match((b.text or "").strip())
                 if m:
@@ -831,7 +806,7 @@ def blocks_to_html(
             lines = [ln for ln in clean_text.split("\n")]
             inner = "<br />".join([inline_format(ln, root=root) for ln in lines])
             cite_html = ""
-            rendered_refs = render_cite_refs(refs, sources, show_time=False)
+            rendered_refs = render_cite_refs(refs, sources, show_time=True)
             if rendered_refs:
                 cite_html = " " + rendered_refs
             parts.append(f"<blockquote><p>{inner}{cite_html}</p></blockquote>")
@@ -852,7 +827,8 @@ def blocks_to_html(
             if b.tag:
                 parts.append(wrap_open + f'<span class="pill">{escape(b.tag)}</span>')
             tag_list = "ol" if b.ordered else "ul"
-            parts.append(f"<{tag_list}>")
+            list_class = ' class="source-list"' if in_sources_section else ""
+            parts.append(f"<{tag_list}{list_class}>")
             for it in b.items or []:
                 clean_item, item_refs = extract_src_comment_refs(it)
                 linked = linkify_source_ref(clean_item, sources, root=root)
@@ -860,13 +836,13 @@ def blocks_to_html(
                     rendered_item = linked
                 else:
                     rendered_item = "<br />".join([inline_format(part, root=root) for part in clean_item.split("\n")])
-                rendered_refs = render_cite_refs(item_refs, sources, show_time=False)
+                rendered_refs = render_cite_refs(item_refs, sources, show_time=True)
                 if rendered_refs:
                     rendered_item += " " + rendered_refs
                 parts.append(f"<li>{rendered_item}</li>")
                 search_parts.append(strip_md_for_search(clean_item))
             parts.append(f"</{tag_list}>")
-            rendered_refs = render_cite_refs(b.anchors or ([] if not b.anchor else [b.anchor]), sources, show_time=False)
+            rendered_refs = render_cite_refs(b.anchors or ([] if not b.anchor else [b.anchor]), sources, show_time=True)
             if rendered_refs:
                 parts.append(rendered_refs)
             if b.tag:
@@ -879,7 +855,7 @@ def blocks_to_html(
             if b.tag:
                 parts.append(wrap_open + f'<span class="pill">{escape(b.tag)}</span>')
             txt = inline_format(b.text, root=root)
-            rendered_refs = render_cite_refs(b.anchors or ([] if not b.anchor else [b.anchor]), sources, show_time=False)
+            rendered_refs = render_cite_refs(b.anchors or ([] if not b.anchor else [b.anchor]), sources, show_time=True)
             cite_html = (" " + rendered_refs) if rendered_refs else ""
             parts.append(f"<p>{txt}{cite_html}</p>")
             if b.tag:
@@ -914,6 +890,22 @@ def canonical_rel_path(href: str) -> str:
 
 def absolute_page_url(base_url: str, href: str) -> str:
     return urljoin(base_url, canonical_rel_path(href))
+
+
+def search_priority_for_href(href: str) -> int:
+    rel = (href or "").strip().lstrip("./")
+    if rel.startswith(("archive/", "reader/")):
+        return ARCHIVE_SEARCH_PRIORITY
+    return ACTIVE_SEARCH_PRIORITY
+
+
+def search_index_entry(href: str, title: str, text: str) -> Dict[str, object]:
+    return {
+        "href": href,
+        "title": title,
+        "text": text,
+        "search_priority": search_priority_for_href(href),
+    }
 
 
 def render_page(
@@ -1117,7 +1109,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         question_pages.append((f"questions/{p.stem}/index.html", markdown_title(md, p.stem.replace("-", " ")), p))
     question_nav = [(href, title) for href, title, _path in question_pages]
 
-    search_index: List[Dict[str, str]] = []
+    search_index: List[Dict[str, object]] = []
     page_hrefs: List[str] = []
 
     def nav_for(href: str) -> str:
@@ -1137,7 +1129,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             nav_html=nav_for(href),
         )
         page_hrefs.append(href)
-        search_index.append({"href": href, "title": title, "text": text_body})
+        search_index.append(search_index_entry(href, title, text_body))
 
     emit("index.html", "the-mind", read_markdown_or_missing(HOME_MD, "the-mind"))
 
@@ -1190,7 +1182,7 @@ def main(argv: Optional[List[str]] = None) -> int:
                 head += f" — [source]({url})"
             src_lines.append(head)
         sources_md = "\n".join(src_lines) + "\n"
-    emit("sources/index.html", markdown_title(sources_md, "Sources"), sources_md)
+    emit("sources/index.html", markdown_title(sources_md, "Sources"), sources_md, page_kind="sources")
 
     if FURTHER_READING_MD.exists():
         further_reading_md = FURTHER_READING_MD.read_text(encoding="utf-8", errors="replace")
@@ -1229,12 +1221,12 @@ def main(argv: Optional[List[str]] = None) -> int:
             nav_html=nav_for("reader/index.html"),
         )
         page_hrefs.append("reader/index.html")
-        search_index.append({"href": "reader/index.html", "title": "Reader / V1", "text": reader_text})
+        search_index.append(search_index_entry("reader/index.html", "Reader / V1", reader_text))
 
         for anchor_id, title, src_path, _h1 in chapter_pages:
             md = Path(src_path).read_text(encoding="utf-8", errors="replace")
             _html_body, text_body = blocks_to_html(parse_blocks(md), sources, root=page_root("reader/index.html"))
-            search_index.append({"href": f"reader/index.html#{anchor_id}", "title": title, "text": text_body})
+            search_index.append(search_index_entry(f"reader/index.html#{anchor_id}", title, text_body))
 
     (out_dir / "search_index.json").write_text(json.dumps(search_index, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
     write_sitemap(out_dir, base_url, page_hrefs)

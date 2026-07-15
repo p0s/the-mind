@@ -11,6 +11,20 @@ from _core.timecodes import parse_timecode_to_seconds
 from urllib.parse import urlparse
 
 
+PDF_PRINTED_PAGE_OFFSETS = {
+    # Both CIMC PDFs begin with one unnumbered physical page before printed p1.
+    "web_cimc_ai_cimchypothesis_pdf": 1,
+    "web_cimc_ai_cimcwhitepaper_pdf": 1,
+}
+
+WHOLE_TRANSCRIPT_LOCATORS = {
+    (
+        "web_jimruttshow_blubrry_net_the_jim_rutt_show_transcripts_transcript_of_ep_334_worldviews_joscha_bach",
+        "00:00:00",
+    ): "whole transcript",
+}
+
+
 def load_sources_csv(path: Path) -> Dict[str, Dict[str, str]]:
     out: Dict[str, Dict[str, str]] = {}
     with path.open("r", encoding="utf-8", newline="") as f:
@@ -94,7 +108,12 @@ def infer_presentation_format(meta: Dict[str, str]) -> str:
     return "talk"
 
 
-def located_url(url: str, locator: str) -> str:
+def whole_source_locator_label(source_id: str, locator: str) -> Optional[str]:
+    """Return a truthful label for a contract locator that is not an exact position."""
+    return WHOLE_TRANSCRIPT_LOCATORS.get(((source_id or "").strip(), normalize_locator(locator)))
+
+
+def located_url(url: str, locator: str, *, source_id: str = "") -> str:
     """
     Return a canonical URL that locates into a source:
       - timecoded media: append a t=SECONDS query parameter where supported
@@ -107,16 +126,22 @@ def located_url(url: str, locator: str) -> str:
     loc = normalize_locator(locator)
     kind = locator_kind(loc)
 
+    # This written transcript has no timing data. Its zero timecode is only the
+    # canonical provenance-contract placeholder, not a seekable timestamp.
+    if whole_source_locator_label(source_id, loc):
+        return u
+
     if kind == "pdf_page":
         page = parse_pdf_page(loc)
         if page is None:
             return u
         start, _end = page
+        physical_page = start + PDF_PRINTED_PAGE_OFFSETS.get((source_id or "").strip(), 0)
         # Replace any existing fragment; page links should be deterministic.
         from urllib.parse import urlsplit, urlunsplit
 
         parts = urlsplit(u)
-        parts = parts._replace(fragment=f"page={start}")
+        parts = parts._replace(fragment=f"page={physical_page}")
         return urlunsplit(parts)
 
     if kind == "timecode":

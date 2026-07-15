@@ -1,0 +1,23 @@
+name: Reader clarification
+description: Suggest clearer wording on a page
+title: "[Clarification] "
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Page URL
+      placeholder: https://the-mind.xyz/...
+    validations:
+      required: true
+  - type: textarea
+    id: unclear
+    attributes:
+      label: Unclear passage or idea
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected clarification
+    validations:
+      required: false

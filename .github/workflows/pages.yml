@@ -41,6 +41,9 @@ jobs:
       - name: Build site
         run: python3 scripts/build_site.py --out dist
 
+      - name: Check generated links
+        run: python3 scripts/check_site_links.py --dir dist
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

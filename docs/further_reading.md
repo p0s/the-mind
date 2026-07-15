@@ -81,6 +81,8 @@ Start here if you care less about worldview and more about architecture, testabi
 
 - [Testing the Machine Consciousness Hypothesis](https://arxiv.org/pdf/2512.01081)  
   The best direct follow-up on what testing could look like.
+- [CIMC Research Program Whitepaper](https://cimc.ai/cimcWhitepaper.pdf)
+  Institute-level context for construction, interpretive validation, ethics, and stewardship; not evidence that a system is conscious.
 - [The AI perspective on Consciousness](https://www.youtube.com/watch?v=xthJ1R9Ifc0)  
   Good on architecture and current AI limits.
 - [Synthetic Sentience](https://media.ccc.de/v/37c3-12167-synthetic_sentience)  

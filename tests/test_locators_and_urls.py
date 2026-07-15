@@ -42,6 +42,28 @@ class TestLocatorsAndUrls(unittest.TestCase):
         self.assertEqual(located_url(u, "p16"), "https://cimc.ai/cimcHypothesis.pdf#page=16")
         self.assertEqual(located_url(u, "p7-9"), "https://cimc.ai/cimcHypothesis.pdf#page=7")
 
+    def test_cimc_pdf_fragments_offset_printed_pages_only_for_known_sources(self) -> None:
+        cases = [
+            ("web_cimc_ai_cimchypothesis_pdf", "https://cimc.ai/cimcHypothesis.pdf"),
+            ("web_cimc_ai_cimcwhitepaper_pdf", "https://cimc.ai/cimcWhitepaper.pdf"),
+        ]
+        for source_id, url in cases:
+            with self.subTest(source_id=source_id):
+                self.assertEqual(located_url(url, "p4", source_id=source_id), f"{url}#page=5")
+                self.assertEqual(located_url(url, "p16-18", source_id=source_id), f"{url}#page=17")
+
+        generic = "https://example.com/paper.pdf"
+        self.assertEqual(located_url(generic, "p4"), f"{generic}#page=4")
+        self.assertEqual(located_url(generic, "p16-18", source_id="web_generic_pdf"), f"{generic}#page=16")
+
+    def test_whole_transcript_placeholder_never_becomes_a_time_link(self) -> None:
+        source_id = (
+            "web_jimruttshow_blubrry_net_the_jim_rutt_show_transcripts_"
+            "transcript_of_ep_334_worldviews_joscha_bach"
+        )
+        url = "https://www.youtube.com/watch?v=placeholder"
+        self.assertEqual(located_url(url, "00:00:00", source_id=source_id), url)
+
     def test_core_located_url_timecode_unchanged_semantics(self) -> None:
         u = "https://www.youtube.com/watch?v=abc"
         self.assertEqual(located_url(u, "00:00:05"), "https://www.youtube.com/watch?v=abc&t=5s")

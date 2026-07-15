@@ -95,6 +95,9 @@ Meaning-level reproducibility remains the standard.
   - `<!-- src: <source_id> @ <locator> -->`
 - Public pages may stay clean and readable; the build can render anchors lightly.
 - The glossary / claims / sources layer should make it easy for a reader or contributor to go deeper.
+- Treat the hypothesis paper as the primary source, talks and interviews as supporting sources, source-grounded editorial bridges as project synthesis, and unresolved claims as open questions.
+- Make those distinctions explicit on key pages and in the claims ledger without turning every paragraph into a badge.
+- A source anchor records provenance; it does not by itself establish independent empirical validation or scientific consensus.
 
 Do not present non-trivial synthesis as if it were a direct Bach claim.
 If the page makes a bridge or interpretation, keep it modest and source-grounded.
@@ -110,6 +113,7 @@ Naming:
 V2 should not compete with V1 on completeness.
 V2 should function as the readable interface; V1 as the dense audit trail / long-form substrate.
 Prefer a small archive note on Home over a prominent top-level nav entry.
+Archive and Reader content may remain searchable, but matching active V2 pages must rank ahead of V1 Reader and chapter results.
 
 ## Repository expectations
 

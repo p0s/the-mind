@@ -4,6 +4,8 @@
 
 This site explains mind, consciousness, self, and AI in plain language, while staying close to Joscha Bach’s public work. The main source is the essay *The Machine Consciousness Hypothesis*. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p6; web_cimc_ai_cimchypothesis_pdf @ p20-23 -->
 
+**Start here:** [Read How the Mind Works](https://the-mind.xyz/guide/).
+
 Most people do not want a giant theory first. They want help with a few live questions:
 
 - Why is there an inner world at all?
@@ -16,7 +18,7 @@ This site is built around those questions.
 
 ## The core map
 
-The shortest version is:
+This is the framework’s working map, not a list of settled empirical facts. The shortest version is:
 
 **Mind.** A mind is a model-building control system: it builds usable models so it can steer action, not just represent the world. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p12-13; ccc_38c3_self_models_of_loving_grace @ 00:32:16 -->
 
@@ -35,44 +37,43 @@ The shortest version is:
 ### How the Mind Works
 Read the short guided path first:
 
-- [How the Mind Works](https://p0s.github.io/the-mind/guide/)
+- [How the Mind Works](https://the-mind.xyz/guide/)
+
+### Choose a path
+
+- **Understand your experience:** [How the Mind Works](https://the-mind.xyz/guide/) → [consciousness](https://the-mind.xyz/questions/what-is-consciousness/) → [self](https://the-mind.xyz/questions/what-is-the-self/) → [free will](https://the-mind.xyz/questions/is-free-will-real/)
+- **Ask about AI:** [How the Mind Works](https://the-mind.xyz/guide/) → [Could AI be conscious?](https://the-mind.xyz/questions/could-ai-be-conscious/) → [Do LLMs have qualia?](https://the-mind.xyz/questions/do-llms-have-qualia/)
+- **Start from meditation, religion, or spirituality:** [How the Mind Works](https://the-mind.xyz/guide/) → [What is the self?](https://the-mind.xyz/questions/what-is-the-self/) → [Does this kill spirituality?](https://the-mind.xyz/questions/does-this-kill-spirituality/)
 
 ### Questions
 Then use the question pages:
 
-- [What is a mind?](https://p0s.github.io/the-mind/questions/what-is-a-mind/)
-- [What is consciousness?](https://p0s.github.io/the-mind/questions/what-is-consciousness/)
-- [Why do feelings matter?](https://p0s.github.io/the-mind/questions/why-do-feelings-matter/)
-- [What is the self?](https://p0s.github.io/the-mind/questions/what-is-the-self/)
-- [Is free will real?](https://p0s.github.io/the-mind/questions/is-free-will-real/)
-- [Could AI be conscious?](https://p0s.github.io/the-mind/questions/could-ai-be-conscious/)
-- [Do LLMs have qualia?](https://p0s.github.io/the-mind/questions/do-llms-have-qualia/)
-- [Does this kill spirituality?](https://p0s.github.io/the-mind/questions/does-this-kill-spirituality/)
+- [What is a mind?](https://the-mind.xyz/questions/what-is-a-mind/)
+- [What is consciousness?](https://the-mind.xyz/questions/what-is-consciousness/)
+- [Why do feelings matter?](https://the-mind.xyz/questions/why-do-feelings-matter/)
+- [What is the self?](https://the-mind.xyz/questions/what-is-the-self/)
+- [Is free will real?](https://the-mind.xyz/questions/is-free-will-real/)
+- [Could AI be conscious?](https://the-mind.xyz/questions/could-ai-be-conscious/)
+- [Do LLMs have qualia?](https://the-mind.xyz/questions/do-llms-have-qualia/)
+- [Does this kill spirituality?](https://the-mind.xyz/questions/does-this-kill-spirituality/)
 
 ### Go deeper
 If you want definitions, source trail, and more reading:
 
-- [Glossary](https://p0s.github.io/the-mind/glossary/)
-- [Claims](https://p0s.github.io/the-mind/claims/)
-- [Sources](https://p0s.github.io/the-mind/sources/)
-- [Further reading](https://p0s.github.io/the-mind/further-reading/)
+- [Glossary](https://the-mind.xyz/glossary/)
+- [Claims](https://the-mind.xyz/claims/)
+- [Sources](https://the-mind.xyz/sources/)
+- [Further reading](https://the-mind.xyz/further-reading/)
 
 The first deeper stop should usually be the main essay:
 
 - [Joscha Bach, Hikari Sorensen — The Machine Consciousness Hypothesis](https://cimc.ai/cimcHypothesis.pdf)
 
-## Three ways into the site
-
-If you are mainly here as a person trying to understand your own experience, start with **How the Mind Works** and then read **consciousness**, **self**, and **free will**.
-
-If you are mainly here for AI, start with **How the Mind Works** and then read **Could AI be conscious?** and **Do LLMs have qualia?**
-
-If you are mainly here from meditation, religion, or spirituality, start with **How the Mind Works** and then read **What is the self?** and **Does this kill spirituality?**
-
 ## About the citations
 
-Public pages stay readable, but they keep source anchors lightly rendered.
-The audit pages are there when you want to trace definitions and claims back to the underlying sources.
+Public pages stay readable, but they keep source anchors lightly rendered. The hypothesis paper is the primary source; talks and interviews are supporting sources used for clarification; some bridges are project synthesis; and unresolved points are named as open questions.
+
+A citation shows where a claim or formulation comes from. It does not by itself establish independent empirical validation or scientific consensus. The audit pages are there when you want to inspect that distinction and trace definitions and claims back to the underlying sources.
 
 ## About this project
 
@@ -85,7 +86,7 @@ The aim is to restate the framework clearly, preserve source grounding, and make
 
 V1 remains available as a lighter-footed archive:
 
-- [Archive / V1 / source-grounded thesis](https://p0s.github.io/the-mind/archive/)
+- [Archive / V1 / source-grounded thesis](https://the-mind.xyz/archive/)
 
 ---
 

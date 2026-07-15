@@ -14,7 +14,7 @@
 Long-form interview transcript that restates several of Bach's core ideas in more approachable language than the white paper alone. The main value here is editorial: it offers clear handles for explaining model-mediated experience, mental-state coordination, realness as implementation, and the observer/perception loop without changing the underlying theory. Use it when a page needs a cleaner bridge from abstract architecture to general-reader intuition.
 
 ## Key segments (locators)
-- [00:00:00] keywords: mental-state coordination, language, music analogy, constructed world, implementation, observer
+- [whole transcript; canonical placeholder locator `00:00:00`] keywords: mental-state coordination, language, music analogy, constructed world, implementation, observer
 
 ## Terms to add to glossary
 - Realness as implementation

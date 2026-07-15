@@ -11,32 +11,6 @@ async function loadSearchIndex(root) {
   return await res.json();
 }
 
-function normalize(s) {
-  return (s || "").toLowerCase().replace(/\s+/g, " ").trim();
-}
-
-function countOccurrences(hay, needle) {
-  if (!hay || !needle) return 0;
-  let n = 0;
-  let i = 0;
-  while (true) {
-    const j = hay.indexOf(needle, i);
-    if (j < 0) break;
-    n += 1;
-    i = j + Math.max(1, needle.length);
-  }
-  return n;
-}
-
-function snippet(text, q) {
-  const t = text || "";
-  const i = t.toLowerCase().indexOf(q);
-  if (i < 0) return t.slice(0, 140);
-  const start = Math.max(0, i - 60);
-  const end = Math.min(t.length, i + 120);
-  return (start > 0 ? "…" : "") + t.slice(start, end) + (end < t.length ? "…" : "");
-}
-
 function renderHits(container, hits) {
   const root = window.__SITE_ROOT__ || "./";
   if (!hits.length) {
@@ -85,7 +59,7 @@ function setupSearch(root) {
   });
 
   input.addEventListener("input", async () => {
-    const q = normalize(input.value);
+    const q = window.MindSearch.normalize(input.value);
     if (!index) index = await loadSearchIndex(root);
     if (!q) {
       hide();
@@ -94,26 +68,7 @@ function setupSearch(root) {
     }
     if (q === lastQ) return;
     lastQ = q;
-    const hits = [];
-    for (const item of index || []) {
-      const titleNorm = normalize(item.title);
-      const textNorm = normalize(item.text);
-      const inTitle = titleNorm.includes(q);
-      const inText = textNorm.includes(q);
-      if (inTitle || inText) {
-        // Basic ranking:
-        // - title hits dominate
-        // - more occurrences rank higher
-        const score = (inTitle ? 100 : 0) + 10 * countOccurrences(titleNorm, q) + countOccurrences(textNorm, q);
-        hits.push({
-          href: item.href,
-          title: item.title,
-          snippet: snippet(item.text, q),
-          score,
-        });
-      }
-    }
-    hits.sort((a, b) => (b.score || 0) - (a.score || 0));
+    const hits = window.MindSearch.rankSearchIndex(index || [], q);
     show();
     renderHits(results, hits);
   });

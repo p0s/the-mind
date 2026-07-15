@@ -128,6 +128,120 @@ class TestSiteMarkdown(unittest.TestCase):
         self.assertEqual(html_body.count('class="cite"'), 1)
         self.assertIn("@ p16, p18-19", html_body)
 
+    def test_single_source_citation_shows_locator(self) -> None:
+        md = "Hello <!-- src: web_x @ p16 -->\n"
+        sources = {
+            "web_x": {
+                "url": "https://example.com/paper.pdf",
+                "title": "Example Paper",
+                "kind": "web",
+                "notes": "format=essay",
+            }
+        }
+        html_body, _text = build_site.blocks_to_html(build_site.parse_blocks(md), sources=sources, root="./")
+        self.assertIn("@ p16", html_body)
+
+    def test_cimc_citations_link_physical_pages_but_show_printed_locators(self) -> None:
+        primary_id = "web_cimc_ai_cimchypothesis_pdf"
+        program_id = "web_cimc_ai_cimcwhitepaper_pdf"
+        md = f"Hello <!-- src: {primary_id} @ p4; {program_id} @ p16-18 -->\n"
+        sources = {
+            primary_id: {
+                "url": "https://cimc.ai/cimcHypothesis.pdf",
+                "title": "The Machine Consciousness Hypothesis",
+                "kind": "web",
+                "notes": "format=essay",
+            },
+            program_id: {
+                "url": "https://cimc.ai/cimcWhitepaper.pdf",
+                "title": "Research Program Whitepaper",
+                "kind": "web",
+                "notes": "format=essay",
+            },
+        }
+
+        html_body, _text = build_site.blocks_to_html(build_site.parse_blocks(md), sources=sources, root="./")
+        self.assertIn('href="https://cimc.ai/cimcHypothesis.pdf#page=5"', html_body)
+        self.assertIn('href="https://cimc.ai/cimcWhitepaper.pdf#page=17"', html_body)
+        self.assertIn("@ p4", html_body)
+        self.assertIn("@ p16-18", html_body)
+
+    def test_untimed_written_transcript_renders_truthful_locator(self) -> None:
+        source_id = (
+            "web_jimruttshow_blubrry_net_the_jim_rutt_show_transcripts_"
+            "transcript_of_ep_334_worldviews_joscha_bach"
+        )
+        url = "https://jimruttshow.blubrry.net/transcript/"
+        md = f"Hello <!-- src: {source_id} @ 00:00:00 -->\n"
+        sources = {
+            source_id: {
+                "url": url,
+                "title": "Written transcript",
+                "kind": "web",
+                "notes": "format=interview transcript=official",
+            }
+        }
+
+        html_body, _text = build_site.blocks_to_html(build_site.parse_blocks(md), sources=sources, root="./")
+        self.assertIn(f'href="{url}"', html_body)
+        self.assertIn("whole transcript", html_body)
+        self.assertNotIn("@ 00:00:00", html_body)
+        self.assertNotIn("?t=", html_body)
+
+    def test_primary_and_program_sources_use_stable_labels(self) -> None:
+        primary = {
+            "url": "https://example.com/hypothesis.pdf",
+            "title": "A title that may change",
+            "kind": "web",
+            "notes": "format=essay",
+        }
+        program = {
+            "url": "https://example.com/whitepaper.pdf",
+            "title": "Another title",
+            "kind": "web",
+            "notes": "format=essay",
+        }
+        self.assertEqual(
+            build_site.citation_label("web_cimc_ai_cimchypothesis_pdf", primary),
+            "Primary paper: Machine Consciousness Hypothesis",
+        )
+        self.assertEqual(
+            build_site.citation_label("web_cimc_ai_cimcwhitepaper_pdf", program),
+            "Program context: CIMC Research Program Whitepaper",
+        )
+
+    def test_sources_section_marks_list_for_full_title_wrapping(self) -> None:
+        md = "## Sources\n\n- web_x @ p16\n"
+        sources = {
+            "web_x": {
+                "url": "https://example.com/paper.pdf",
+                "title": "A deliberately long source title",
+                "kind": "web",
+                "notes": "format=essay",
+            }
+        }
+        html_body, _text = build_site.blocks_to_html(build_site.parse_blocks(md), sources=sources, root="./")
+        self.assertIn('<ul class="source-list">', html_body)
+
+    def test_source_list_title_wrapping_is_not_mobile_only(self) -> None:
+        css = (ROOT / "site" / "assets" / "style.css").read_text(encoding="utf-8")
+        mobile_start = css.index("@media (max-width: 920px)")
+
+        self.assertLess(css.index(".source-list .cite"), mobile_start)
+        self.assertGreater(
+            css.index(".btn--icon { width: 44px; height: 44px; }"), mobile_start
+        )
+
+    def test_template_labels_search_and_links_reader_feedback(self) -> None:
+        template = build_site.read_template()
+        self.assertIn('aria-label="Search the site"', template)
+        self.assertIn("template=reader-clarification.yml", template)
+
+        issue_form = (ROOT / ".github" / "ISSUE_TEMPLATE" / "reader-clarification.yml").read_text(encoding="utf-8")
+        expected_field = issue_form.split("id: expected", 1)[1]
+        self.assertIn("label: Expected clarification", expected_field)
+        self.assertIn("required: false", expected_field)
+
     def test_questions_nav_uses_section_link_in_summary(self) -> None:
         nav = build_site.build_nav(
             [("questions/what-is-a-mind/index.html", "What is a mind?")],

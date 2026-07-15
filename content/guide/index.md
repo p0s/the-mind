@@ -6,9 +6,23 @@ The central promise is simple: **start from the fact that experience exists, the
 
 The approach here is grounded mainly in *The Machine Consciousness Hypothesis*: consciousness is treated neither as magic nor as a disposable illusion, but as a real feature of mental organization with a phenomenology, a function, and a possible implementation story. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p6; web_cimc_ai_cimchypothesis_pdf @ p12-13; web_cimc_ai_cimchypothesis_pdf @ p16-23 -->
 
+## At a glance
+
+In this framework, the working map is:
+
+- a **mind** builds models to guide action,
+- **feelings** mark what matters to that system,
+- a **self** is the system’s model of itself as an agent,
+- **consciousness** names both the phenomenon of experience being present and a proposed mode of organization that coordinates it,
+- and **AI consciousness** remains an architectural and developmental question, not something fluent output settles.
+
+**On this page:** [experience, mind, and the modeled world](#1-start-with-the-strange-part-experience-exists) · [feeling and self](#4-why-feelings-matter) · [consciousness](#6-what-consciousness-adds) · [AI and open questions](#8-what-this-means-for-ai)
+
+**Evidence key:** the hypothesis paper is the primary source. Talks and interviews are supporting sources used for clearer formulations. Sentences framed as “in this framework” are project synthesis. Questions explicitly left unresolved are open. A citation establishes provenance, not independent empirical validation.
+
 ## 1) Start with the strange part: experience exists
 
-Before we get to neurons, computers, or AI, there is one fact nobody actually escapes: **it is like something to be you**.
+Before we get to neurons, computers, or AI, start from the familiar observation that **there is something it is like to be you**.
 
 You are confronted with a present. There is seeing, hearing, emotion, thought, memory, effort, confusion, relief, tension, imagination. Even if you later explain all of that in mechanistic terms, the fact to be explained is already there. That is why consciousness keeps returning as a deep problem. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p1-3; web_cimc_ai_cimchypothesis_pdf @ p14-16 -->
 
@@ -18,13 +32,13 @@ One reason the topic feels so confusing is that people often jump between levels
 
 ## 2) What a mind is
 
-A mind is not best understood as “whatever the brain is made of”. It is better understood as **a model-building control system**.
+In this framework, a mind is not best understood as “whatever the brain is made of”. It is better understood as **a model-building control system**.
 
 A system becomes interesting as a mind when it is not merely pushed around by the world, but builds models in order to steer what happens next. Prediction matters because it serves control. The point is not only to know; the point is to stay viable, choose, coordinate, and act. <!-- src: ccc_38c3_self_models_of_loving_grace @ 00:32:16 -->
 
 The paper describes the mind as the matrix in which our models of self and world take shape: the board on which perceptions, intuitions, thoughts, emotions, and experiences are written. That phrasing is useful because it keeps the mind broad. A mind is not just “reason”. It includes perception, imagery, feeling, valuation, and deliberation. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p12-13 -->
 
-That is also why simple intelligence tests miss something. A system can be narrow and brilliant in one domain without being much of a mind in the fuller sense. A mind is a coordinated architecture that can integrate many kinds of content in the service of agency.
+That is also why, in this framework, simple intelligence tests miss something. A system can be narrow and brilliant in one domain without being much of a mind in the fuller sense. The working model treats a mind as a coordinated architecture that integrates many kinds of content in the service of agency.
 
 ## 3) Why the world you experience is already a model
 
@@ -41,11 +55,11 @@ The paper gives two especially useful terms here:
 - **Realness**: the representation of something currently being the case.
 - **Phenomenal reality**: sensory content currently being confirmed. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p15 -->
 
-That sounds abstract, but it explains everyday experience surprisingly well. A remembered scene, a vivid daydream, a hallucination, and a present perception can all appear in consciousness, but they differ in how “currently the case” they feel. Realness is treated as a variable representational feature, not as an all-or-nothing metaphysical stamp.
+That sounds abstract, but within this model it offers a useful account of everyday differences. A remembered scene, a vivid daydream, a hallucination, and a present perception can all appear in consciousness, but they differ in how “currently the case” they feel. Realness is treated as a variable representational feature, not as an all-or-nothing metaphysical stamp.
 
 ## 4) Why feelings matter
 
-A model without stakes is inert. It can describe. It cannot care.
+A model without stakes may describe a situation while lacking any internal basis for one outcome to matter more than another.
 
 Feelings matter because they are how the mind marks some states as better, worse, safer, riskier, attractive, painful, urgent, meaningful, or threatening. In the paper, emotions are treated as expressions of the control dimensions of the psyche, and feelings are the salient perceptual surface of emotion, valence, and extra-intellectual evaluation. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p13 -->
 
@@ -59,13 +73,15 @@ Consciousness is not the same thing as the self. The paper says this very direct
 
 Why, then, do we so often feel like there is a someone at the center of experience?
 
-Because a sophisticated controller needs a model of itself.
+In this framework, the answer is that a sophisticated controller needs a model of itself.
 
 It needs to know where the body is, what the system can do, what its limits are, what its commitments are, how others react to it, and which changes count as “my action” rather than “something that happened to me”. The self is best understood here as a **self-model**: a control-relevant representation of the agent inside its own world-model. <!-- src: yt_UkAOHrbcnAs @ 00:16:47; yt_CcQMYNi9a2w @ 00:25:57 -->
 
 That does **not** make the self unreal in the dismissive sense. It makes it real as a model object, not as a basic particle of physics. A map legend is not a mountain, but it is still real as part of the map. Likewise, the self is not a little ghost sitting behind experience. It is part of how the mind organizes agency.
 
 The paper’s term **psyche** is useful here too. It names the combination of a personal self and the motivational “strings” that pull on it, within a mind that models self, interests, and world. In other words: the person you experience yourself as is not just a neutral observer. It is already tied to concerns, pressures, desires, fears, and values. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p13 -->
+
+**Checkpoint:** if selfhood is your main question, you can take a focused detour to [What is the self?](/questions/what-is-the-self/). Otherwise, continue to what consciousness adds.
 
 ## 6) What consciousness adds
 
@@ -79,7 +95,7 @@ The paper gives a three-part demand for any serious theory:
 ### Phenomenology
 Phenomenologically, consciousness is described as **second-order perception**: not only seeing the apple, but the fact that seeing is taking place now. It also includes the experience of present and presence, and sometimes the experience of being an observing self in a world. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p15; web_cimc_ai_cimchypothesis_pdf @ p20 -->
 
-A shorter public handle for this is a "bubble of nowness". <!-- src: yt_9LtKJ2k8UyM @ 00:03:12 -->
+Bach uses a “bubble of nowness” as a compact analogy for this synchronized present. <!-- src: yt_9LtKJ2k8UyM @ 00:03:12 -->
 
 That phrase is useful because it points at synchronization. Consciousness is the mode in which multiple signals hang together tightly enough to count as one lived present for one controller. <!-- src: yt_9LtKJ2k8UyM @ 00:03:12; web_cimc_ai_cimchypothesis_pdf @ p15-18 -->
 
@@ -88,7 +104,7 @@ That already helps explain why consciousness feels different from mere informati
 ### Function
 Functionally, consciousness is treated as an operation on mental states that increases coherence. Different subsystems, partial models, impulses, and interpretations are active at once. Consciousness helps reduce contradiction and align them enough that the agent can act as one system. The paper uses the image of a conductor in a mental orchestra. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p16-18 -->
 
-This is a major move. It says consciousness is not a useless glow floating over cognition. It does work. Alertness, selective attention, planning, sustained vigilance, and attentional learning all depend on it. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p16-17 -->
+This is a major move in the paper’s account: consciousness is not a useless glow floating over cognition. The paper associates its function with alertness, selective attention, planning, sustained vigilance, and attentional learning. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p16-17 -->
 
 ### Mechanism
 Mechanistically, the exact implementation is still open, but the paper points toward an observer-like organization, directed attention, and coherence-maximizing integration. Consciousness is not treated as a substance. It is treated as a pattern of organization that can, in principle, be characterized. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p17-18; web_cimc_ai_cimchypothesis_pdf @ p20 -->
@@ -121,15 +137,17 @@ The argument is:
 - and if that organization can be implemented computationally,
 - then machine consciousness is a real research question. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p6; web_cimc_ai_cimchypothesis_pdf @ p20-23 -->
 
-That is also why the paper says there can be **no Turing Test for consciousness**. Intelligence can often be tested as performance. Consciousness cannot, because it is not just a score on externally visible behavior. It is a particular way of being organized internally. A system may behave impressively without implementing the relevant organization. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p21-23 -->
+That is also why the paper argues that there can be **no purely behavioral Turing Test for consciousness**. Intelligence can often be tested as performance. On this account, consciousness cannot be settled that way, because it is not just a score on externally visible behavior. It is a particular way of being organized internally. A system may behave impressively without implementing the relevant organization. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p21-23 -->
 
 So what about current AI?
 
-On this framework, current generative systems may already produce something like rich dream-content: simulated worlds, voices, styles, perspectives, characters. But whether they also implement the “dream within the dream” — the organized presence of an observer confronted with its own modeling — remains open. <!-- src: yt_O5hymlaldf0 @ 00:01:58; ccc_37c3_12167_synthetic_sentience @ 00:17:39 -->
+On this framework, current generative systems may already produce rich simulated content: worlds, voices, styles, perspectives, and characters. The still-open question is whether a system also models the act of perceiving and implements the observer-like organization associated with presentness and coherence control. <!-- src: yt_O5hymlaldf0 @ 00:01:58; ccc_37c3_12167_synthetic_sentience @ 00:17:39 -->
+
+**Checkpoint:** for the focused present-day question, read [Do LLMs have qualia?](/questions/do-llms-have-qualia/). The next section keeps to what the framework leaves unresolved.
 
 ## 9) What this does not settle
 
-This model clarifies a lot, but it does not settle everything.
+This working model organizes the questions, but it does not settle everything.
 
 It does not by itself answer:
 - whether biology has indispensable ingredients,
@@ -142,7 +160,7 @@ It also does not require cheap reductionism. The paper explicitly leaves room fo
 
 ## 10) A compact takeaway
 
-Here is the shortest version of the whole site:
+Here is the shortest version of the whole site’s working framework:
 
 - A **mind** is a model-building control system.
 - **Feelings** are part of how things matter to that system.
