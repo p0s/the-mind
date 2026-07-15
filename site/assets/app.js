@@ -7,7 +7,7 @@
 
 async function loadSearchIndex(root) {
   const res = await fetch(root + "search_index.json", { cache: "no-store" });
-  if (!res.ok) return [];
+  if (!res.ok) throw new Error(`Search index request failed: ${res.status}`);
   return await res.json();
 }
 
@@ -37,8 +37,9 @@ function setupSearch(root) {
   const results = document.getElementById("searchResults");
   if (!input || !results) return;
 
-  let index = null;
+  const getSearchIndex = window.MindSearch.createCachedLoader(() => loadSearchIndex(root));
   let lastQ = "";
+  let inputRevision = 0;
 
   function hide() {
     results.hidden = true;
@@ -54,23 +55,36 @@ function setupSearch(root) {
     hide();
   });
 
-  input.addEventListener("focus", async () => {
-    if (!index) index = await loadSearchIndex(root);
-  });
-
   input.addEventListener("input", async () => {
-    const q = window.MindSearch.normalize(input.value);
-    if (!index) index = await loadSearchIndex(root);
+    const revision = ++inputRevision;
+    let q = window.MindSearch.normalize(input.value);
     if (!q) {
       hide();
       lastQ = "";
       return;
     }
-    if (q === lastQ) return;
-    lastQ = q;
-    const hits = window.MindSearch.rankSearchIndex(index || [], q);
-    show();
-    renderHits(results, hits);
+
+    try {
+      const index = await getSearchIndex();
+      q = window.MindSearch.normalize(input.value);
+      if (revision !== inputRevision) return;
+      if (!q) {
+        hide();
+        lastQ = "";
+        return;
+      }
+      if (q === lastQ && !results.hidden) return;
+      lastQ = q;
+      const hits = window.MindSearch.rankSearchIndex(index || [], q);
+      show();
+      renderHits(results, hits);
+    } catch (error) {
+      q = window.MindSearch.normalize(input.value);
+      if (revision !== inputRevision || !q) return;
+      lastQ = "";
+      show();
+      results.innerHTML = '<div class="hit"><div class="hit__title">Search unavailable.</div></div>';
+    }
   });
 
   input.addEventListener("keydown", (ev) => {

@@ -32,6 +32,22 @@ const MindSearch = (() => {
     return Number.isFinite(priority) ? priority : 0;
   }
 
+  function createCachedLoader(loader) {
+    let cachedPromise = null;
+
+    return function load() {
+      if (cachedPromise) return cachedPromise;
+
+      cachedPromise = Promise.resolve()
+        .then(() => loader())
+        .catch((error) => {
+          cachedPromise = null;
+          throw error;
+        });
+      return cachedPromise;
+    };
+  }
+
   function rankSearchIndex(index, query) {
     const q = normalize(query);
     if (!q) return [];
@@ -63,7 +79,7 @@ const MindSearch = (() => {
     return hits;
   }
 
-  return { normalize, rankSearchIndex };
+  return { createCachedLoader, normalize, rankSearchIndex };
 })();
 
 if (typeof window !== "undefined") window.MindSearch = MindSearch;
