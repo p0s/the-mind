@@ -2,6 +2,8 @@
 
 These pages are the shortest way into the main confusions people actually have.
 
+If you want one connected explanation first, start with [How the Mind Works](/guide/). Otherwise, choose the topic that matches the question you have now.
+
 ## Human mind
 
 - [What is a mind?](/questions/what-is-a-mind/)  
@@ -32,4 +34,4 @@ These pages are the shortest way into the main confusions people actually have.
 
 ## Next stop
 
-If you want the deeper layer behind these pages, go to the [Glossary](/glossary/), [Claims](/claims/), [Sources](/sources/), and [Further reading](/further-reading/).
+For the connected walkthrough, go to [How the Mind Works](/guide/). For the deeper layer behind these answers, use the [Glossary](/glossary/), [Claims](/claims/), [Sources](/sources/), and [Further reading](/further-reading/).

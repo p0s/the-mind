@@ -349,6 +349,38 @@ body:not(.supports-annotations) #toggleTags {
   overflow-wrap: anywhere;
 }
 
+.breadcrumbs {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.breadcrumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.breadcrumbs li {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+  margin: 0;
+}
+.breadcrumbs li + li::before {
+  content: "/";
+  color: var(--line-hover);
+}
+.breadcrumbs a {
+  color: inherit;
+  text-underline-offset: 2px;
+}
+.breadcrumbs a:hover { color: var(--ink0); }
+.breadcrumbs [aria-current="page"] { color: var(--ink1); }
+
 h1, h2, h3, h4 {
   line-height: 1.15;
   margin: 18px 0 10px;

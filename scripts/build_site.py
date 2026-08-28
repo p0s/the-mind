@@ -35,10 +35,11 @@ import shutil
 import subprocess
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Iterable, List, Optional, Tuple
-from urllib.parse import urljoin
+from typing import Dict, Iterable, List, Optional, Sequence, Tuple
+from urllib.parse import urljoin, urlsplit, urlunsplit
 
 from _core.locators import normalize_locator
+from _core.seo import PageSEO, breadcrumb_entries, seo_for_href, structured_data
 from _core.sources import located_url, whole_source_locator_label
 
 
@@ -81,6 +82,7 @@ SRC_RX = re.compile(
 SRC_COMMENT_RX = re.compile(r"<!--\s*src:\s*([^>]+?)\s*-->", re.IGNORECASE)
 SRC_REF_IN_COMMENT_RX = re.compile(rf"([a-z0-9_\-]+)\s*@\s*({LOCATOR_RX})", re.IGNORECASE)
 SRC_ITEM_RX = re.compile(rf"^([a-z0-9_\-]+)\s+@\s+({LOCATOR_RX})\b(.*)$", re.IGNORECASE)
+QUESTION_LINK_RX = re.compile(r"\[([^\]]+)\]\((/questions/[^)#?]+/)\)")
 
 
 def parse_src_comment_refs(body: str) -> List[Tuple[str, str]]:
@@ -440,6 +442,16 @@ def markdown_title(md: str, fallback: str) -> str:
     h1 = next((l[2:].strip() for l in md.splitlines() if l.startswith("# ")), "")
     title = re.sub(r"\s+", " ", h1 or fallback).strip()
     return title or fallback
+
+
+def demote_markdown_headings(md: str) -> str:
+    """Nest an included document below the containing page's single H1."""
+    return re.sub(
+        r"^(#{1,5})(\s+)",
+        lambda match: "#" + match.group(1) + match.group(2),
+        md,
+        flags=re.MULTILINE,
+    )
 
 
 def read_markdown_or_missing(path: Path, fallback_title: str) -> str:
@@ -874,9 +886,13 @@ def site_base_url() -> str:
     v = (os.environ.get("THE_MIND_SITE_BASE_URL") or "").strip()
     if not v:
         v = DEFAULT_SITE_BASE_URL
-    if not v.endswith("/"):
-        v += "/"
-    return v
+    parsed = urlsplit(v)
+    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
+        raise ValueError("THE_MIND_SITE_BASE_URL must be an absolute HTTP(S) URL")
+    if parsed.username or parsed.password or parsed.query or parsed.fragment:
+        raise ValueError("THE_MIND_SITE_BASE_URL must not contain credentials, a query, or a fragment")
+    path = parsed.path.rstrip("/") + "/"
+    return urlunsplit((parsed.scheme, parsed.netloc, path, "", ""))
 
 
 def canonical_rel_path(href: str) -> str:
@@ -890,6 +906,57 @@ def canonical_rel_path(href: str) -> str:
 
 def absolute_page_url(base_url: str, href: str) -> str:
     return urljoin(base_url, canonical_rel_path(href))
+
+
+def source_citation_urls(md: str, sources: Dict[str, Dict[str, str]]) -> List[str]:
+    """Mirror rendered source anchors into structured data without adding claims."""
+    urls: List[str] = []
+    seen = set()
+    for match in SRC_COMMENT_RX.finditer(md or ""):
+        for source_id, locator in parse_src_comment_refs(match.group(1)):
+            meta = sources.get(source_id, {})
+            source_url = (meta.get("url") or "").strip()
+            if not source_url:
+                continue
+            url = located_url(source_url, locator, source_id=source_id)
+            if url in seen:
+                continue
+            seen.add(url)
+            urls.append(url)
+    return urls
+
+
+def question_hub_items(md: str) -> List[Tuple[str, str]]:
+    """Read the visible Questions hub order for matching ItemList schema."""
+    items: List[Tuple[str, str]] = []
+    seen = set()
+    for label, path in QUESTION_LINK_RX.findall(md or ""):
+        href = path.lstrip("/") + "index.html"
+        if href in seen:
+            continue
+        seen.add(href)
+        items.append((href, strip_md_for_search(label)))
+    return items
+
+
+def render_breadcrumbs(href: str, *, root: str) -> str:
+    entries = breadcrumb_entries(href)
+    if len(entries) <= 1:
+        return ""
+
+    parts = ['<nav class="breadcrumbs" aria-label="Breadcrumb"><ol>']
+    for position, (item_href, label) in enumerate(entries):
+        if position == len(entries) - 1:
+            parts.append(f'<li aria-current="page"><span>{escape(label)}</span></li>')
+        else:
+            parts.append(f'<li><a href="{escape_attr(root + item_href)}">{escape(label)}</a></li>')
+    parts.append("</ol></nav>")
+    return "".join(parts)
+
+
+def structured_data_script(data: Dict[str, object]) -> str:
+    payload = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    return f'<script type="application/ld+json">{payload}</script>'
 
 
 def search_priority_for_href(href: str) -> int:
@@ -911,24 +978,33 @@ def search_index_entry(href: str, title: str, text: str) -> Dict[str, object]:
 def render_page(
     template: str,
     *,
-    title: str,
+    seo: PageSEO,
     nav: str,
+    breadcrumbs: str,
     content: str,
     root: str,
     page_id: str,
     page_url: str,
     og_image_url: str,
+    structured_data_html: str,
     body_class: str = "",
     extra_scripts: str = "",
 ) -> str:
+    robots = "index,follow,max-image-preview:large" if seo.indexable else "noindex,follow"
+    og_type = "article" if seo.schema_type == "Article" else "website"
     return (
-        template.replace("{{title}}", escape(title))
+        template.replace("{{seo_title}}", escape(seo.title))
+        .replace("{{description}}", escape_attr(seo.description))
+        .replace("{{robots}}", escape_attr(robots))
+        .replace("{{og_type}}", escape_attr(og_type))
         .replace("{{nav}}", nav)
+        .replace("{{breadcrumbs}}", breadcrumbs)
         .replace("{{content}}", content)
         .replace("{{root}}", root)
         .replace("{{page_id}}", escape(page_id))
         .replace("{{page_url}}", escape_attr(page_url))
         .replace("{{og_image_url}}", escape_attr(og_image_url))
+        .replace("{{structured_data}}", structured_data_html)
         .replace("{{body_class}}", escape(body_class))
         .replace("{{extra_scripts}}", extra_scripts)
     )
@@ -946,21 +1022,37 @@ def emit_markdown_page(
     base_url: str,
     og_image_url: str,
     nav_html: str,
+    collection_items: Sequence[Tuple[str, str]] = (),
 ) -> Tuple[str, str]:
     root = page_root(href)
+    seo = seo_for_href(href)
+    page_url = absolute_page_url(base_url, href)
+    breadcrumbs = breadcrumb_entries(href)
+    breadcrumb_urls = [(absolute_page_url(base_url, item_href), label) for item_href, label in breadcrumbs]
+    collection_urls = [(absolute_page_url(base_url, item_href), label) for item_href, label in collection_items]
+    schema = structured_data(
+        seo=seo,
+        page_url=page_url,
+        site_url=absolute_page_url(base_url, "index.html"),
+        breadcrumbs=breadcrumb_urls,
+        citations=source_citation_urls(md, sources),
+        collection_items=collection_urls,
+    )
     html_body, text_body = blocks_to_html(parse_blocks(md), sources, root=root, page_kind=page_kind)
     body_class = "supports-annotations" if href == "reader/index.html" else ""
     write(
         out_dir / href,
         render_page(
             template,
-            title=title,
+            seo=seo,
             nav=nav_html,
+            breadcrumbs=render_breadcrumbs(href, root=root),
             content=html_body,
             root=root,
             page_id=slugify(href.replace("/index.html", "").replace("/", "-") or "home"),
-            page_url=absolute_page_url(base_url, href),
+            page_url=page_url,
             og_image_url=og_image_url,
+            structured_data_html=structured_data_script(schema),
             body_class=body_class,
         ),
     )
@@ -1060,7 +1152,7 @@ def write_robots(out_dir: Path, base_url: str) -> None:
     text = "\n".join(
         [
             "User-agent: *",
-            "Disallow:",
+            "Allow: /",
             "",
             f"Sitemap: {sitemap_url}",
             "",
@@ -1115,7 +1207,14 @@ def main(argv: Optional[List[str]] = None) -> int:
     def nav_for(href: str) -> str:
         return build_nav(question_nav, current_href=href, root=page_root(href))
 
-    def emit(href: str, title: str, md: str, *, page_kind: str = "") -> None:
+    def emit(
+        href: str,
+        title: str,
+        md: str,
+        *,
+        page_kind: str = "",
+        collection_items: Sequence[Tuple[str, str]] = (),
+    ) -> None:
         _html_body, text_body = emit_markdown_page(
             out_dir=out_dir,
             template=template,
@@ -1127,8 +1226,10 @@ def main(argv: Optional[List[str]] = None) -> int:
             base_url=base_url,
             og_image_url=og_image_url,
             nav_html=nav_for(href),
+            collection_items=collection_items,
         )
-        page_hrefs.append(href)
+        if seo_for_href(href).indexable:
+            page_hrefs.append(href)
         search_index.append(search_index_entry(href, title, text_body))
 
     emit("index.html", "the-mind", read_markdown_or_missing(HOME_MD, "the-mind"))
@@ -1137,7 +1238,15 @@ def main(argv: Optional[List[str]] = None) -> int:
     emit("guide/index.html", markdown_title(guide_md, "How the Mind Works"), guide_md)
 
     questions_index_md = read_markdown_or_missing(QUESTIONS_INDEX_MD, "Questions")
-    emit("questions/index.html", markdown_title(questions_index_md, "Questions"), questions_index_md)
+    question_collection = question_hub_items(questions_index_md)
+    if {href for href, _title in question_collection} != {href for href, _title in question_nav}:
+        raise SystemExit("Questions hub must link every public question exactly once")
+    emit(
+        "questions/index.html",
+        markdown_title(questions_index_md, "Questions"),
+        questions_index_md,
+        collection_items=question_collection,
+    )
 
     for href, title, path in question_pages:
         emit(href, title, path.read_text(encoding="utf-8", errors="replace"))
@@ -1206,7 +1315,10 @@ def main(argv: Optional[List[str]] = None) -> int:
             reader_parts.append(f"- [{title}](#{anchor_id})")
         reader_parts.append("")
         reader_md = "\n".join(reader_parts) + "\n\n---\n\n" + "\n\n---\n\n".join(
-            [Path(src_path).read_text(encoding="utf-8", errors="replace").rstrip() for _anchor_id, _title, src_path, _h1 in chapter_pages]
+            [
+                demote_markdown_headings(Path(src_path).read_text(encoding="utf-8", errors="replace")).rstrip()
+                for _anchor_id, _title, src_path, _h1 in chapter_pages
+            ]
         )
         _html_body, reader_text = emit_markdown_page(
             out_dir=out_dir,
@@ -1220,7 +1332,8 @@ def main(argv: Optional[List[str]] = None) -> int:
             og_image_url=og_image_url,
             nav_html=nav_for("reader/index.html"),
         )
-        page_hrefs.append("reader/index.html")
+        if seo_for_href("reader/index.html").indexable:
+            page_hrefs.append("reader/index.html")
         search_index.append(search_index_entry("reader/index.html", "Reader / V1", reader_text))
 
         for anchor_id, title, src_path, _h1 in chapter_pages:
