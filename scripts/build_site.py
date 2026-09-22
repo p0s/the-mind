@@ -934,6 +934,16 @@ def render_page(
     )
 
 
+WEBSITE_PRIVACY_HTML = """<h1>Website privacy</h1>
+<p>This website counts successful public HTML document requests at the edge so I can understand basic site reach and estimate sessions. It does not run a browser tracker, set an analytics identifier, collect query strings, or record clicks, screen size, custom events, or account identity.</p>
+<p>For an eligible request, the analytics gateway receives the public path, referring origin, original browser user agent, and a trustworthy network address for transient processing. It keeps country only when Cloudflare supplies it as trusted metadata, discards raw IP and user-agent data after processing, links data to this site only, and retains live analytics for 13 months. Encrypted operational backup copies expire within 30 days after live data is removed. This does not change native-app telemetry promises.</p>
+<p>Requests from recognizable bots, prefetches, redirects, errors, assets, private paths, or visitors sending Do Not Track or Global Privacy Control are skipped. The counts are estimates and do not claim to identify people or accurately distinguish humans, downloads, or conversions.</p>
+<p>Choose a preference without JavaScript. No cookie is set until you submit one of these forms; the host-only preference cookie is HttpOnly, Secure, SameSite=Lax, and expires after one year unless you opt in sooner.</p>
+<form method="post" action="/analytics/opt-out"><button type="submit">Opt out of website request counting</button></form>
+<form method="post" action="/analytics/opt-in"><button type="submit">Opt in to website request counting</button></form>
+<p><a href="../index.html">Back to the-mind</a></p>"""
+
+
 def emit_markdown_page(
     *,
     out_dir: Path,
@@ -1191,6 +1201,23 @@ def main(argv: Optional[List[str]] = None) -> int:
             markdown_title(further_reading_md, "Further reading"),
             further_reading_md,
         )
+
+    privacy_href = "privacy/index.html"
+    write(
+        out_dir / privacy_href,
+        render_page(
+            template,
+            title="Website privacy",
+            nav=nav_for(privacy_href),
+            content=WEBSITE_PRIVACY_HTML,
+            root=page_root(privacy_href),
+            page_id="privacy",
+            page_url=absolute_page_url(base_url, privacy_href),
+            og_image_url=og_image_url,
+        ),
+    )
+    page_hrefs.append(privacy_href)
+    search_index.append(search_index_entry(privacy_href, "Website privacy", "Website privacy and analytics choice"))
 
     # Reader (legacy V1 single-page archive)
     if chapter_pages:
