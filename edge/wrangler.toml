@@ -1,0 +1,7 @@
+name = "the-mind-edge"
+main = "worker.js"
+compatibility_date = "2026-09-22"
+
+# The route and account are deliberately configured by the deployment owner.
+# This Worker stays in front of the existing GitHub Pages origin; it does not
+# move the site or contain credentials.
