@@ -1,6 +1,9 @@
 name = "the-mind-edge"
 main = "worker.js"
 compatibility_date = "2026-09-22"
+account_id = "0317b000520a8e6b237de500c592d67a"
+workers_dev = false
+preview_urls = false
 
 # The repository's existing build writes the public site to ../dist. The
 # deployment owner attaches this Worker to the canonical hostname and supplies

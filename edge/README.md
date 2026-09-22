@@ -24,7 +24,7 @@ Worker to `the-mind.xyz/*`:
 - `ANALYTICS_INGEST_URL`: the gateway's `/ingest/v1` URL.
 - `ANALYTICS_INGEST_TOKEN`: the per-site secret for `the-mind.xyz`.
 
-The route, Cloudflare account, zone, custom-domain binding, DNS records, and
-secrets are intentionally absent from this repository. The deployment owner
-must choose the existing Cloudflare account and attach the canonical hostname
+The configuration pins the approved tightness Cloudflare account and disables
+workers.dev and preview URLs. The route, zone, custom-domain binding, DNS records
+and secrets remain deployment configuration. Attach the canonical hostname
 without changing the registrar or adding a second public host.
