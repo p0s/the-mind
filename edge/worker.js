@@ -182,32 +182,11 @@ async function ingest(request, env) {
   }
 }
 
-function originUrlFor(request, env) {
-  const base = String(env?.ORIGIN_BASE_URL || "");
-  if (!base) throw new Error("ORIGIN_BASE_URL is required");
-  const baseUrl = new URL(base);
-  const requestUrl = new URL(request.url);
-  if (baseUrl.hostname.toLowerCase() === requestUrl.hostname.toLowerCase()) {
-    throw new Error("origin must not be the public hostname");
+async function fetchAssets(request, env) {
+  if (!env?.ASSETS || typeof env.ASSETS.fetch !== "function") {
+    throw new Error("ASSETS binding is required");
   }
-  const prefix = baseUrl.pathname.replace(/\/$/, "");
-  const target = new URL(baseUrl.toString());
-  target.pathname = `${prefix}${requestUrl.pathname}` || "/";
-  target.search = requestUrl.search;
-  return target;
-}
-
-async function fetchOrigin(request, env) {
-  const target = originUrlFor(request, env);
-  const headers = new Headers(request.headers);
-  headers.delete("Host");
-  headers.delete("CF-Connecting-IP");
-  return fetch(new Request(target, {
-    method: request.method,
-    headers,
-    body: request.method === "GET" || request.method === "HEAD" ? undefined : request.body,
-    redirect: "manual",
-  }));
+  return env.ASSETS.fetch(request);
 }
 
 async function handle(request, env, executionCtx) {
@@ -218,9 +197,9 @@ async function handle(request, env, executionCtx) {
 
   let response;
   try {
-    response = await fetchOrigin(request, env);
+    response = await fetchAssets(request, env);
   } catch {
-    return new Response("Origin unavailable", { status: 503, headers: responseHeaders() });
+    return new Response("Site assets unavailable", { status: 503, headers: responseHeaders() });
   }
   if (eligibleResponse(request, response)) {
     const work = ingest(request, env);
@@ -234,11 +213,10 @@ export default { fetch: handle };
 export {
   eligiblePath,
   eligibleResponse,
-  fetchOrigin,
+  fetchAssets,
   hasOptOutCookie,
   isOptedOut,
   isPrefetch,
   isRecognizableBot,
-  originUrlFor,
   payloadFor,
 };

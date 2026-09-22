@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import worker, {
   eligiblePath,
   eligibleResponse,
-  originUrlFor,
+  fetchAssets,
   payloadFor,
 } from "./worker.js";
 
@@ -39,8 +39,14 @@ assert.equal(eligibleResponse(request("/questions/what-is-a-mind/", { DNT: "1" }
 assert.equal(eligibleResponse(request("/questions/what-is-a-mind/", { Purpose: "prefetch" }), document), false);
 assert.equal(eligibleResponse(request("/questions/what-is-a-mind/", { "User-Agent": "ExampleBot" }), document), false);
 
-const origin = originUrlFor(page, { ORIGIN_BASE_URL: "https://p0s.github.io/the-mind/" });
-assert.equal(origin.toString(), "https://p0s.github.io/the-mind/questions/what-is-a-mind/");
+const assetRequests = [];
+const assets = {
+  fetch: async (input) => {
+    assetRequests.push(input);
+    return document;
+  },
+};
+assert.equal(await fetchAssets(page, { ASSETS: assets }), document);
 
 const originalFetch = globalThis.fetch;
 const seen = [];
@@ -52,15 +58,19 @@ globalThis.fetch = async (input, options) => {
 };
 const waits = [];
 const response = await worker.fetch(page, {
-  ORIGIN_BASE_URL: "https://p0s.github.io/the-mind/",
+  ASSETS: assets,
   ANALYTICS_INGEST_URL: "https://stats.p0s.eu/ingest/v1",
   ANALYTICS_INGEST_TOKEN: "test-token",
 }, { waitUntil: (promise) => waits.push(promise) });
 assert.equal(response, document);
-assert.equal(seen[0].input, "https://p0s.github.io/the-mind/questions/what-is-a-mind/");
+assert.equal(assetRequests[0].url, page.url);
+assert.equal(seen.length, 1);
 assert.equal(waits.length, 1);
 await waits[0];
-assert.equal(seen[1].options.headers.Authorization, "Bearer test-token");
+assert.equal(seen[0].options.headers.Authorization, "Bearer test-token");
+
+const unavailable = await worker.fetch(page, {}, {});
+assert.equal(unavailable.status, 503);
 
 const form = await worker.fetch(new Request("https://the-mind.xyz/analytics/opt-out"), {}, {});
 assert.equal(form.status, 200);

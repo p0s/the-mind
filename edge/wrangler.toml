@@ -2,6 +2,10 @@ name = "the-mind-edge"
 main = "worker.js"
 compatibility_date = "2026-09-22"
 
-# The route and account are deliberately configured by the deployment owner.
-# This Worker stays in front of the existing GitHub Pages origin; it does not
-# move the site or contain credentials.
+# The repository's existing build writes the public site to ../dist. The
+# deployment owner attaches this Worker to the canonical hostname and supplies
+# only the server-side analytics variables; this file contains no credentials.
+[assets]
+directory = "../dist"
+binding = "ASSETS"
+run_worker_first = true
