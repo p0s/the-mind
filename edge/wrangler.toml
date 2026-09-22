@@ -4,6 +4,17 @@ compatibility_date = "2026-09-22"
 account_id = "0317b000520a8e6b237de500c592d67a"
 workers_dev = false
 preview_urls = false
+keep_vars = true
+
+# Persist the two production custom domains without attaching them during
+# source preparation. The www hostname is redirected to the apex in worker.js.
+[[routes]]
+pattern = "the-mind.xyz"
+custom_domain = true
+
+[[routes]]
+pattern = "www.the-mind.xyz"
+custom_domain = true
 
 # The repository's existing build writes the public site to ../dist. The
 # deployment owner attaches this Worker to the canonical hostname and supplies

@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import worker, {
+  canonicalRedirect,
   eligiblePath,
   eligibleResponse,
   fetchAssets,
@@ -71,6 +72,18 @@ assert.equal(seen[0].options.headers.Authorization, "Bearer test-token");
 
 const unavailable = await worker.fetch(page, {}, {});
 assert.equal(unavailable.status, 503);
+
+const wwwPage = new Request("https://www.the-mind.xyz/questions/what-is-a-mind/");
+const wwwRedirect = await worker.fetch(wwwPage, { ASSETS: assets }, {});
+assert.equal(wwwRedirect.status, 301);
+assert.equal(wwwRedirect.headers.get("Location"), "https://the-mind.xyz/questions/what-is-a-mind/");
+assert.equal(wwwRedirect.headers.get("Referrer-Policy"), "same-origin");
+
+const wwwPost = new Request("https://www.the-mind.xyz/analytics/opt-out", { method: "POST" });
+const wwwPostRedirect = await worker.fetch(wwwPost, { ASSETS: assets }, {});
+assert.equal(wwwPostRedirect.status, 308);
+assert.equal(wwwPostRedirect.headers.get("Location"), "https://the-mind.xyz/analytics/opt-out");
+assert.equal(canonicalRedirect(wwwPage).status, 301);
 
 const form = await worker.fetch(new Request("https://the-mind.xyz/analytics/opt-out"), {}, {});
 assert.equal(form.status, 200);

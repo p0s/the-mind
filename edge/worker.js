@@ -1,4 +1,5 @@
 const SITE_HOSTNAME = "the-mind.xyz";
+const WWW_HOSTNAME = "www.the-mind.xyz";
 const OPT_OUT_COOKIE = "p0s_analytics_optout";
 const INGEST_TIMEOUT_MS = 1500;
 const MAX_USER_AGENT = 512;
@@ -31,6 +32,20 @@ function responseHeaders() {
     "Referrer-Policy": "same-origin",
     "X-Content-Type-Options": "nosniff",
   };
+}
+
+function canonicalRedirect(request) {
+  const target = new URL(request.url);
+  target.hostname = SITE_HOSTNAME;
+  const status = request.method === "GET" || request.method === "HEAD" ? 301 : 308;
+  return new Response(null, {
+    status,
+    headers: {
+      ...responseHeaders(),
+      "Cache-Control": "public, max-age=300",
+      Location: target.toString(),
+    },
+  });
 }
 
 function preferencePage(action, title, description) {
@@ -191,7 +206,9 @@ async function fetchAssets(request, env) {
 
 async function handle(request, env, executionCtx) {
   const url = new URL(request.url);
-  if (url.hostname.toLowerCase() !== SITE_HOSTNAME) return new Response("Not Found", { status: 404 });
+  const hostname = url.hostname.toLowerCase();
+  if (hostname === WWW_HOSTNAME) return canonicalRedirect(request);
+  if (hostname !== SITE_HOSTNAME) return new Response("Not Found", { status: 404 });
   if (url.pathname === "/analytics/opt-out") return preferenceResponse(request, "opt-out");
   if (url.pathname === "/analytics/opt-in") return preferenceResponse(request, "opt-in");
 
@@ -218,5 +235,6 @@ export {
   isOptedOut,
   isPrefetch,
   isRecognizableBot,
+  canonicalRedirect,
   payloadFor,
 };

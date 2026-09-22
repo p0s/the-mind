@@ -25,6 +25,18 @@ Worker to `the-mind.xyz/*`:
 - `ANALYTICS_INGEST_TOKEN`: the per-site secret for `the-mind.xyz`.
 
 The configuration pins the approved tightness Cloudflare account and disables
-workers.dev and preview URLs. The route, zone, custom-domain binding, DNS records
-and secrets remain deployment configuration. Attach the canonical hostname
-without changing the registrar or adding a second public host.
+workers.dev and preview URLs. It persists two intended Custom Domain targets:
+`the-mind.xyz` and `www.the-mind.xyz`. The Worker serves the apex and redirects
+the www hostname to the apex, preserving the existing canonical behavior.
+DNS records, certificate issuance, and secrets remain deployment configuration.
+
+After DNS and secret preflight, the deployment owner can activate the persisted
+configuration with:
+
+```sh
+python3 scripts/build_site.py --out dist
+/opt/homebrew/bin/wrangler deploy --config edge/wrangler.toml --keep-vars
+```
+
+This task only prepares the source and command; it does not attach either
+Custom Domain or set analytics secrets.
