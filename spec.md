@@ -39,6 +39,16 @@ Questions are evergreen pages, not news or journal entries.
 
 ## Content requirements
 
+### Home
+Home should help a curious visitor understand what they can learn here, which perspective the site takes, and where to begin.
+
+- Open with recognizable questions about experience, selfhood, and choice, followed by a short explanation of what readers can learn.
+- Identify Bach and Sorensen’s hypothesis paper as the main source and make clear that the site explains a proposed account with open questions.
+- Offer one primary entry to **How the Mind Works**, followed by a single list of the core question pages. Avoid repeating these links in separate audience paths.
+- End with compact source and project context: the original paper, deeper reference links, the non-affiliation note, and a low-prominence archive link.
+
+Keep definitions and compressed theory summaries in the guide and glossary. Home does not include a core map.
+
 ### How the Mind Works
 The main walkthrough is the main product. It should explain, in plain but precise language:
 
