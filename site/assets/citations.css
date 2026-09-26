@@ -1,0 +1,145 @@
+/* Source presentation: compact labels by default, optional margin notes. */
+.source-layout-control {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+  margin: -4px 0 12px;
+  font: 11px/1.5 system-ui, sans-serif;
+  color: var(--muted);
+}
+.source-layout-control[hidden], .cite-details[hidden] { display: none; }
+.source-layout-control > span:first-child { margin-right: 3px; }
+.source-layout-control button {
+  background: none;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  padding: 6px 2px;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.source-layout-control button[aria-pressed="true"] {
+  color: var(--accent);
+  border-bottom-color: currentColor;
+}
+.source-layout-control button:hover { color: var(--ink0); }
+.source-layout-control button:focus-visible,
+.cite_ref[data-source] .cite:focus-visible,
+.source-note a:focus-visible,
+.source-popover :focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.cite_ref[data-source] { gap: 5px; }
+.cite_ref[data-source] .cite {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 7px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--accent-hover-bg);
+  font: 11px/1.6 system-ui, sans-serif;
+  color: var(--accent);
+  max-width: 100%;
+  text-overflow: clip;
+  white-space: normal;
+  cursor: pointer;
+  transition: background .15s;
+}
+.cite_ref[data-source] .cite:hover,
+.cite_ref[data-source] .cite[aria-expanded="true"] { background: var(--cite-hover-bg); }
+.cite_ref[data-source] .cite svg {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 12px;
+  stroke: currentColor;
+  stroke-width: 1.2;
+  fill: none;
+}
+.cite_ref[data-source] .cite > span:last-child { white-space: nowrap; }
+.cite-fallback { font: 11px/1.6 system-ui, sans-serif; }
+.citation-enhanced .cite-fallback { display: none; }
+.citation-margin { display: none; }
+.source-role, .source-title, .source-creator, .source-locations { display: block; }
+.source-role {
+  font: 9px/1.6 system-ui, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--muted);
+}
+.source-title { font: 13px/1.5 system-ui, sans-serif; margin: 5px 0; color: var(--ink0); }
+.source-creator { font: 11px/1.6 system-ui, sans-serif; color: var(--muted); }
+.source-locations { display: flex; flex-wrap: wrap; gap: 3px 11px; margin-top: 6px; }
+.source-locations a { font: 12px/1.6 system-ui, sans-serif; color: var(--accent); padding: 3px 0; text-underline-offset: 3px; }
+.source-note { display: block; }
+.source-note + .source-note { margin-top: 17px; }
+.citation-margin .source-creator { display: none; }
+.source-popover {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  padding: 21px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--paper);
+  color: var(--ink1);
+  width: min(370px, calc(100vw - 28px));
+  max-height: 70dvh;
+  overflow: auto;
+  overflow-wrap: anywhere;
+  box-shadow: 0 12px 40px var(--shadow);
+}
+.source-popover:popover-open { animation: source-reveal .15s ease-out; }
+.source-popover .source-title { font: 23px/1.25 var(--serif); margin: 10px 0; }
+.source-popover .source-role { padding-right: 30px; }
+.source-popover .source-locations { margin-top: 15px; }
+.source-popover .source-locations a {
+  background: var(--accent-hover-bg);
+  border-radius: 4px;
+  padding: 6px 9px;
+  text-decoration: none;
+}
+.source-popover .source-locations a:hover { text-decoration: underline; }
+.source-popover-close {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--muted);
+  font: 19px/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+html[data-source-layout="margin"] .citation-block .cite_ref[data-source] { display: none; }
+html[data-source-layout="margin"] .citation-margin {
+  display: block;
+  border-left: 1px solid var(--line);
+  padding-left: 15px;
+  margin: 8px 0 20px;
+}
+/* Only claim a side margin when the reading column can keep a useful width. */
+@media (min-width: 1150px) {
+  html[data-source-layout="margin"]:has(.citation-block) .layout {
+    max-width: 1420px;
+    grid-template-columns: 250px minmax(0, 1fr);
+  }
+  html[data-source-layout="margin"] .reading-body:has(.citation-block) { padding-right: 224px; }
+  html[data-source-layout="margin"] .citation-block {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 200px;
+    column-gap: 24px;
+    margin-right: -224px;
+  }
+  html[data-source-layout="margin"] .citation-margin { margin-top: 10px; }
+}
+@keyframes source-reveal { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  .source-popover:popover-open { animation: none; }
+  .cite_ref[data-source] .cite { transition: none; }
+}
