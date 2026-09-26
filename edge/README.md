@@ -35,14 +35,15 @@ configuration with:
 
 ```sh
 python3 scripts/build_site.py --out dist
-/opt/homebrew/bin/wrangler deploy --config edge/wrangler.toml --keep-vars
+/opt/homebrew/bin/wrangler deploy --profile Tightness_mannish146 --config edge/wrangler.toml --keep-vars
 ```
 
 ## Deploy automatically after merges
 
-Use Cloudflare Workers Builds to connect the existing `the-mind-edge` Worker
-to GitHub repository `p0s/the-mind`. The GitHub Pages workflow publishes only
-the fallback copy; it does not update `the-mind.xyz`.
+Cloudflare Workers Builds connects the existing `the-mind-edge` Worker to
+GitHub repository `p0s/the-mind`. Merges into `main` trigger validation and
+production deployment. The GitHub Pages workflow publishes only the fallback
+copy; it does not update `the-mind.xyz`.
 
 In the Worker's **Settings > Builds**, use:
 
@@ -62,8 +63,9 @@ the existing server-side variables; the checked-in configuration retains the
 Worker name, account, and custom domains. Use the existing Cloudflare GitHub
 integration; no Cloudflare credential needs to be copied into this repository.
 
-Connecting the repository is a Cloudflare dashboard operation: merging these
-instructions alone does not enable it. After connecting, verify a successful
-production build for the merged commit and read back the changed public pages.
-The local Wrangler command above remains available for an authorized manual
-deployment.
+The existing Cloudflare GitHub App includes `p0s/the-mind` in its selected
+repositories. The connection and settings above are saved in Cloudflare;
+repository files alone do not establish or restore this connection. Check the
+Worker's build history for the merged commit and verify the changed public
+pages after a deployment. The local Wrangler command above remains available
+for an authorized manual deployment using the saved account profile.
