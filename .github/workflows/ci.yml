@@ -30,20 +30,8 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Public repo hygiene check
-        run: python3 scripts/check_public_repo_hygiene.py
-
-      - name: Build all outputs
-        run: python3 scripts/build_all.py
-
-      - name: Lint knowledge base
-        run: python3 scripts/lint_knowledge_base.py
-        
-      - name: Lint provenance
-        run: python3 scripts/lint_provenance.py
-
-      - name: Run unit tests
-        run: python3 -m unittest discover -s tests
+      - name: Validate site
+        run: python3 scripts/check.py
 
       - name: Ensure no tracked diffs
         run: git diff --exit-code
