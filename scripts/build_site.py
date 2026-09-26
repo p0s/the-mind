@@ -278,7 +278,6 @@ def render_cite_group(source_id: str, locators: List[str], sources: Dict[str, Di
     href = located_url(url, normalized[0], source_id=source_id)
     title = re.sub(r"\s+", " ", (meta.get("title") or "").strip()) or source_id
     fmt = infer_presentation_format(meta)
-    label = citation_label(source_id, meta)
     locator_text = citation_locator_text(source_id, normalized)
 
     tooltip_lines = [f"{fmt}: {title}", f"{source_id} — {locator_text}"]
@@ -287,12 +286,48 @@ def render_cite_group(source_id: str, locators: List[str], sources: Dict[str, Di
         tooltip_lines.append(f"Bach time: {seconds_to_hhmmss(bach_s)} (approx)")
     tooltip = " | ".join(tooltip_lines)
 
-    a = (
-        f'<a class="cite" href="{escape_attr(href)}" target="_blank" rel="noopener noreferrer" title="{escape_attr(tooltip)}">{escape(label)}</a>'
+    # Compact in prose; full titles remain in source lists and the detail view.
+    kind = "Paper" if url.lower().split("?", 1)[0].endswith(".pdf") else fmt.title()
+    if any(whole_source_locator_label(source_id, loc) for loc in normalized):
+        kind = "Transcript"
+    role = "Primary source" if source_id == "web_cimc_ai_cimchypothesis_pdf" else "Supporting source"
+    if source_id == "web_cimc_ai_cimcwhitepaper_pdf":
+        role = "Program context"
+
+    def location_label(loc: str) -> str:
+        placeholder = whole_source_locator_label(source_id, loc)
+        if placeholder:
+            return placeholder
+        if loc.startswith("p"):
+            return ("pp. " if "-" in loc else "p. ") + loc[1:].replace("-", "–")
+        return loc.removeprefix("00:")
+
+    locations = []
+    for loc in normalized:
+        target = located_url(url, loc, source_id=source_id)
+        locations.append(
+            f'<a href="{escape_attr(target)}" target="_blank" rel="noopener noreferrer">'
+            f'{escape(location_label(loc))}<span aria-hidden="true"> ↗</span></a>'
+        )
+    extra = f" +{len(normalized) - 1}" if len(normalized) > 1 else ""
+    icon_path = 'M4 2h6l3 3v9H4zM10 2v4h3M6 8h5M6 11h4' if kind in {"Paper", "Essay", "Transcript"} else 'm5 3 8 5-8 5z'
+    icon = f'<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="{icon_path}" /></svg>'
+    label = f"{kind}: {title} — {locator_text}"
+    compact = (
+        f'<a class="cite" href="{escape_attr(href)}" target="_blank" rel="noopener noreferrer" '
+        f'title="{escape_attr(tooltip)}" aria-label="{escape_attr(label)}">{icon}'
+        f'<span>{escape(kind)}</span><span aria-hidden="true">·</span>'
+        f'<span>{escape(location_label(normalized[0]) + extra)}</span></a>'
     )
-    if show_time or len(normalized) > 1 or any(whole_source_locator_label(source_id, loc) for loc in normalized):
-        return f'<span class="cite_ref">{a}<span class="cite_time">{escape(locator_text)}</span></span>'
-    return a
+    creator = " · ".join(filter(None, [meta.get("creator_or_channel"), meta.get("published_date")]))
+    detail = (
+        f'<span class="cite-details" hidden><span class="source-role">{escape(role)} · {escape(kind)}</span>'
+        f'<span class="source-title">{escape(title)}</span><span class="source-creator">{escape(creator)}</span>'
+        f'<span class="source-locations">{"".join(locations)}</span></span>'
+    )
+    # Additional destinations remain directly usable without JavaScript/popovers.
+    fallback = f'<span class="cite-fallback">{" ".join(locations[1:])}</span>' if len(locations) > 1 else ""
+    return f'<span class="cite_ref" data-source="{escape_attr(source_id)}">{compact}{fallback}{detail}</span>'
 
 
 def render_cite_refs(
@@ -844,7 +879,7 @@ def blocks_to_html(
             parts.append(f"</{tag_list}>")
             rendered_refs = render_cite_refs(b.anchors or ([] if not b.anchor else [b.anchor]), sources, show_time=True)
             if rendered_refs:
-                parts.append(rendered_refs)
+                parts.append(f"<p>{rendered_refs}</p>")
             if b.tag:
                 parts.append(wrap_close)
             continue

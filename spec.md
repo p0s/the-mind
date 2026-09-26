@@ -103,7 +103,7 @@ Meaning-level reproducibility remains the standard.
 
 - Keep source anchors in markdown using the existing canonical form:
   - `<!-- src: <source_id> @ <locator> -->`
-- Public pages may stay clean and readable; the build can render anchors lightly.
+- Prose citations default to compact source-type and location labels. Opening one reveals the full title and every linked location. A small Inline / Margin switch remembers the reader's choice locally; margin notes sit below their passage on narrow screens. Source lists keep full titles, and source links remain usable without JavaScript.
 - The glossary / claims / sources layer should make it easy for a reader or contributor to go deeper.
 - Treat the hypothesis paper as the primary source, talks and interviews as supporting sources, source-grounded editorial bridges as project synthesis, and unresolved claims as open questions.
 - Make those distinctions explicit on key pages and in the claims ledger without turning every paragraph into a badge.

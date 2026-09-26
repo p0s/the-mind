@@ -19,6 +19,11 @@
     <meta name="twitter:image" content="{{og_image_url}}" />
     <title>{{title}}</title>
     <script>
+      (function () {
+        try {
+          if (localStorage.getItem("source-layout") === "margin") document.documentElement.dataset.sourceLayout = "margin";
+        } catch (e) {}
+      })();
       // Set theme early (avoids flash). Stored preference overrides system preference.
       (function () {
         try {
@@ -36,6 +41,7 @@
       })();
     </script>
     <link rel="stylesheet" href="{{root}}assets/style.css" />
+    <link rel="stylesheet" href="{{root}}assets/citations.css" />
   </head>
   <body class="{{body_class}}">
     <a class="skip-link" href="#main">Skip to content</a>
@@ -97,7 +103,13 @@
 
       <main id="main" class="main">
         <article class="paper">
-          {{content}}
+          <div id="sourceLayoutControl" class="source-layout-control" role="group" aria-label="Source placement" hidden>
+            <span>Sources</span>
+            <button type="button" data-source-layout="inline" aria-pressed="true">Inline</button>
+            <span aria-hidden="true">/</span>
+            <button type="button" data-source-layout="margin" aria-pressed="false">Margin</button>
+          </div>
+          <div class="reading-body">{{content}}</div>
         </article>
       </main>
     </div>
@@ -119,6 +131,7 @@
     </script>
     <script src="{{root}}assets/search.js"></script>
     <script src="{{root}}assets/app.js"></script>
+    <script src="{{root}}assets/citations.js"></script>
     {{extra_scripts}}
   </body>
 </html>

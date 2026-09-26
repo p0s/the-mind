@@ -31,7 +31,7 @@ PDF example (page locator):
 
 `[BACH] Realness is treated as a representational feature. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p16 -->`
 
-The site builder renders this as a visible hyperlink (label is derived from `sources/sources.csv`), with the locator in the tooltip.
+The site builder renders a compact source-type and location link, with metadata derived from `sources/sources.csv`. With JavaScript, it opens the full title and a separate link for every location. Readers may switch to margin notes; these move below the passage on narrow screens. Without JavaScript, the compact label and additional location links go directly to the originals. The full title and canonical locators also remain in the tooltip.
 
 ### 2) List citations (visible)
 
