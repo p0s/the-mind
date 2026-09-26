@@ -10,7 +10,7 @@ Large language models are unusually good at producing first-person-seeming text.
 
 That makes people ask: maybe the model really has qualia?
 
-The problem is that language is evidence of a model of language use. It is not, by itself, evidence of the internal organization that would make the report a report of felt experience. <!-- src: yt_3MkJEGE9GRY @ 01:05:40 -->
+Fluent self-report is not sufficient, by itself, to establish the internal organization that would make it a report of felt experience. <!-- src: yt_3MkJEGE9GRY @ 01:05:40 -->
 
 ## What qualia would mean here
 
@@ -43,9 +43,9 @@ Take anxiety.
 
 A person with anxiety does not merely produce the sentence “I am anxious”. Anxiety changes attention, planning, bodily state, salience, and policy. It changes what futures loom large. It matters to the controller. <!-- src: yt_dW5uZLCm0Tg @ 00:49:17; yt_xthJ1R9Ifc0 @ 00:06:05 -->
 
-A model can describe that pattern without implementing it.
+A model can describe that pattern without implementing it. It may also contain emotion-related representations that influence its processing and behavior. Whether those processes are accompanied by subjective experience remains an open question. <!-- src: web_joscha_substack_com_p_the_age_of_age @ 00:00:00; web_cimcai_substack_com_p_cimc_berlin_recap_hackathons_and @ 00:00:00 -->
 
-That is the core issue. A system that talks expertly about inner life may still be doing expert simulation rather than undergoing the inner life it describes.
+We therefore need to distinguish emotional language, functional emotion-related processes, and felt experience.
 
 ## The “dream within the dream” point
 
@@ -93,3 +93,5 @@ For now:
 - yt_xthJ1R9Ifc0 @ 00:06:05
 - yt_O5hymlaldf0 @ 00:01:58
 - web_cimc_ai_cimchypothesis_pdf @ p20-23
+- web_joscha_substack_com_p_the_age_of_age @ 00:00:00
+- web_cimcai_substack_com_p_cimc_berlin_recap_hackathons_and @ 00:00:00

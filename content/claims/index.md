@@ -137,7 +137,11 @@ Basis: **Project synthesis** from the primary paper and supporting sources.
 
 Open question: Whether any present LLM has qualia remains an **Open question**.
 
+Clarification: Functional emotion-related representations may influence a model's behavior; that alone does not establish subjective experience. This is project synthesis informed by Bach's AGE essay and Hikari Sorensen's September CIMC note.
+
 Supports:
 - web_cimc_ai_cimchypothesis_pdf @ p21-23
 - yt_34VOI_oo-qM @ 00:25:22
 - yt_O5hymlaldf0 @ 00:01:58
+- web_joscha_substack_com_p_the_age_of_age @ 00:00:00
+- web_cimcai_substack_com_p_cimc_berlin_recap_hackathons_and @ 00:00:00
