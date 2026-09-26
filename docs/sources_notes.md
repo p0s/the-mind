@@ -10,6 +10,9 @@ The `notes` column in `sources/sources.csv` is a space-separated list of `key=va
 - `discovered_via=<freeform>` (where the link came from)
 - `license=<freeform>` (e.g., `cc-by-4.0`)
 - `doi=<freeform>` (when available)
+- `review=metadata|excerpts|full_text` (scope of the recorded review: publisher metadata/descriptions, selected source passages, or the complete written source; none means a claim is independently validated)
+- `verified_on=YYYY-MM-DD` (date the canonical publisher page or metadata was checked)
+- `transcript=official` (the publisher provides or links an official transcript; this does not mean the transcript has been read)
 
 ## Optional future keys (recommended)
 
