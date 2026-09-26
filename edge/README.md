@@ -38,5 +38,32 @@ python3 scripts/build_site.py --out dist
 /opt/homebrew/bin/wrangler deploy --config edge/wrangler.toml --keep-vars
 ```
 
-This task only prepares the source and command; it does not attach either
-Custom Domain or set analytics secrets.
+## Deploy automatically after merges
+
+Use Cloudflare Workers Builds to connect the existing `the-mind-edge` Worker
+to GitHub repository `p0s/the-mind`. The GitHub Pages workflow publishes only
+the fallback copy; it does not update `the-mind.xyz`.
+
+In the Worker's **Settings > Builds**, use:
+
+| Setting | Value |
+| --- | --- |
+| Production branch | `main` |
+| Root directory | Repository root |
+| Build variable | `NODE_VERSION=24` |
+| Build command | `npm ci && python3 scripts/check.py && git diff --exit-code` |
+| Deploy command | `npx --yes wrangler@4.138.0 deploy --config edge/wrangler.toml --keep-vars --strict` |
+| Builds for non-production branches | Disabled |
+
+The shared `scripts/check.py` command runs the same build, generated-link checks,
+public-repository hygiene, content and provenance lint, and unit tests as GitHub
+CI. A failed check stops the build before deployment. `--keep-vars` preserves
+the existing server-side variables; the checked-in configuration retains the
+Worker name, account, and custom domains. Use the existing Cloudflare GitHub
+integration; no Cloudflare credential needs to be copied into this repository.
+
+Connecting the repository is a Cloudflare dashboard operation: merging these
+instructions alone does not enable it. After connecting, verify a successful
+production build for the merged commit and read back the changed public pages.
+The local Wrangler command above remains available for an authorized manual
+deployment.
