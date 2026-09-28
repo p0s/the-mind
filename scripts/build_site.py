@@ -33,10 +33,12 @@ import os
 import re
 import shutil
 import subprocess
+import xml.etree.ElementTree as ET
 from dataclasses import dataclass
+from html.parser import HTMLParser
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlsplit
 
 from _core.locators import normalize_locator
 from _core.sources import located_url, whole_source_locator_label
@@ -481,6 +483,35 @@ def read_markdown_or_missing(path: Path, fallback_title: str) -> str:
     if path.exists():
         return path.read_text(encoding="utf-8", errors="replace")
     return f"# {fallback_title}\n\n_{fallback_title} content missing: {path.relative_to(ROOT)}._\n"
+
+
+def is_draft_markdown(markdown: str) -> bool:
+    lines = (markdown or "").splitlines()
+    if not lines or lines[0].strip() not in {"---", "+++"}:
+        return False
+    delimiter = lines[0].strip()
+    end = next((index for index, line in enumerate(lines[1:], start=1) if line.strip() == delimiter), None)
+    if end is None:
+        return False
+
+    for line in lines[1:end]:
+        match = re.match(r"^\s*draft\s*[:=]\s*(.*?)\s*$", line, re.IGNORECASE)
+        if not match:
+            continue
+        value = match.group(1).split("#", 1)[0].strip().strip("\"'").lower()
+        return value in {"true", "yes", "on", "1"}
+    return False
+
+
+def question_markdown_pages(directory: Path) -> List[Tuple[Path, str]]:
+    pages: List[Tuple[Path, str]] = []
+    for path in sorted(directory.glob("*.md")):
+        if not path.is_file() or path.name == "index.md":
+            continue
+        markdown = path.read_text(encoding="utf-8", errors="replace")
+        if not is_draft_markdown(markdown):
+            pages.append((path, markdown))
+    return pages
 
 
 def inline_format(s: str, *, root: str) -> str:
@@ -1112,6 +1143,171 @@ def write_robots(out_dir: Path, base_url: str) -> None:
     (out_dir / "robots.txt").write_text(text, encoding="utf-8")
 
 
+class _SitemapPageParser(HTMLParser):
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.canonicals: List[str] = []
+        self.noindex = False
+        self.redirect = False
+
+    def handle_starttag(self, tag: str, attrs: List[Tuple[str, Optional[str]]]) -> None:
+        values = {name.lower(): value or "" for name, value in attrs}
+        if tag.lower() == "link" and "canonical" in values.get("rel", "").lower().split():
+            href = values.get("href", "").strip()
+            if href:
+                self.canonicals.append(href)
+        if tag.lower() != "meta":
+            return
+        if values.get("http-equiv", "").lower() == "refresh":
+            self.redirect = True
+        if values.get("name", "").lower() not in {"robots", "googlebot", "bingbot", "googlebot-news"}:
+            return
+        directives = re.split(r"[\s,;]+", values.get("content", "").lower())
+        self.noindex = self.noindex or "noindex" in directives
+
+
+def _same_site_https_url(value: str, base_parts, context: str):
+    parts = urlsplit(value)
+    if parts.scheme != "https" or parts.netloc.lower() != base_parts.netloc.lower():
+        raise ValueError(f"{context} must use the canonical HTTPS host {base_parts.netloc}: {value}")
+    if parts.query or parts.fragment:
+        raise ValueError(f"{context} must not contain a query or fragment: {value}")
+    return parts
+
+
+def _redirect_patterns(out_dir: Path, canonical_host: str) -> List[str]:
+    path = out_dir / "_redirects"
+    if not path.is_file():
+        return []
+    patterns: List[str] = []
+    for raw_line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        line = raw_line.strip()
+        if not line or line.startswith("#"):
+            continue
+        fields = line.split()
+        if len(fields) < 2:
+            continue
+        status = fields[2] if len(fields) > 2 else "301"
+        if status not in {"301", "302", "303", "307", "308"}:
+            continue
+        source = fields[0]
+        source_parts = urlsplit(source)
+        if source_parts.scheme or source_parts.netloc:
+            if source_parts.netloc and source_parts.netloc.lower() != canonical_host.lower():
+                continue
+            source = source_parts.path
+        patterns.append(source if source.startswith("/") else f"/{source}")
+    return patterns
+
+
+def _redirect_matches(path: str, pattern: str) -> bool:
+    expression = ".*".join(re.escape(part) for part in pattern.split("*"))
+    return re.fullmatch(expression, path) is not None
+
+
+def validate_sitemap_output(out_dir: Path, base_url: str) -> Dict[str, int]:
+    """Fail the build unless the sitemap exactly covers indexable HTML output."""
+    base_parts = urlsplit(base_url)
+    if base_parts.scheme != "https" or not base_parts.netloc or base_parts.query or base_parts.fragment:
+        raise ValueError(f"Site base URL must use HTTPS and have no query or fragment: {base_url}")
+    root_sitemap = urljoin(base_url, "sitemap.xml")
+    robots_path = out_dir / "robots.txt"
+    sitemap_path = out_dir / "sitemap.xml"
+    if not robots_path.is_file():
+        raise ValueError("Build output is missing robots.txt")
+    if not sitemap_path.is_file():
+        raise ValueError("Build output is missing sitemap.xml")
+
+    advertised = [
+        match.group(1)
+        for line in robots_path.read_text(encoding="utf-8", errors="replace").splitlines()
+        if (match := re.match(r"^\s*Sitemap:\s*(\S+)\s*$", line, re.IGNORECASE))
+    ]
+    if advertised != [root_sitemap]:
+        raise ValueError(f"robots.txt must advertise only the canonical sitemap {root_sitemap}; found {advertised}")
+    for url in advertised:
+        _same_site_https_url(url, base_parts, "robots.txt Sitemap directive")
+
+    expected: set[str] = set()
+    noindex_pages: set[str] = set()
+    redirect_pages: set[str] = set()
+    redirects = _redirect_patterns(out_dir, base_parts.netloc)
+    for page_path in sorted(out_dir.rglob("*.html")):
+        if page_path.name.lower() == "404.html":
+            continue
+        relative = page_path.relative_to(out_dir).as_posix()
+        output_url = absolute_page_url(base_url, relative)
+        metadata = _SitemapPageParser()
+        metadata.feed(page_path.read_text(encoding="utf-8", errors="replace"))
+
+        if metadata.redirect:
+            redirect_pages.add(output_url)
+            continue
+        if metadata.noindex:
+            noindex_pages.add(output_url)
+        if len(metadata.canonicals) == 0 and metadata.noindex:
+            continue
+        if len(metadata.canonicals) != 1:
+            raise ValueError(f"{relative} must have exactly one canonical link; found {len(metadata.canonicals)}")
+
+        canonical = metadata.canonicals[0]
+        _same_site_https_url(canonical, base_parts, f"Canonical link in {relative}")
+        if canonical != output_url:
+            raise ValueError(f"Canonical link in {relative} does not match its output URL: {canonical} != {output_url}")
+        if metadata.noindex:
+            noindex_pages.add(canonical)
+            continue
+        if any(_redirect_matches(urlsplit(output_url).path, pattern) for pattern in redirects):
+            continue
+        if canonical in expected:
+            raise ValueError(f"More than one rendered page has canonical URL {canonical}")
+        expected.add(canonical)
+
+    try:
+        sitemap_root = ET.parse(sitemap_path).getroot()
+    except ET.ParseError as error:
+        raise ValueError(f"sitemap.xml is not valid XML: {error}") from error
+    if sitemap_root.tag.rsplit("}", 1)[-1] != "urlset":
+        raise ValueError("sitemap.xml must be a urlset for this single-site build")
+
+    listed_values: List[str] = []
+    for url_node in sitemap_root:
+        if url_node.tag.rsplit("}", 1)[-1] != "url":
+            continue
+        locations = [
+            (child.text or "").strip()
+            for child in url_node
+            if child.tag.rsplit("}", 1)[-1] == "loc"
+        ]
+        if len(locations) != 1 or not locations[0]:
+            raise ValueError("Every sitemap url record must contain exactly one non-empty loc")
+        _same_site_https_url(locations[0], base_parts, "Page URL in sitemap.xml")
+        listed_values.append(locations[0])
+
+    listed = set(listed_values)
+    if len(listed_values) != len(listed):
+        raise ValueError("sitemap.xml contains duplicate page URLs")
+    for url in sorted(listed):
+        if url in noindex_pages:
+            raise ValueError(f"sitemap.xml includes a noindex page: {url}")
+        if url in redirect_pages:
+            raise ValueError(f"sitemap.xml includes a redirect page: {url}")
+        if any(_redirect_matches(urlsplit(url).path, pattern) for pattern in redirects):
+            raise ValueError(f"sitemap.xml includes a redirect route: {url}")
+
+    missing = sorted(expected - listed)
+    unexpected = sorted(listed - expected)
+    if missing or unexpected:
+        details = []
+        if missing:
+            details.append(f"missing indexable pages: {', '.join(missing[:8])}")
+        if unexpected:
+            details.append(f"unexpected sitemap pages: {', '.join(unexpected[:8])}")
+        raise ValueError("Sitemap coverage failed: " + "; ".join(details))
+
+    return {"pages": len(expected), "sitemaps": 1}
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", default=str(ROOT / "dist"), help="Output directory (default: ./dist)")
@@ -1145,10 +1341,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         anchor_id = slugify(h1)
         chapter_pages.append((anchor_id, title, str(p), h1))
 
-    question_files = sorted([p for p in QUESTIONS_DIR.glob("*.md") if p.is_file() and p.name != "index.md"])
     question_pages: List[Tuple[str, str, Path]] = []
-    for p in question_files:
-        md = p.read_text(encoding="utf-8", errors="replace")
+    for p, md in question_markdown_pages(QUESTIONS_DIR):
         question_pages.append((f"questions/{p.stem}/index.html", markdown_title(md, p.stem.replace("-", " ")), p))
     question_nav = [(href, title) for href, title, _path in question_pages]
 
@@ -1159,6 +1353,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         return build_nav(question_nav, current_href=href, root=page_root(href))
 
     def emit(href: str, title: str, md: str, *, page_kind: str = "") -> None:
+        if is_draft_markdown(md):
+            return
         _html_body, text_body = emit_markdown_page(
             out_dir=out_dir,
             template=template,
@@ -1291,8 +1487,9 @@ def main(argv: Optional[List[str]] = None) -> int:
     (out_dir / "search_index.json").write_text(json.dumps(search_index, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
     write_sitemap(out_dir, base_url, page_hrefs)
     write_robots(out_dir, base_url)
+    sitemap_result = validate_sitemap_output(out_dir, base_url)
 
-    print(f"wrote site to {out_dir}")
+    print(f"wrote site to {out_dir}; sitemap verified: {sitemap_result['pages']} indexable pages")
     return 0
 
 
