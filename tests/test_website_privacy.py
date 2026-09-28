@@ -22,8 +22,10 @@ class TestWebsitePrivacy(unittest.TestCase):
 
         self.assertIn('method="post" action="/analytics/opt-out"', privacy)
         self.assertIn('method="post" action="/analytics/opt-in"', privacy)
-        self.assertIn("retains live analytics for 13 months", privacy)
-        self.assertIn("Encrypted operational backup copies expire within 30 days", privacy)
+        self.assertIn("estimated sessions for 13 months", privacy)
+        self.assertIn("Encrypted backups expire within 30 days", privacy)
+        self.assertIn("IP address and browser details are used briefly", privacy)
+        self.assertIn("Do Not Track, Global Privacy Control", privacy)
         self.assertIn('href="./privacy/index.html"', home)
         self.assertIn("https://the-mind.xyz/privacy/", sitemap)
 
