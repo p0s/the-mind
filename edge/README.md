@@ -58,10 +58,13 @@ In the Worker's **Settings > Builds**, use:
 
 The shared `scripts/check.py` command runs the same build, generated-link checks,
 public-repository hygiene, content and provenance lint, and unit tests as GitHub
-CI. A failed check stops the build before deployment. `--keep-vars` preserves
-the existing server-side variables; the checked-in configuration retains the
-Worker name, account, and custom domains. Use the existing Cloudflare GitHub
-integration; no Cloudflare credential needs to be copied into this repository.
+CI. The build verifies that the sitemap exactly matches rendered indexable
+pages, uses the canonical host, and excludes drafts, noindex pages, and
+redirects. A failed check stops the build before deployment. `--keep-vars`
+preserves the existing server-side variables; the checked-in configuration
+retains the Worker name, account, and custom domains. Use the existing
+Cloudflare GitHub integration; no Cloudflare credential needs to be copied into
+this repository.
 
 The existing Cloudflare GitHub App includes `p0s/the-mind` in its selected
 repositories. The connection and settings above are saved in Cloudflare;
