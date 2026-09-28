@@ -970,10 +970,8 @@ def render_page(
 
 
 WEBSITE_PRIVACY_HTML = """<h1>Website privacy</h1>
-<p>This website counts successful public HTML document requests at the edge so I can understand basic site reach and estimate sessions. It does not run a browser tracker, set an analytics identifier, collect query strings, or record clicks, screen size, custom events, or account identity.</p>
-<p>For an eligible request, the analytics gateway receives the public path, referring origin, original browser user agent, and a trustworthy network address for transient processing. It keeps country only when Cloudflare supplies it as trusted metadata, discards raw IP and user-agent data after processing, links data to this site only, and retains live analytics for 13 months. Encrypted operational backup copies expire within 30 days after live data is removed. This does not change native-app telemetry promises.</p>
-<p>Requests from recognizable bots, prefetches, redirects, errors, assets, private paths, or visitors sending Do Not Track or Global Privacy Control are skipped. The counts are estimates and do not claim to identify people or accurately distinguish humans, downloads, or conversions.</p>
-<p>Choose a preference without JavaScript. No cookie is set until you submit one of these forms; the host-only preference cookie is HttpOnly, Secure, SameSite=Lax, and expires after one year unless you opt in sooner.</p>
+<p>We count public page requests to estimate visits. There is no browser tracker or analytics ID. Counts exclude recognizable bots and visitors using Do Not Track, Global Privacy Control, or the choice below.</p>
+<p>We keep the page path, referring site, country when available, and estimated sessions for 13 months. IP address and browser details are used briefly to process a request, then discarded. Encrypted backups expire within 30 days after live data is removed. A cookie on this site remembers your choice if you use the forms below.</p>
 <form method="post" action="/analytics/opt-out"><button type="submit">Opt out of website request counting</button></form>
 <form method="post" action="/analytics/opt-in"><button type="submit">Opt in to website request counting</button></form>
 <p><a href="../index.html">Back to the-mind</a></p>"""
