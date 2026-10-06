@@ -71,7 +71,12 @@ class TestSitemapValidation(unittest.TestCase):
         (questions / "draft.md").write_text("---\ndraft: true\n---\n# Draft question\n", encoding="utf-8")
         output = Path(self.temporary.name) / "site"
 
-        with patch.object(build_site, "QUESTIONS_DIR", questions):
+        existing_description = build_site.page_description
+        def description(href):
+            if href == "questions/published/index.html":
+                return "Published question used to check sitemap draft filtering."
+            return existing_description(href)
+        with patch.object(build_site, "QUESTIONS_DIR", questions), patch.object(build_site, "page_description", side_effect=description):
             self.assertEqual(build_site.main(["--out", str(output)]), 0)
 
         self.assertTrue((output / "questions/published/index.html").is_file())
