@@ -932,6 +932,14 @@ def blocks_to_html(
     return "\n".join(parts), " ".join([p for p in search_parts if p]).strip()
 
 
+def page_description(href: str) -> str:
+    descriptions = json.loads((ROOT / "site" / "page-descriptions.json").read_text(encoding="utf-8"))
+    description = descriptions.get(href)
+    if not isinstance(description, str) or not description.strip():
+        raise ValueError(f"Missing explicit page description: {href}")
+    return description.strip()
+
+
 def read_template() -> str:
     return TEMPLATE_BASE.read_text(encoding="utf-8", errors="replace")
 
@@ -978,6 +986,7 @@ def render_page(
     template: str,
     *,
     title: str,
+    description: str,
     nav: str,
     content: str,
     root: str,
@@ -987,8 +996,11 @@ def render_page(
     body_class: str = "",
     extra_scripts: str = "",
 ) -> str:
+    if not description.strip():
+        raise ValueError("Page description must not be empty")
     return (
         template.replace("{{title}}", escape(title))
+        .replace("{{description}}", escape_attr(description))
         .replace("{{nav}}", nav)
         .replace("{{content}}", content)
         .replace("{{root}}", root)
@@ -1023,12 +1035,16 @@ def emit_markdown_page(
 ) -> Tuple[str, str]:
     root = page_root(href)
     html_body, text_body = blocks_to_html(parse_blocks(md), sources, root=root, page_kind=page_kind)
-    body_class = "supports-annotations" if href == "reader/index.html" else ""
+    body_classes = ["supports-annotations"] if href == "reader/index.html" else []
+    if 'class="cite_ref" data-source=' in html_body:
+        body_classes.append("has-citations")
+    body_class = " ".join(body_classes)
     write(
         out_dir / href,
         render_page(
             template,
             title=title,
+            description=page_description(href),
             nav=nav_html,
             content=html_body,
             root=root,
@@ -1370,7 +1386,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         page_hrefs.append(href)
         search_index.append(search_index_entry(href, title, text_body))
 
-    emit("index.html", "the-mind", read_markdown_or_missing(HOME_MD, "the-mind"))
+    home_md = read_markdown_or_missing(HOME_MD, "Mind, consciousness, and AI")
+    emit("index.html", markdown_title(home_md, "Mind, consciousness, and AI") + " | the-mind", home_md)
 
     guide_md = read_markdown_or_missing(GUIDE_MD, "How the Mind Works")
     emit("guide/index.html", markdown_title(guide_md, "How the Mind Works"), guide_md)
@@ -1437,6 +1454,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         render_page(
             template,
             title="Website privacy",
+            description=page_description(privacy_href),
             nav=nav_for(privacy_href),
             content=WEBSITE_PRIVACY_HTML,
             root=page_root(privacy_href),

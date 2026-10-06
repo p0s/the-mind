@@ -1,5 +1,7 @@
 # Do LLMs have qualia?
 
+**The sources discussed here do not establish that LLMs have qualia.** Fluent self-report alone does not settle whether a system has subjective experience. <!-- src: web_cimc_ai_cimchypothesis_pdf @ p20-23 -->
+
 A system can say “I feel anxious” without feeling anxious.
 
 That sounds obvious when we say it about fiction or acting. It becomes less obvious when the language gets strong enough to look like self-report. But the basic distinction remains: **fluent description is not the same thing as experience**. <!-- src: yt_34VOI_oo-qM @ 00:25:22 -->

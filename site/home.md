@@ -1,4 +1,4 @@
-# the-mind
+# Mind, consciousness, and AI
 
 **What is happening when you experience a world, feel like a self, or make a choice?**
 

@@ -9,6 +9,11 @@
   color: var(--muted);
 }
 .source-layout-control[hidden], .cite-details[hidden] { display: none; }
+/* Reserve the source switch before enhancement; pages without citations keep no gap. */
+.has-citations .source-layout-control[hidden] {
+  display: flex;
+  visibility: hidden;
+}
 .source-layout-control > span:first-child { margin-right: 3px; }
 .source-layout-control button {
   background: none;
@@ -116,7 +121,7 @@
   font: 19px/1 system-ui, sans-serif;
   cursor: pointer;
 }
-html[data-source-layout="margin"] .citation-block .cite_ref[data-source] { display: none; }
+html[data-source-layout="margin"] .has-citations .reading-body .cite_ref[data-source] { display: none; }
 html[data-source-layout="margin"] .citation-margin {
   display: block;
   border-left: 1px solid var(--line);
@@ -125,11 +130,11 @@ html[data-source-layout="margin"] .citation-margin {
 }
 /* Only claim a side margin when the reading column can keep a useful width. */
 @media (min-width: 1150px) {
-  html[data-source-layout="margin"]:has(.citation-block) .layout {
+  html[data-source-layout="margin"] .has-citations .layout {
     max-width: 1420px;
     grid-template-columns: 250px minmax(0, 1fr);
   }
-  html[data-source-layout="margin"] .reading-body:has(.citation-block) { padding-right: 224px; }
+  html[data-source-layout="margin"] .has-citations .reading-body { padding-right: 224px; }
   html[data-source-layout="margin"] .citation-block {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 200px;
