@@ -86,5 +86,33 @@ class TestSitemapValidation(unittest.TestCase):
         self.assertNotIn("https://the-mind.xyz/questions/draft/", sitemap)
 
 
+class TestIndexNowKeyDeployment(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temporary = tempfile.TemporaryDirectory(prefix="the-mind-indexnow-")
+        self.addCleanup(self.temporary.cleanup)
+        self.root = Path(self.temporary.name)
+        self.key_dir = self.root / "keys"
+        self.key_dir.mkdir()
+        self.out_dir = self.root / "dist"
+        self.out_dir.mkdir()
+
+    def test_copies_matching_key_to_output_root(self) -> None:
+        key = "0123456789abcdef0123456789abcdef"
+        (self.key_dir / f"{key}.txt").write_text(f"{key}\n", encoding="utf-8")
+
+        with patch.object(build_site, "INDEXNOW_KEY_DIR", self.key_dir):
+            build_site.copy_indexnow_key(self.out_dir)
+
+        self.assertEqual((self.out_dir / f"{key}.txt").read_text(encoding="utf-8"), f"{key}\n")
+
+    def test_rejects_key_content_that_does_not_match_filename(self) -> None:
+        key = "0123456789abcdef0123456789abcdef"
+        (self.key_dir / f"{key}.txt").write_text("mismatch\n", encoding="utf-8")
+
+        with patch.object(build_site, "INDEXNOW_KEY_DIR", self.key_dir):
+            with self.assertRaisesRegex(ValueError, "content must exactly match"):
+                build_site.copy_indexnow_key(self.out_dir)
+
+
 if __name__ == "__main__":
     unittest.main()

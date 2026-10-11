@@ -48,6 +48,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 TEMPLATE_BASE = ROOT / "site" / "templates" / "base.html"
 ASSETS_DIR = ROOT / "site" / "assets"
+INDEXNOW_KEY_DIR = ROOT / "site" / "indexnow"
 HOME_MD = ROOT / "site" / "home.md"
 
 CHAPTERS_DIR = ROOT / "manuscript" / "chapters"
@@ -1130,6 +1131,21 @@ def copy_root_assets(out_dir: Path) -> None:
             shutil.copy2(p, out_dir / name)
 
 
+def copy_indexnow_key(out_dir: Path) -> None:
+    """Publish exactly one protocol key at the host root."""
+    key_files = sorted(INDEXNOW_KEY_DIR.glob("*.txt"))
+    if len(key_files) != 1:
+        raise ValueError(f"Expected one IndexNow key file, found {len(key_files)}")
+
+    key_file = key_files[0]
+    key = key_file.stem
+    if re.fullmatch(r"[a-f0-9]{32}", key) is None:
+        raise ValueError("IndexNow key filename must be 32 lowercase hexadecimal characters")
+    if key_file.read_text(encoding="utf-8") != f"{key}\n":
+        raise ValueError("IndexNow key file content must exactly match its filename")
+    shutil.copy2(key_file, out_dir / key_file.name)
+
+
 def write_nojekyll(out_dir: Path) -> None:
     # Makes branch-based Pages deployments work (no Jekyll processing).
     (out_dir / ".nojekyll").write_text("", encoding="utf-8")
@@ -1340,6 +1356,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     copy_assets(out_dir)
     copy_root_assets(out_dir)
+    copy_indexnow_key(out_dir)
     write_nojekyll(out_dir)
 
     sources = load_sources()
