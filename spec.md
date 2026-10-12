@@ -141,6 +141,16 @@ No silent drift:
 - if the content materially changes its meaning or structure, update the spec.
 - if new sources materially change core claims, update the glossary / claims / sources and then the main walkthrough/questions as needed.
 
+## Production URL notifications
+
+After a successful production Worker release on `main`, the release notifier
+verifies the opaque source identity, the host's IndexNow key, and the live
+sitemap before sending Bing the added, changed, or deleted canonical public
+URLs since the verified live baseline. It sends no visitor data. Preview,
+failed, and no-op releases send nothing; an HTTP `202` is recorded as received
+while key validation is pending. Per-host pending state is retained for bounded
+retry on a later successful production release and fails closed if it is lost.
+
 ## Non-goals
 
 V2 is not:

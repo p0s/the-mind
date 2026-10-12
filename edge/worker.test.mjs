@@ -49,6 +49,16 @@ const assets = {
 };
 assert.equal(await fetchAssets(page, { ASSETS: assets }), document);
 
+const releaseIdentity = await worker.fetch(new Request("https://the-mind.xyz/.well-known/indexnow-release.json"), {
+  ASSETS: {
+    fetch: async () => new Response('{"version":1}', { status: 200, headers: { "Cache-Control": "public, max-age=3600" } }),
+  },
+}, {});
+assert.equal(releaseIdentity.status, 200);
+assert.equal(releaseIdentity.headers.get("Cache-Control"), "no-store");
+assert.equal(releaseIdentity.headers.get("X-Robots-Tag"), "noindex");
+assert.equal(await releaseIdentity.text(), '{"version":1}');
+
 const originalFetch = globalThis.fetch;
 const seen = [];
 globalThis.fetch = async (input, options) => {

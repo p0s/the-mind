@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -112,6 +113,26 @@ class TestIndexNowKeyDeployment(unittest.TestCase):
         with patch.object(build_site, "INDEXNOW_KEY_DIR", self.key_dir):
             with self.assertRaisesRegex(ValueError, "content must exactly match"):
                 build_site.copy_indexnow_key(self.out_dir)
+
+    def test_release_identity_accepts_robots_txt_and_replaces_on_rebuild(self) -> None:
+        key = "0123456789abcdef0123456789abcdef"
+        (self.key_dir / f"{key}.txt").write_text(f"{key}\n", encoding="utf-8")
+
+        with patch.object(build_site, "INDEXNOW_KEY_DIR", self.key_dir):
+            build_site.copy_indexnow_key(self.out_dir)
+        build_site.write_robots(self.out_dir, BASE_URL)
+
+        with patch.dict("os.environ", {"INDEXNOW_SOURCE_SHA": "a" * 40}):
+            build_site.write_indexnow_release(self.out_dir)
+        first = json.loads((self.out_dir / ".well-known/indexnow-release.json").read_text(encoding="utf-8"))
+
+        with patch.dict("os.environ", {"INDEXNOW_SOURCE_SHA": "b" * 40}):
+            build_site.write_indexnow_release(self.out_dir)
+        second = json.loads((self.out_dir / ".well-known/indexnow-release.json").read_text(encoding="utf-8"))
+
+        self.assertEqual(first["host"], "the-mind.xyz")
+        self.assertNotEqual(first["revision"], second["revision"])
+        self.assertTrue((self.out_dir / "robots.txt").is_file())
 
 
 if __name__ == "__main__":
