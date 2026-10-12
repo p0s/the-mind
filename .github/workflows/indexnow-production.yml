@@ -1,0 +1,160 @@
+name: IndexNow production
+run-name: IndexNow ${{ github.event.check_run.name }} ${{ github.event.check_run.head_sha }}
+
+on:
+  check_run:
+    types: [completed]
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  notify:
+    if: >-
+      github.event.check_run.app.slug == 'cloudflare-workers-and-pages' &&
+      github.event.check_run.status == 'completed' &&
+      github.event.check_run.conclusion == 'success' &&
+      github.event.check_run.check_suite.head_branch == 'main' &&
+      github.event.check_run.name == 'Workers Builds: the-mind-edge'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: indexnow-the-mind-edge
+      cancel-in-progress: false
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+      GH_TOKEN: ${{ github.token }}
+      TARGET_SHA: ${{ github.event.check_run.head_sha }}
+
+    steps:
+      - name: Checkout successful production source
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.check_run.head_sha }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+
+      - name: Confirm target remains on production main
+        run: |
+          git fetch --no-tags origin main
+          git merge-base --is-ancestor "$TARGET_SHA" origin/main
+
+      - name: Resolve exact production host
+        id: context
+        run: |
+          echo 'host=the-mind.xyz' >> "$GITHUB_OUTPUT"
+          echo 'slug=the-mind-xyz' >> "$GITHUB_OUTPUT"
+          echo 'baseline=cf581a3a991229139f9fd60d3a8ee9605a137f05' >> "$GITHUB_OUTPUT"
+
+      - name: Restore last IndexNow state or identify first activation
+        id: restore
+        run: node scripts/restore-indexnow-state.mjs --host '${{ steps.context.outputs.host }}'
+
+      - name: Persist first-activation marker
+        if: steps.restore.outputs.bootstrap == 'true'
+        run: |
+          node scripts/indexnow-state.mjs bootstrap \
+            --host '${{ steps.context.outputs.host }}' \
+            --baseline-source-sha '${{ steps.context.outputs.baseline }}' \
+            --output .indexnow/run/bootstrap/state.json
+
+      - name: Upload first-activation marker
+        if: steps.restore.outputs.bootstrap == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: indexnow-state-${{ steps.context.outputs.slug }}-bootstrap-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .indexnow/run/bootstrap/state.json
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Download exact prior state artifact
+        if: steps.restore.outputs.bootstrap == 'false'
+        run: >-
+          gh run download '${{ steps.restore.outputs.run_id }}'
+          --repo "$GITHUB_REPOSITORY"
+          --name '${{ steps.restore.outputs.artifact_name }}'
+          --dir .indexnow/restore
+
+      - name: Install production build dependencies
+        run: npm ci
+
+      - name: Build successful production source
+        env:
+          INDEXNOW_SOURCE_SHA: ${{ github.event.check_run.head_sha }}
+        run: |
+          python3 scripts/check.py
+          git diff --exit-code
+          node scripts/indexnow-state.mjs manifest \
+            --host '${{ steps.context.outputs.host }}' \
+            --directory dist \
+            --source-sha "$TARGET_SHA" \
+            --output .indexnow/current.json
+
+      - name: Build fixed production baseline for first activation
+        if: steps.restore.outputs.bootstrap == 'true'
+        env:
+          INDEXNOW_SOURCE_SHA: ${{ steps.context.outputs.baseline }}
+        run: |
+          git worktree add --detach "$RUNNER_TEMP/indexnow-baseline" '${{ steps.context.outputs.baseline }}'
+          (cd "$RUNNER_TEMP/indexnow-baseline" && npm ci && python3 scripts/check.py && git diff --exit-code)
+          node scripts/indexnow-state.mjs manifest \
+            --host '${{ steps.context.outputs.host }}' \
+            --directory "$RUNNER_TEMP/indexnow-baseline/dist" \
+            --source-sha '${{ steps.context.outputs.baseline }}' \
+            --output .indexnow/baseline.json
+
+      - name: Verify live publication and persist the request plan
+        id: prepare
+        run: |
+          state_args=()
+          if [ '${{ steps.restore.outputs.bootstrap }}' = 'true' ]; then
+            state_args=(--baseline .indexnow/baseline.json)
+          else
+            state_args=(--state .indexnow/restore/state.json)
+          fi
+          node scripts/indexnow-state.mjs prepare \
+            --host '${{ steps.context.outputs.host }}' \
+            --current .indexnow/current.json \
+            "${state_args[@]}" \
+            --output-directory .indexnow/run
+          echo "status=$(jq -r '.status' .indexnow/run/result.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Persist pending and in-flight state before requesting Bing
+        if: steps.prepare.outputs.status == 'ready'
+        uses: actions/upload-artifact@v4
+        with:
+          name: indexnow-state-${{ steps.context.outputs.slug }}-before-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .indexnow/run/before/state.json
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Submit one bounded IndexNow request
+        id: submit
+        if: steps.prepare.outputs.status == 'ready'
+        run: |
+          node scripts/indexnow-state.mjs submit \
+            --host '${{ steps.context.outputs.host }}' \
+            --current .indexnow/current.json \
+            --before-state .indexnow/run/before/state.json \
+            --request .indexnow/run/request.json \
+            --output-directory .indexnow/run
+
+      - name: Persist accepted receipt or retained pending state
+        if: always() && steps.prepare.outcome == 'success' && (steps.prepare.outputs.status != 'ready' || steps.submit.outcome != 'skipped')
+        uses: actions/upload-artifact@v4
+        with:
+          name: indexnow-state-${{ steps.context.outputs.slug }}-after-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .indexnow/run/after/state.json
+          if-no-files-found: error
+          retention-days: 90

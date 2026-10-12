@@ -27,12 +27,15 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import html
 import json
 import os
 import re
 import shutil
+import stat
 import subprocess
+import tempfile
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from html.parser import HTMLParser
@@ -1146,6 +1149,66 @@ def copy_indexnow_key(out_dir: Path) -> None:
     shutil.copy2(key_file, out_dir / key_file.name)
 
 
+def write_indexnow_release(out_dir: Path) -> None:
+    """Publish an opaque production source identity beside the public key."""
+    if out_dir.is_symlink() or not out_dir.is_dir():
+        raise ValueError("IndexNow output must be a regular directory")
+    host = "the-mind.xyz"
+    # robots.txt is also at the root of every build; identify protocol keys by
+    # their required 32-character hexadecimal filename instead of counting all
+    # text files in the output directory.
+    key_files = sorted(
+        path for path in out_dir.glob("*.txt")
+        if re.fullmatch(r"[a-f0-9]{32}\.txt", path.name) is not None
+    )
+    if len(key_files) != 1:
+        raise ValueError(f"Expected one IndexNow key in build output, found {len(key_files)}")
+    key_file = key_files[0]
+    key = key_file.stem
+    if re.fullmatch(r"[a-f0-9]{32}", key) is None or key_file.read_text(encoding="utf-8") != f"{key}\n":
+        raise ValueError("Built IndexNow key file does not exactly match its filename")
+
+    source_sha = os.environ.get("INDEXNOW_SOURCE_SHA") or os.environ.get("CF_PAGES_COMMIT_SHA")
+    if not source_sha:
+        source_sha = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        ).stdout.strip()
+    if re.fullmatch(r"[a-f0-9]{40}", source_sha) is None:
+        raise ValueError("IndexNow release source must be a full lowercase commit SHA")
+
+    revision = hashlib.sha256(f"indexnow-release-v1\0{host}\0{source_sha}".encode("utf-8")).hexdigest()
+    identity_path = out_dir / ".well-known" / "indexnow-release.json"
+    identity_path.parent.mkdir(parents=True, exist_ok=True)
+    if identity_path.parent.is_symlink() or not identity_path.parent.is_dir():
+        raise ValueError("IndexNow release directory must be a regular directory")
+    payload = json.dumps({"version": 1, "host": host, "revision": revision}, indent=2) + "\n"
+    try:
+        existing = identity_path.lstat()
+    except FileNotFoundError:
+        existing = None
+    if existing is not None and not stat.S_ISREG(existing.st_mode):
+        raise ValueError("Existing IndexNow release identity must be a regular file")
+    with tempfile.NamedTemporaryFile(
+        mode="w",
+        encoding="utf-8",
+        dir=identity_path.parent,
+        prefix="indexnow-release.",
+        suffix=".tmp",
+        delete=False,
+    ) as identity_file:
+        identity_file.write(payload)
+        temporary_path = Path(identity_file.name)
+    try:
+        temporary_path.chmod(0o644)
+        os.replace(temporary_path, identity_path)
+    finally:
+        temporary_path.unlink(missing_ok=True)
+
+
 def write_nojekyll(out_dir: Path) -> None:
     # Makes branch-based Pages deployments work (no Jekyll processing).
     (out_dir / ".nojekyll").write_text("", encoding="utf-8")
@@ -1523,6 +1586,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     write_sitemap(out_dir, base_url, page_hrefs)
     write_robots(out_dir, base_url)
     sitemap_result = validate_sitemap_output(out_dir, base_url)
+    write_indexnow_release(out_dir)
 
     print(f"wrote site to {out_dir}; sitemap verified: {sitemap_result['pages']} indexable pages")
     return 0

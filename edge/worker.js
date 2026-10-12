@@ -1,5 +1,6 @@
 const SITE_HOSTNAME = "the-mind.xyz";
 const WWW_HOSTNAME = "www.the-mind.xyz";
+const INDEXNOW_RELEASE_PATH = "/.well-known/indexnow-release.json";
 const OPT_OUT_COOKIE = "p0s_analytics_optout";
 const INGEST_TIMEOUT_MS = 1500;
 const MAX_USER_AGENT = 512;
@@ -217,6 +218,16 @@ async function handle(request, env, executionCtx) {
     response = await fetchAssets(request, env);
   } catch {
     return new Response("Site assets unavailable", { status: 503, headers: responseHeaders() });
+  }
+  if (url.pathname === INDEXNOW_RELEASE_PATH && response.ok) {
+    const headers = new Headers(response.headers);
+    headers.set("Cache-Control", "no-store");
+    headers.set("X-Robots-Tag", "noindex");
+    response = new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers,
+    });
   }
   if (eligibleResponse(request, response)) {
     const work = ingest(request, env);
