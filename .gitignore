@@ -42,6 +42,7 @@ cookies/
 # Local private docs (not committed)
 spec.local.md
 visualizations-spec.local.md
+.p0s-local/
 
 # Build artifacts (optional later)
 manuscript/build/

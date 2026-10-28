@@ -1017,7 +1017,8 @@ def render_page(
 
 
 WEBSITE_PRIVACY_HTML = """<h1>Website privacy</h1>
-<p>We count public page requests to estimate visits. There is no browser tracker or analytics ID. Counts exclude recognizable bots and visitors using Do Not Track, Global Privacy Control, or the choice below.</p>
+<p>We count public page requests to estimate visits. A small first-party script separately counts pages visible for ten seconds and pages with browser interaction. These are activity estimates, not verified people. There is no analytics ID or tracking cookie. Counts exclude recognizable bots and visitors using Do Not Track, Global Privacy Control, or the choice below.</p>
+<p>The script sends only a public page path and fixed signals to this site. The server processes these using the same information described below. No text, query or cross-site identifier is collected.</p>
 <p>We keep the page path, referring site, country when available, and estimated sessions for 13 months. IP address and browser details are used briefly to process a request, then discarded. Encrypted backups expire within 30 days after live data is removed. A cookie on this site remembers your choice if you use the forms below.</p>
 <form method="post" action="/analytics/opt-out"><button type="submit">Opt out of website request counting</button></form>
 <form method="post" action="/analytics/opt-in"><button type="submit">Opt in to website request counting</button></form>

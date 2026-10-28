@@ -3,8 +3,10 @@
 The existing site build remains the source of the public files. This Cloudflare
 Worker serves that build through the `ASSETS` binding, handles the no-JavaScript
 analytics preference forms, and counts eligible successful HTML document
-responses after the asset responds. It does not proxy GitHub Pages and does not
-ship a browser tracker.
+responses after the asset responds. One first-party module separately reports
+ten-visible-second and trusted-input activity estimates. It follows a
+response-specific privacy marker and creates no visitor ID or tracking cookie.
+These estimates do not certify people. It does not proxy GitHub Pages.
 
 Build the public tree from the repository root with:
 
@@ -24,7 +26,7 @@ Worker to `the-mind.xyz/*`:
 - `ANALYTICS_INGEST_URL`: the gateway's `/ingest/v1` URL.
 - `ANALYTICS_INGEST_TOKEN`: the per-site secret for `the-mind.xyz`.
 
-The configuration pins the approved tightness Cloudflare account and disables
+The configuration preserves the existing production account and disables
 workers.dev and preview URLs. It persists two intended Custom Domain targets:
 `the-mind.xyz` and `www.the-mind.xyz`. The Worker serves the apex and redirects
 the www hostname to the apex, preserving the existing canonical behavior.
@@ -35,7 +37,7 @@ configuration with:
 
 ```sh
 python3 scripts/build_site.py --out dist
-/opt/homebrew/bin/wrangler deploy --profile Tightness_mannish146 --config edge/wrangler.toml --keep-vars
+wrangler deploy --config edge/wrangler.toml --keep-vars
 ```
 
 ## Deploy automatically after merges
@@ -72,3 +74,22 @@ repository files alone do not establish or restore this connection. Check the
 Worker's build history for the merged commit and verify the changed public
 pages after a deployment. The local Wrangler command above remains available
 for an authorized manual deployment using the saved account profile.
+
+## Measurement contract
+
+Page observations, passive visible-page activity and foreground interaction
+stay separate. The single versioned module sends only fixed signals and a
+public path to `/analytics/signal`. Every relay checks same origin, privacy,
+bots, prefetch and public-path eligibility again. Refusals produce no stage.
+One bootstrap is a delivery-stage count, never a visitor count. The unchanged
+producer v2 client uses random per-event delivery IDs and at most one bounded
+retry; the collector refuses uncertain or unknown retries rather than writing
+twice. Loss remains possible. Requests run in background tasks.
+
+Use `?measurement_qa=1` for labelled technical verification. The original
+document QA/path is captured before history changes; technical page, visible,
+foreground and bootstrap counts remain separate from ordinary audience data.
+No aggregate business action or Google tag is added. Privacy controls,
+retention, existing site identities and the release/notification path stay intact.
+Run `node --test edge/worker.test.mjs edge/measurement.test.mjs` for the local
+adapter and browser controls; the shared site gate includes them too.

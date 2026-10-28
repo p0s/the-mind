@@ -22,7 +22,8 @@ def main() -> int:
         result = subprocess.run((sys.executable, *args), cwd=ROOT)
         if result.returncode:
             return result.returncode
-    return 0
+    print("Running: node --test edge/worker.test.mjs edge/measurement.test.mjs", flush=True)
+    return subprocess.run(("node", "--test", "edge/worker.test.mjs", "edge/measurement.test.mjs"), cwd=ROOT).returncode
 
 
 if __name__ == "__main__":

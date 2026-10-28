@@ -141,6 +141,34 @@ No silent drift:
 - if the content materially changes its meaning or structure, update the spec.
 - if new sources materially change core claims, update the glossary / claims / sources and then the main walkthrough/questions as needed.
 
+## Website measurement
+
+Keep page requests, passive visible-page activity and foreground interaction
+as separate browser estimates. None certifies a person or a human lower bound.
+The existing server-side page observations remain. One first-party module
+reports a bootstrap stage, once after ten cumulative visible seconds, and
+once after those seconds plus trusted click, key or scroll input. Hidden time,
+prerendering, modifier-only keys and untrusted input do not qualify. Public
+page paths explain reading activity; no new aggregate business action is added.
+
+The server marks each permitted response; the browser module checks that
+marker and DNT/GPC again. Every relay rechecks same origin, production host,
+public path, trusted Cloudflare IP, privacy preference, bots and prefetch.
+Refusals send no event or diagnostic stage. Signals contain only fixed headers
+and the public path; the server adds the existing transient request fields.
+No query, fragment, text, new cookie, visitor ID, Google tag or cross-site ID.
+HTML permission responses are private/no-store and drop stale validators.
+
+Use the unchanged frozen producer v2 client for random per-event delivery IDs
+and at most one conditional retry. The collector refuses unknown/uncertain
+retries instead of risking another write. Loss remains possible. Background
+delivery never delays the page. The original document's ?measurement_qa=1 is
+captured from NavigationTiming, with the current document URL as fallback;
+history changes cannot relabel events. QA page/activity/bootstrap events are
+technical diagnostics, never ordinary audience counts. Privacy notices stay
+brief and accurate. Existing opt-out, retention, site IDs, custom domains,
+source identities, counters and publication notifications remain unchanged.
+
 ## Production URL notifications
 
 After a successful production Worker release on `main`, the release notifier
