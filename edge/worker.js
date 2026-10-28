@@ -1,8 +1,9 @@
+import { deliver, SIGNALS, stageBody } from "./ingest-client.mjs";
+
 const SITE_HOSTNAME = "the-mind.xyz";
 const WWW_HOSTNAME = "www.the-mind.xyz";
 const INDEXNOW_RELEASE_PATH = "/.well-known/indexnow-release.json";
 const OPT_OUT_COOKIE = "p0s_analytics_optout";
-const INGEST_TIMEOUT_MS = 1500;
 const MAX_USER_AGENT = 512;
 const MAX_PATH = 500;
 const MAX_REFERRER = 255;
@@ -117,7 +118,8 @@ function isPrefetch(request) {
 }
 
 function isRecognizableBot(request) {
-  return BOT_PATTERN.test(request.headers.get("User-Agent") || "");
+  return request.cf?.botManagement?.verifiedBot === true
+    || BOT_PATTERN.test(request.headers.get("User-Agent") || "");
 }
 
 function trustedIp(request) {
@@ -129,7 +131,7 @@ function trustedIp(request) {
 
 function country(request) {
   const value = String(request.cf?.country || "").toUpperCase();
-  return /^[A-Z]{2}$/.test(value) ? value : "";
+  return /^[A-Z]{2}$/.test(value) && !["XX", "T1"].includes(value) ? value : "";
 }
 
 function referrerOrigin(request) {
@@ -146,6 +148,9 @@ function referrerOrigin(request) {
 
 function eligiblePath(pathname) {
   if (pathname.length > MAX_PATH || pathname.includes("\u0000")) return false;
+  if (!/^\/(?:[a-z0-9][a-z0-9_-]*\/)*$/i.test(pathname)) return false;
+  if (pathname.split("/").some(segment => /^[a-f0-9]{32,}$/i.test(segment)
+      || /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(segment))) return false;
   if (pathname !== "/" && (!pathname.endsWith("/") || /\.[^/]+\/$/.test(pathname))) return false;
   if (pathname.includes(".") || /(?:token|secret|password|auth|account|private|job|preview|login|logout|dashboard|settings|api|admin)/i.test(pathname)) return false;
   return true;
@@ -155,47 +160,90 @@ function eligibleResponse(request, response) {
   const url = new URL(request.url);
   if (url.hostname.toLowerCase() !== SITE_HOSTNAME || request.method !== "GET" || response.status !== 200) return false;
   if (!eligiblePath(url.pathname) || isOptedOut(request) || isPrefetch(request) || isRecognizableBot(request)) return false;
+  if (/(?:^|[&;])(?:code|email|id|key|password|secret|session|token|user)=/i.test(url.search.slice(1))) return false;
   if (!/\btext\/html\b/i.test(response.headers.get("Content-Type") || "")) return false;
   return Boolean(trustedIp(request));
 }
 
-function payloadFor(request) {
+function payloadFor(request, path = new URL(request.url).pathname) {
   const url = new URL(request.url);
   const payload = {
     hostname: SITE_HOSTNAME,
-    path: url.pathname,
+    path,
     referrer: referrerOrigin(request),
     ip: trustedIp(request),
     userAgent: (request.headers.get("User-Agent") || "").slice(0, MAX_USER_AGENT),
   };
   const visitorCountry = country(request);
   if (visitorCountry) payload.country = visitorCountry;
+  if (url.searchParams.get("measurement_qa") === "1") payload.qa = true;
   return payload;
 }
 
-async function ingest(request, env) {
+function configured(env) {
   const url = String(env?.ANALYTICS_INGEST_URL || "");
   const token = String(env?.ANALYTICS_INGEST_TOKEN || "");
-  if (!url || !token) return;
+  try { if (new URL(url).protocol !== "https:" || !token) return null; }
+  catch { return null; }
+  return { url, token };
+}
 
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), INGEST_TIMEOUT_MS);
+function collect(env, route, payload) {
+  const target = configured(env);
+  return target ? deliver(target.url, route, target.token, payload) : Promise.resolve();
+}
+
+function background(work, ctx) {
+  if (typeof ctx?.waitUntil === "function") ctx.waitUntil(work);
+  else void work;
+}
+
+async function emptyBody(request) {
+  const length = request.headers.get("Content-Length");
+  if (length !== null && (!/^\d+$/.test(length) || Number(length) !== 0)) return false;
+  if (!request.body) return true;
+  const reader = request.body.getReader();
   try {
-    await fetch(url, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payloadFor(request)),
-      signal: controller.signal,
-    });
-  } catch {
-    // Collection must never affect the document response and must not log
-    // visitor details. There is intentionally no retry.
-  } finally {
-    clearTimeout(timeout);
+    const { done } = await reader.read();
+    if (!done) await reader.cancel();
+    return done;
+  } catch { return false; }
+  finally { reader.releaseLock(); }
+}
+
+async function signalResponse(request, env, ctx) {
+  const reply = (status = 204) => new Response(null, { status, headers: { "Cache-Control": "no-store" } });
+  const url = new URL(request.url);
+  if (url.search || url.protocol !== "https:" || url.port) return reply(404);
+  if (request.method !== "POST") return reply(405);
+  if (request.headers.get("Origin") !== url.origin
+      || ![null, "same-origin"].includes(request.headers.get("Sec-Fetch-Site"))) return reply(403);
+  if (isOptedOut(request) || isPrefetch(request) || isRecognizableBot(request)) return reply();
+  const path = request.headers.get("X-Analytics-Path");
+  const signal = request.headers.get("X-Analytics-Signal");
+  if (!path || !path.startsWith("/") || !eligiblePath(path) || /[?#]/.test(path)
+      || !trustedIp(request) || (signal !== "bootstrap" && !Object.hasOwn(SIGNALS, signal))
+      || !await emptyBody(request)) return reply(400);
+  const qa = request.headers.get("X-Measurement-QA") === "1";
+  const payload = signal === "bootstrap" ? stageBody("bootstrap", { qa }) : payloadFor(request, path);
+  if (signal !== "bootstrap") {
+    payload.eventName = SIGNALS[signal];
+    if (qa) payload.qa = true;
   }
+  background(collect(env, signal === "bootstrap" ? "stage" : "page", payload), ctx);
+  return reply();
+}
+
+function permissionResponse(response, allowed) {
+  if (!/\btext\/html\b/i.test(response.headers.get("Content-Type") || "")) return response;
+  const headers = new Headers(response.headers);
+  headers.set("Cache-Control", "private, no-store");
+  headers.delete("Content-Length");
+  headers.delete("ETag");
+  const rewritten = new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+  return new HTMLRewriter().on("body", { element(element) {
+    element.setAttribute("data-site-measurement", allowed ? "allowed" : "denied");
+  } }).transform(rewritten);
 }
 
 async function fetchAssets(request, env) {
@@ -212,6 +260,7 @@ async function handle(request, env, executionCtx) {
   if (hostname !== SITE_HOSTNAME) return new Response("Not Found", { status: 404 });
   if (url.pathname === "/analytics/opt-out") return preferenceResponse(request, "opt-out");
   if (url.pathname === "/analytics/opt-in") return preferenceResponse(request, "opt-in");
+  if (url.pathname === "/analytics/signal") return signalResponse(request, env, executionCtx);
 
   let response;
   try {
@@ -229,12 +278,9 @@ async function handle(request, env, executionCtx) {
       headers,
     });
   }
-  if (eligibleResponse(request, response)) {
-    const work = ingest(request, env);
-    if (executionCtx && typeof executionCtx.waitUntil === "function") executionCtx.waitUntil(work);
-    else await work;
-  }
-  return response;
+  const allowed = Boolean(configured(env)) && eligibleResponse(request, response);
+  if (allowed) background(collect(env, "page", payloadFor(request)), executionCtx);
+  return permissionResponse(response, allowed);
 }
 
 export default { fetch: handle };

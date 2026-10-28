@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { FixtureRewriter } from "./test-fixtures.mjs";
 import worker, {
   canonicalRedirect,
   eligiblePath,
@@ -6,6 +7,7 @@ import worker, {
   fetchAssets,
   payloadFor,
 } from "./worker.js";
+globalThis.HTMLRewriter = FixtureRewriter;
 
 function request(path = "/", headers = {}) {
   const value = new Request(`https://the-mind.xyz${path}`, {
@@ -64,7 +66,7 @@ const seen = [];
 globalThis.fetch = async (input, options) => {
   const url = typeof input === "string" ? input : input.url;
   seen.push({ input: url, options });
-  if (url.startsWith("https://stats.p0s.eu/")) return new Response("ok", { status: 204 });
+  if (url.startsWith("https://stats.p0s.eu/")) return new Response(null, { status: 204 });
   return document;
 };
 const waits = [];
@@ -73,12 +75,15 @@ const response = await worker.fetch(page, {
   ANALYTICS_INGEST_URL: "https://stats.p0s.eu/ingest/v1",
   ANALYTICS_INGEST_TOKEN: "test-token",
 }, { waitUntil: (promise) => waits.push(promise) });
-assert.equal(response, document);
+assert.equal(response.status, 200);
+assert.equal(response.headers.get("Cache-Control"), "private, no-store");
+assert.equal(await response.text(), "<!doctype html>");
 assert.equal(assetRequests[0].url, page.url);
 assert.equal(seen.length, 1);
 assert.equal(waits.length, 1);
 await waits[0];
-assert.equal(seen[0].options.headers.Authorization, "Bearer test-token");
+assert.equal(seen[0].options.headers.authorization, "Bearer test-token");
+assert.match(JSON.parse(seen[0].options.body).eventId, /^[0-9a-f]{32}$/);
 
 const unavailable = await worker.fetch(page, {}, {});
 assert.equal(unavailable.status, 503);
