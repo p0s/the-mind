@@ -75,6 +75,24 @@ Worker's build history for the merged commit and verify the changed public
 pages after a deployment. The local Wrangler command above remains available
 for an authorized manual deployment using the saved account profile.
 
+## Agent-readable responses
+
+The build writes an `index.md` beside every `index.html` page. It is rendered
+from the same parsed source as the HTML, with absolute links, citation
+locators, source details and the footer disclaimer. The build also writes an
+`llms.txt` index of those Markdown pages. `robots.txt` declares the Content
+Signals `search=yes, ai-input=yes`; it sets no `ai-train` signal, so it neither
+grants nor restricts training.
+
+HTML stays the default. A `GET` or `HEAD` page request whose `Accept` header
+names `text/markdown` at least as highly as `text/html` receives the page's
+`index.md` as `text/markdown; charset=utf-8`, with `Vary: Accept`,
+`Content-Location` and a canonical `Link` header. HTML page responses advertise
+the Markdown alternate in a `Link` header and `Vary: Accept`; the homepage also
+links `llms.txt` with `rel="describedby"`. Markdown responses are not counted as
+page views. The site publishes no MCP, A2A, OAuth, API catalog or payment
+metadata, so those well-known paths keep returning 404.
+
 ## Measurement contract
 
 Page observations, passive visible-page activity and foreground interaction

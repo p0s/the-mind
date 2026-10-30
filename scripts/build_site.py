@@ -20,6 +20,8 @@ Public V2 pages:
 Archive:
 - reader/ (legacy V1 single-page reader)
 
+Every page also gets an index.md Markdown alternate, and llms.txt indexes them.
+
 The site keeps provenance as links to original sources (URL + locator).
 """
 
@@ -264,7 +266,31 @@ def render_cite_link(source_id: str, locator: str, sources: Dict[str, Dict[str, 
     return a
 
 
-def render_cite_group(source_id: str, locators: List[str], sources: Dict[str, Dict[str, str]], *, show_time: bool) -> Optional[str]:
+@dataclass
+class CitationGroup:
+    """One source cited with one or more locators; shared by the HTML and Markdown output."""
+
+    source_id: str
+    url: str
+    title: str
+    fmt: str
+    kind: str
+    role: str
+    creator: str
+    locator_text: str
+    locations: List[Tuple[str, str]]  # (label, located URL); the first is the compact link target
+
+
+def citation_location_label(source_id: str, loc: str) -> str:
+    placeholder = whole_source_locator_label(source_id, loc)
+    if placeholder:
+        return placeholder
+    if loc.startswith("p"):
+        return ("pp. " if "-" in loc else "p. ") + loc[1:].replace("-", "–")
+    return loc.removeprefix("00:")
+
+
+def citation_group(source_id: str, locators: List[str], sources: Dict[str, Dict[str, str]]) -> Optional[CitationGroup]:
     meta = sources.get(source_id, {})
     url = (meta.get("url") or "").strip()
     if not url or not locators:
@@ -281,54 +307,74 @@ def render_cite_group(source_id: str, locators: List[str], sources: Dict[str, Di
     if not normalized:
         return None
 
-    href = located_url(url, normalized[0], source_id=source_id)
-    title = re.sub(r"\s+", " ", (meta.get("title") or "").strip()) or source_id
     fmt = infer_presentation_format(meta)
-    locator_text = citation_locator_text(source_id, normalized)
-
-    tooltip_lines = [f"{fmt}: {title}", f"{source_id} — {locator_text}"]
-    bach_s = bach_time_seconds(source_id)
-    if bach_s is not None:
-        tooltip_lines.append(f"Bach time: {seconds_to_hhmmss(bach_s)} (approx)")
-    tooltip = " | ".join(tooltip_lines)
-
-    # Compact in prose; full titles remain in source lists and the detail view.
     kind = "Paper" if url.lower().split("?", 1)[0].endswith(".pdf") else fmt.title()
     if any(whole_source_locator_label(source_id, loc) for loc in normalized):
         kind = "Transcript"
     role = "Primary source" if source_id == "web_cimc_ai_cimchypothesis_pdf" else "Supporting source"
     if source_id == "web_cimc_ai_cimcwhitepaper_pdf":
         role = "Program context"
+    return CitationGroup(
+        source_id=source_id,
+        url=url,
+        title=re.sub(r"\s+", " ", (meta.get("title") or "").strip()) or source_id,
+        fmt=fmt,
+        kind=kind,
+        role=role,
+        creator=" · ".join(filter(None, [meta.get("creator_or_channel"), meta.get("published_date")])),
+        locator_text=citation_locator_text(source_id, normalized),
+        locations=[
+            (citation_location_label(source_id, loc), located_url(url, loc, source_id=source_id))
+            for loc in normalized
+        ],
+    )
 
-    def location_label(loc: str) -> str:
-        placeholder = whole_source_locator_label(source_id, loc)
-        if placeholder:
-            return placeholder
-        if loc.startswith("p"):
-            return ("pp. " if "-" in loc else "p. ") + loc[1:].replace("-", "–")
-        return loc.removeprefix("00:")
 
+def grouped_refs(refs: List[Tuple[str, str]]) -> List[Tuple[str, List[str]]]:
+    """Group locators by source, keeping first-citation order."""
+    grouped: List[Tuple[str, List[str]]] = []
+    order: Dict[str, int] = {}
+    for sid, loc in refs:
+        if sid not in order:
+            order[sid] = len(grouped)
+            grouped.append((sid, [loc]))
+            continue
+        grouped[order[sid]][1].append(loc)
+    return grouped
+
+
+def render_cite_group(source_id: str, locators: List[str], sources: Dict[str, Dict[str, str]], *, show_time: bool) -> Optional[str]:
+    group = citation_group(source_id, locators, sources)
+    if group is None:
+        return None
+
+    tooltip_lines = [f"{group.fmt}: {group.title}", f"{source_id} — {group.locator_text}"]
+    bach_s = bach_time_seconds(source_id)
+    if bach_s is not None:
+        tooltip_lines.append(f"Bach time: {seconds_to_hhmmss(bach_s)} (approx)")
+    tooltip = " | ".join(tooltip_lines)
+
+    # Compact in prose; full titles remain in source lists and the detail view.
     locations = []
-    for loc in normalized:
-        target = located_url(url, loc, source_id=source_id)
+    for location_label, target in group.locations:
         locations.append(
             f'<a href="{escape_attr(target)}" target="_blank" rel="noopener noreferrer">'
-            f'{escape(location_label(loc))}<span aria-hidden="true"> ↗</span></a>'
+            f'{escape(location_label)}<span aria-hidden="true"> ↗</span></a>'
         )
-    extra = f" +{len(normalized) - 1}" if len(normalized) > 1 else ""
-    icon_path = 'M4 2h6l3 3v9H4zM10 2v4h3M6 8h5M6 11h4' if kind in {"Paper", "Essay", "Transcript"} else 'm5 3 8 5-8 5z'
+    first_label, href = group.locations[0]
+    extra = f" +{len(group.locations) - 1}" if len(group.locations) > 1 else ""
+    icon_path = 'M4 2h6l3 3v9H4zM10 2v4h3M6 8h5M6 11h4' if group.kind in {"Paper", "Essay", "Transcript"} else 'm5 3 8 5-8 5z'
     icon = f'<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="{icon_path}" /></svg>'
-    label = f"{kind}: {title} — {locator_text}"
+    label = f"{group.kind}: {group.title} — {group.locator_text}"
     compact = (
         f'<a class="cite" href="{escape_attr(href)}" target="_blank" rel="noopener noreferrer" '
         f'title="{escape_attr(tooltip)}" aria-label="{escape_attr(label)}">{icon}'
-        f'<span>{escape(kind)}</span><span aria-hidden="true">·</span>'
-        f'<span>{escape(location_label(normalized[0]) + extra)}</span></a>'
+        f'<span>{escape(group.kind)}</span><span aria-hidden="true">·</span>'
+        f'<span>{escape(first_label + extra)}</span></a>'
     )
-    creator = " · ".join(filter(None, [meta.get("creator_or_channel"), meta.get("published_date")]))
     detail = (
-        f'<span class="cite-details" hidden><span class="source-role">{escape(role)} · {escape(kind)}</span>'
-        f'<span class="source-title">{escape(title)}</span><span class="source-creator">{escape(creator)}</span>'
+        f'<span class="cite-details" hidden><span class="source-role">{escape(group.role)} · {escape(group.kind)}</span>'
+        f'<span class="source-title">{escape(group.title)}</span><span class="source-creator">{escape(group.creator)}</span>'
         f'<span class="source-locations">{"".join(locations)}</span></span>'
     )
     # Additional destinations remain directly usable without JavaScript/popovers.
@@ -342,17 +388,8 @@ def render_cite_refs(
     *,
     show_time: bool,
 ) -> str:
-    grouped: List[Tuple[str, List[str]]] = []
-    order: Dict[str, int] = {}
-    for sid, loc in refs:
-        if sid not in order:
-            order[sid] = len(grouped)
-            grouped.append((sid, [loc]))
-            continue
-        grouped[order[sid]][1].append(loc)
-
     rendered: List[str] = []
-    for sid, locators in grouped:
+    for sid, locators in grouped_refs(refs):
         html = render_cite_group(sid, locators, sources, show_time=show_time)
         if html:
             rendered.append(html)
@@ -518,6 +555,14 @@ def question_markdown_pages(directory: Path) -> List[Tuple[Path, str]]:
     return pages
 
 
+def emphasize(s: str) -> str:
+    # **bold**
+    s = re.sub(r"\*\*([^*]+)\*\*", lambda m: f"<strong>{m.group(1)}</strong>", s)
+    # *italics* and _italics_ (keep conservative boundaries)
+    s = re.sub(r"(?<!\w)\*([^*\n]+?)\*(?!\w)", lambda m: f"<em>{m.group(1)}</em>", s)
+    return re.sub(r"(?<!\w)_([^_\n]+?)_(?!\w)", lambda m: f"<em>{m.group(1)}</em>", s)
+
+
 def inline_format(s: str, *, root: str) -> str:
     # Conservative inline formatting:
     # - Escape text
@@ -552,7 +597,7 @@ def inline_format(s: str, *, root: str) -> str:
             return f'<a href="{href_attr}" target="_blank" rel="noopener noreferrer">{label}</a>'
         return f'<a href="{href_attr}">{label}</a>'
 
-    s = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", lambda m: stash(make_anchor(m.group(1), m.group(2))), s)
+    s = re.sub(r"\[([^\]]+)\]\(([^)]+)\)", lambda m: stash(make_anchor(emphasize(m.group(1)), m.group(2))), s)
 
     # Bare URLs
     s = re.sub(
@@ -573,11 +618,7 @@ def inline_format(s: str, *, root: str) -> str:
         s,
     )
 
-    # **bold**
-    s = re.sub(r"\*\*([^*]+)\*\*", lambda m: f"<strong>{m.group(1)}</strong>", s)
-    # *italics* and _italics_ (keep conservative boundaries)
-    s = re.sub(r"(?<!\w)\*([^*\n]+?)\*(?!\w)", lambda m: f"<em>{m.group(1)}</em>", s)
-    s = re.sub(r"(?<!\w)_([^_\n]+?)_(?!\w)", lambda m: f"<em>{m.group(1)}</em>", s)
+    s = emphasize(s)
 
     # Restore protected fragments (code/links) after emphasis processing.
     for idx in range(len(protected) - 1, -1, -1):
@@ -936,6 +977,206 @@ def blocks_to_html(
     return "\n".join(parts), " ".join([p for p in search_parts if p]).strip()
 
 
+# Agent-readable Markdown is rendered from the same parsed blocks as the HTML, so both
+# representations keep the same text, links, citations, and locators.
+MARKDOWN_INLINE_RX = re.compile(
+    r"(?P<code>`[^`]+`)"
+    r"|!\[(?P<alt>[^\]]*)\]\((?P<src>[^)]+)\)"
+    r"|\[(?P<label>[^\]]+)\]\((?P<href>[^)]+)\)"
+    r"|(?P<url>https?://[^\s<>()]+)"
+)
+MARKDOWN_FOOTER_TEXT = "Not affiliated with or endorsed by Joscha Bach. Readable first, source-grounded underneath."
+CLARIFICATION_URL = "https://github.com/p0s/the-mind/issues/new?template=reader-clarification.yml"
+
+
+def markdown_url(base_url: str, href: str) -> str:
+    """Public URL of the Markdown file that sits beside a rendered index.html page."""
+    if href != "index.html" and not href.endswith("/index.html"):
+        raise ValueError(f"Markdown alternates require an index.html page: {href}")
+    return urljoin(base_url, href[: -len("index.html")] + "index.md")
+
+
+def markdown_site_url(href: str, *, base_url: str, page_url: str) -> str:
+    """Resolve a source link to the absolute public URL that the HTML link points to."""
+    raw = (href or "").strip()
+    if not raw or raw.startswith(("http://", "https://", "mailto:")):
+        return raw
+    if raw.startswith("#"):
+        return page_url + raw
+    if raw.startswith(("./", "../")):
+        return urljoin(page_url, raw)
+
+    path = raw[1:] if raw.startswith("/") else raw
+    path, hash_mark, fragment = path.partition("#")
+    path, question_mark, query = path.partition("?")
+    path = path.lstrip("./")
+    if path and not path.endswith("/") and not Path(path).suffix:
+        path += "/"
+    return absolute_page_url(base_url, path) + question_mark + query + hash_mark + fragment
+
+
+def markdown_destination(url: str) -> str:
+    if re.search(r"[\s<>]", url) or url.count("(") != url.count(")"):
+        return "<" + url.replace(" ", "%20").replace("<", "%3C").replace(">", "%3E") + ">"
+    return url
+
+
+def markdown_link_text(text: str) -> str:
+    return text.replace("\\", "\\\\").replace("[", "\\[").replace("]", "\\]")
+
+
+def markdown_inline(text: str, *, base_url: str, page_url: str) -> str:
+    def site(href: str) -> str:
+        return markdown_destination(markdown_site_url(href, base_url=base_url, page_url=page_url))
+
+    def link_ids(segment: str) -> str:
+        claims_url = absolute_page_url(base_url, "claims/index.html")
+        glossary_url = absolute_page_url(base_url, "glossary/index.html")
+        segment = CLM_ID_RX.sub(lambda m: f"[{m.group(0)}]({claims_url}#clm-{m.group(1)})", segment)
+        return TERM_ID_RX.sub(lambda m: f"[{m.group(0)}]({glossary_url}#term-{m.group(1)})", segment)
+
+    out: List[str] = []
+    last = 0
+    for m in MARKDOWN_INLINE_RX.finditer(text or ""):
+        out.append(link_ids(text[last : m.start()]))
+        if m.group("src") is not None:
+            out.append(f"![{m.group('alt')}]({site(m.group('src'))})")
+        elif m.group("href") is not None:
+            out.append(f"[{m.group('label')}]({site(m.group('href'))})")
+        else:
+            out.append(m.group(0))
+        last = m.end()
+    out.append(link_ids((text or "")[last:]))
+    return "".join(out)
+
+
+def markdown_citation(group: CitationGroup) -> str:
+    (first_label, first_url), *more = group.locations
+    links = [f"[{markdown_link_text(f'{group.kind}: {group.title}, {first_label}')}]({markdown_destination(first_url)})"]
+    links.extend(f"[{markdown_link_text(label)}]({markdown_destination(url)})" for label, url in more)
+    return ", ".join(links)
+
+
+def blocks_to_markdown(
+    blocks: List[Block],
+    sources: Dict[str, Dict[str, str]],
+    *,
+    base_url: str,
+    page_url: str,
+) -> Tuple[str, List[CitationGroup]]:
+    cited: Dict[str, CitationGroup] = {}
+    parts: List[str] = []
+
+    def inline(text: str) -> str:
+        return markdown_inline(text, base_url=base_url, page_url=page_url)
+
+    def cite(refs: List[Tuple[str, str]]) -> str:
+        rendered = []
+        for sid, locators in grouped_refs(refs):
+            group = citation_group(sid, locators, sources)
+            if group:
+                cited.setdefault(sid, group)
+                rendered.append(markdown_citation(group))
+        return f"({'; '.join(rendered)})" if rendered else ""
+
+    def source_item(text: str) -> Optional[str]:
+        # Markdown form of linkify_source_ref(): "source_id @ locator ..." list items.
+        m = SRC_ITEM_RX.match(text.strip())
+        if not m:
+            return None
+        sid, loc, rest = m.groups()
+        group = citation_group(sid, [loc], sources)
+        if group is None:
+            return None
+        cited.setdefault(sid, group)
+        label = markdown_link_text(citation_label(sid, sources.get(sid, {})))
+        return f"[{label}]({markdown_destination(group.locations[0][1])}) {group.locator_text}" + (inline(rest) if rest else "")
+
+    def with_refs(text: str, refs: List[Tuple[str, str]]) -> str:
+        rendered = cite(refs)
+        return f"{text} {rendered}".strip() if rendered else text
+
+    for b in blocks:
+        block_refs = b.anchors or ([] if not b.anchor else [b.anchor])
+        if b.kind == "heading":
+            parts.append("#" * b.level + " " + inline(b.text))
+        elif b.kind == "hr":
+            parts.append("---")
+        elif b.kind == "blockquote":
+            clean_text, refs = extract_src_comment_refs(b.text)
+            lines = [inline(line) for line in clean_text.split("\n")]
+            lines[-1] = with_refs(lines[-1], refs)
+            parts.append("\n".join(f"> {line}" if line else ">" for line in lines))
+        elif b.kind == "code":
+            if b.code_lang.strip().lower() == "mermaid":
+                continue  # Omitted from the HTML as well.
+            parts.append(f"```{b.code_lang}\n{b.code}\n```")
+        elif b.kind == "list":
+            items = []
+            for number, item in enumerate(b.items or [], start=1):
+                clean_item, item_refs = extract_src_comment_refs(item)
+                marker = f"{number}." if b.ordered else "-"
+                indent = "\n" + " " * (len(marker) + 1)
+                rendered = source_item(clean_item) or indent.join(inline(part) for part in clean_item.split("\n"))
+                items.append(f"{marker} {with_refs(rendered, item_refs)}")
+            block = "\n".join(items)
+            if b.tag:
+                block = f"[{b.tag}]\n\n{block}"
+            list_refs = cite(block_refs)
+            if list_refs:
+                block += "\n\n" + list_refs
+            parts.append(block)
+        elif b.kind == "para":
+            text = with_refs(inline(b.text), block_refs)
+            parts.append(f"[{b.tag}] {text}" if b.tag else text)
+
+    return "\n\n".join(part for part in parts if part.strip()), list(cited.values())
+
+
+def yaml_string(value: str) -> str:
+    # JSON strings are valid YAML double-quoted scalars.
+    return json.dumps(value, ensure_ascii=False)
+
+
+def render_markdown_document(
+    *,
+    title: str,
+    description: str,
+    page_url: str,
+    body: str,
+    cited: List[CitationGroup],
+    base_url: str,
+) -> str:
+    lines = [
+        "---",
+        f"title: {yaml_string(title)}",
+        f"description: {yaml_string(description)}",
+        f"canonical_url: {yaml_string(page_url)}",
+        "---",
+        "",
+        body.strip(),
+        "",
+    ]
+    if cited:
+        lines.extend(["## Source details", ""])
+        for group in cited:
+            details = " · ".join(filter(None, [group.role, group.kind, group.creator]))
+            lines.append(f"- [{markdown_link_text(group.title)}]({markdown_destination(group.url)}) — {details}")
+        lines.append("")
+    lines.extend(
+        [
+            "---",
+            "",
+            MARKDOWN_FOOTER_TEXT,
+            "",
+            f"- [Suggest a clarification]({CLARIFICATION_URL})",
+            f"- [Website privacy and analytics choice]({absolute_page_url(base_url, 'privacy/index.html')})",
+            "",
+        ]
+    )
+    return "\n".join(lines)
+
+
 def page_description(href: str) -> str:
     descriptions = json.loads((ROOT / "site" / "page-descriptions.json").read_text(encoding="utf-8"))
     description = descriptions.get(href)
@@ -1016,13 +1257,40 @@ def render_page(
     )
 
 
-WEBSITE_PRIVACY_HTML = """<h1>Website privacy</h1>
-<p>We count public page requests to estimate visits. A small first-party script separately counts pages visible for ten seconds and pages with browser interaction. These are activity estimates, not verified people. There is no analytics ID or tracking cookie. Counts exclude recognizable bots and visitors using Do Not Track, Global Privacy Control, or the choice below.</p>
-<p>The script sends only a public page path and fixed signals to this site. The server processes these using the same information described below. No text, query or cross-site identifier is collected.</p>
-<p>We keep the page path, referring site, country when available, and estimated sessions for 13 months. IP address and browser details are used briefly to process a request, then discarded. Encrypted backups expire within 30 days after live data is removed. A cookie on this site remembers your choice if you use the forms below.</p>
-<form method="post" action="/analytics/opt-out"><button type="submit">Opt out of website request counting</button></form>
-<form method="post" action="/analytics/opt-in"><button type="submit">Opt in to website request counting</button></form>
-<p><a href="../index.html">Back to the-mind</a></p>"""
+WEBSITE_PRIVACY_TITLE = "Website privacy"
+WEBSITE_PRIVACY_PARAGRAPHS = (
+    "We count public page requests to estimate visits. A small first-party script separately counts pages visible for ten seconds and pages with browser interaction. These are activity estimates, not verified people. There is no analytics ID or tracking cookie. Counts exclude recognizable bots and visitors using Do Not Track, Global Privacy Control, or the choice below.",
+    "The script sends only a public page path and fixed signals to this site. The server processes these using the same information described below. No text, query or cross-site identifier is collected.",
+    "We keep the page path, referring site, country when available, and estimated sessions for 13 months. IP address and browser details are used briefly to process a request, then discarded. Encrypted backups expire within 30 days after live data is removed. A cookie on this site remembers your choice if you use the forms below.",
+)
+WEBSITE_PRIVACY_CHOICES = (
+    ("/analytics/opt-out", "Opt out of website request counting"),
+    ("/analytics/opt-in", "Opt in to website request counting"),
+)
+WEBSITE_PRIVACY_HTML = "\n".join(
+    [
+        f"<h1>{WEBSITE_PRIVACY_TITLE}</h1>",
+        *(f"<p>{text}</p>" for text in WEBSITE_PRIVACY_PARAGRAPHS),
+        *(
+            f'<form method="post" action="{action}"><button type="submit">{label}</button></form>'
+            for action, label in WEBSITE_PRIVACY_CHOICES
+        ),
+        '<p><a href="../index.html">Back to the-mind</a></p>',
+    ]
+)
+
+
+def website_privacy_markdown(base_url: str) -> str:
+    # GET on each choice URL shows the same confirmation form as the HTML buttons.
+    choices = [f"- [{label}]({urljoin(base_url, action)})" for action, label in WEBSITE_PRIVACY_CHOICES]
+    return "\n\n".join(
+        [
+            f"# {WEBSITE_PRIVACY_TITLE}",
+            *WEBSITE_PRIVACY_PARAGRAPHS,
+            "\n".join(choices),
+            f"[Back to the-mind]({base_url})",
+        ]
+    )
 
 
 def emit_markdown_page(
@@ -1039,11 +1307,13 @@ def emit_markdown_page(
     nav_html: str,
 ) -> Tuple[str, str]:
     root = page_root(href)
-    html_body, text_body = blocks_to_html(parse_blocks(md), sources, root=root, page_kind=page_kind)
+    blocks = parse_blocks(md)
+    html_body, text_body = blocks_to_html(blocks, sources, root=root, page_kind=page_kind)
     body_classes = ["supports-annotations"] if href == "reader/index.html" else []
     if 'class="cite_ref" data-source=' in html_body:
         body_classes.append("has-citations")
     body_class = " ".join(body_classes)
+    page_url = absolute_page_url(base_url, href)
     write(
         out_dir / href,
         render_page(
@@ -1054,9 +1324,21 @@ def emit_markdown_page(
             content=html_body,
             root=root,
             page_id=slugify(href.replace("/index.html", "").replace("/", "-") or "home"),
-            page_url=absolute_page_url(base_url, href),
+            page_url=page_url,
             og_image_url=og_image_url,
             body_class=body_class,
+        ),
+    )
+    markdown_body, cited = blocks_to_markdown(blocks, sources, base_url=base_url, page_url=page_url)
+    write(
+        out_dir / href.replace("index.html", "index.md"),
+        render_markdown_document(
+            title=title,
+            description=page_description(href),
+            page_url=page_url,
+            body=markdown_body,
+            cited=cited,
+            base_url=base_url,
         ),
     )
     return html_body, text_body
@@ -1225,11 +1507,22 @@ def write_sitemap(out_dir: Path, base_url: str, hrefs: Iterable[str]) -> None:
     (out_dir / "sitemap.xml").write_text("\n".join(parts) + "\n", encoding="utf-8")
 
 
+# Content Signals (https://contentsignals.org/) permit search and real-time AI answers.
+# No ai-train signal is set: training is neither granted nor restricted here.
+CONTENT_SIGNAL = "search=yes, ai-input=yes"
+
+
 def write_robots(out_dir: Path, base_url: str) -> None:
     sitemap_url = absolute_page_url(base_url, "sitemap.xml")
     text = "\n".join(
         [
+            "# Content Signals: https://contentsignals.org/",
+            "# search=yes: build a search index and show links and short excerpts.",
+            "# ai-input=yes: use pages as real-time input for AI answers, such as grounding.",
+            "# No ai-train signal is set, so this file neither grants nor restricts training.",
+            "# Quoted and linked third-party material keeps its owners' terms.",
             "User-agent: *",
+            f"Content-Signal: {CONTENT_SIGNAL}",
             "Disallow:",
             "",
             f"Sitemap: {sitemap_url}",
@@ -1237,6 +1530,78 @@ def write_robots(out_dir: Path, base_url: str) -> None:
         ]
     )
     (out_dir / "robots.txt").write_text(text, encoding="utf-8")
+
+
+LLMS_SECTIONS = (
+    ("Start here", lambda href: href in {"index.html", "guide/index.html"}),
+    ("Questions", lambda href: href.startswith("questions/")),
+    ("Reference", lambda href: href.split("/", 1)[0] in {"glossary", "claims", "sources", "further-reading"}),
+)
+
+
+def write_llms_txt(
+    out_dir: Path,
+    base_url: str,
+    pages: List[Tuple[str, str]],
+    sources: Dict[str, Dict[str, str]],
+) -> None:
+    """Write an llms.txt index (https://llmstxt.org/) of the Markdown pages."""
+    sections: Dict[str, List[str]] = {name: [] for name, _matches in LLMS_SECTIONS}
+    sections["Optional"] = []
+    for href, label in pages:
+        entry = f"- [{markdown_link_text(label)}]({markdown_url(base_url, href)}): {page_description(href)}"
+        name = next((name for name, matches in LLMS_SECTIONS if matches(href)), "Optional")
+        sections[name].append(entry)
+
+    paper = sources.get("web_cimc_ai_cimchypothesis_pdf", {})
+    if paper.get("url"):
+        authors = paper.get("creator_or_channel")
+        sections["Reference"].append(
+            f"- [{markdown_link_text(paper.get('title') or 'Primary paper')}]({markdown_destination(paper['url'])}): "
+            f"The original paper{f' ({authors})' if authors else ''} and the primary source for this site."
+        )
+
+    lines = [
+        "# the-mind",
+        "",
+        f"> {page_description('index.html')}",
+        "",
+        "This is an independent explanatory project. Not affiliated with or endorsed by Joscha Bach. "
+        "Citations establish where an explanation comes from, not that a hypothesis is settled science.",
+        "",
+        "Each link below is the Markdown version of a page. The HTML pages also return Markdown "
+        "when a request sends `Accept: text/markdown`.",
+    ]
+    for name, entries in sections.items():
+        if entries:
+            lines.extend(["", f"## {name}", "", *entries])
+    (out_dir / "llms.txt").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def validate_markdown_output(out_dir: Path, base_url: str) -> int:
+    """Fail the build unless every sitemap page has a matching Markdown alternate."""
+    sitemap = ET.parse(out_dir / "sitemap.xml").getroot()
+    page_urls = [
+        (node.text or "").strip()
+        for node in sitemap.iter()
+        if node.tag.rsplit("}", 1)[-1] == "loc"
+    ]
+    llms = (out_dir / "llms.txt").read_text(encoding="utf-8")
+    for page_url in page_urls:
+        rel = page_url[len(base_url):] if page_url.startswith(base_url) else None
+        if rel is None or (rel and not rel.endswith("/")):
+            raise ValueError(f"Markdown alternates require directory page URLs: {page_url}")
+        md_path = out_dir / rel / "index.md"
+        if not md_path.is_file():
+            raise ValueError(f"Missing Markdown alternate for {page_url}")
+        text = md_path.read_text(encoding="utf-8")
+        if not text.startswith(f"---\ntitle: ") or f"\ncanonical_url: {yaml_string(page_url)}\n" not in text:
+            raise ValueError(f"Markdown alternate front matter does not match {page_url}")
+        if "<!--" in text:
+            raise ValueError(f"Markdown alternate leaks an HTML comment: {md_path.relative_to(out_dir)}")
+        if f"]({markdown_url(base_url, rel + 'index.html')}):" not in llms:
+            raise ValueError(f"llms.txt does not list the Markdown alternate for {page_url}")
+    return len(page_urls)
 
 
 class _SitemapPageParser(HTMLParser):
@@ -1445,6 +1810,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     search_index: List[Dict[str, object]] = []
     page_hrefs: List[str] = []
+    agent_pages: List[Tuple[str, str]] = []  # (href, label) for llms.txt
 
     def nav_for(href: str) -> str:
         return build_nav(question_nav, current_href=href, root=page_root(href))
@@ -1452,6 +1818,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     def emit(href: str, title: str, md: str, *, page_kind: str = "") -> None:
         if is_draft_markdown(md):
             return
+        agent_pages.append((href, markdown_title(md, title)))
         _html_body, text_body = emit_markdown_page(
             out_dir=out_dir,
             template=template,
@@ -1530,21 +1897,34 @@ def main(argv: Optional[List[str]] = None) -> int:
         )
 
     privacy_href = "privacy/index.html"
+    privacy_url = absolute_page_url(base_url, privacy_href)
     write(
         out_dir / privacy_href,
         render_page(
             template,
-            title="Website privacy",
+            title=WEBSITE_PRIVACY_TITLE,
             description=page_description(privacy_href),
             nav=nav_for(privacy_href),
             content=WEBSITE_PRIVACY_HTML,
             root=page_root(privacy_href),
             page_id="privacy",
-            page_url=absolute_page_url(base_url, privacy_href),
+            page_url=privacy_url,
             og_image_url=og_image_url,
         ),
     )
+    write(
+        out_dir / "privacy" / "index.md",
+        render_markdown_document(
+            title=WEBSITE_PRIVACY_TITLE,
+            description=page_description(privacy_href),
+            page_url=privacy_url,
+            body=website_privacy_markdown(base_url),
+            cited=[],
+            base_url=base_url,
+        ),
+    )
     page_hrefs.append(privacy_href)
+    agent_pages.append((privacy_href, WEBSITE_PRIVACY_TITLE))
     search_index.append(search_index_entry(privacy_href, "Website privacy", "Website privacy and analytics choice"))
 
     # Reader (legacy V1 single-page archive)
@@ -1576,6 +1956,7 @@ def main(argv: Optional[List[str]] = None) -> int:
             nav_html=nav_for("reader/index.html"),
         )
         page_hrefs.append("reader/index.html")
+        agent_pages.append(("reader/index.html", markdown_title(reader_md, "Reader / V1")))
         search_index.append(search_index_entry("reader/index.html", "Reader / V1", reader_text))
 
         for anchor_id, title, src_path, _h1 in chapter_pages:
@@ -1586,10 +1967,15 @@ def main(argv: Optional[List[str]] = None) -> int:
     (out_dir / "search_index.json").write_text(json.dumps(search_index, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
     write_sitemap(out_dir, base_url, page_hrefs)
     write_robots(out_dir, base_url)
+    write_llms_txt(out_dir, base_url, agent_pages, sources)
     sitemap_result = validate_sitemap_output(out_dir, base_url)
+    markdown_pages = validate_markdown_output(out_dir, base_url)
     write_indexnow_release(out_dir)
 
-    print(f"wrote site to {out_dir}; sitemap verified: {sitemap_result['pages']} indexable pages")
+    print(
+        f"wrote site to {out_dir}; sitemap verified: {sitemap_result['pages']} indexable pages; "
+        f"Markdown alternates verified: {markdown_pages}"
+    )
     return 0
 
 
