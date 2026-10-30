@@ -1,8 +1,11 @@
 import { deliver, SIGNALS, stageBody } from "./ingest-client.mjs";
 
 const SITE_HOSTNAME = "the-mind.xyz";
+const SITE_ORIGIN = `https://${SITE_HOSTNAME}`;
 const WWW_HOSTNAME = "www.the-mind.xyz";
 const INDEXNOW_RELEASE_PATH = "/.well-known/indexnow-release.json";
+const MARKDOWN_TYPE = "text/markdown; charset=utf-8";
+const QVALUE = /^(?:0(?:\.\d{0,3})?|1(?:\.0{0,3})?)$/;
 const OPT_OUT_COOKIE = "p0s_analytics_optout";
 const MAX_USER_AGENT = 512;
 const MAX_PATH = 500;
@@ -253,6 +256,73 @@ async function fetchAssets(request, env) {
   return env.ASSETS.fetch(request);
 }
 
+// Quality of the most specific Accept range that matches a media type (RFC 9110).
+function acceptQuality(accept, type) {
+  const [wantedType, wantedSubtype] = type.split("/");
+  let specificity = -1;
+  let quality = 0;
+  for (const range of accept.split(",")) {
+    const [media = "", ...params] = range.split(";").map((part) => part.trim().toLowerCase());
+    const [rangeType, rangeSubtype] = media.split("/");
+    const rank = media === "*/*" ? 0
+      : rangeType !== wantedType ? -1
+      : rangeSubtype === "*" ? 1
+      : rangeSubtype === wantedSubtype ? 2 : -1;
+    const q = params.find((param) => param.startsWith("q="))?.slice(2) ?? "1";
+    if (rank > specificity && QVALUE.test(q)) [specificity, quality] = [rank, Number(q)];
+  }
+  return quality;
+}
+
+// HTML stays the default; Markdown is served only when a client names it at least as highly.
+function prefersMarkdown(request) {
+  const accept = request.headers.get("Accept") || "";
+  if (!/\btext\/markdown\b/i.test(accept)) return false;
+  const markdown = acceptQuality(accept, "text/markdown");
+  return markdown > 0 && markdown >= acceptQuality(accept, "text/html");
+}
+
+function markdownHeaders(source, pagePath) {
+  const headers = new Headers(source);
+  headers.set("Content-Type", MARKDOWN_TYPE);
+  headers.set("Link", `<${SITE_ORIGIN}${pagePath}>; rel="canonical"`);
+  headers.set("X-Content-Type-Options", "nosniff");
+  return headers;
+}
+
+// The build writes index.md beside every index.html page.
+async function markdownResponse(request, env, url) {
+  const source = new URL(`${url.pathname}index.md`, url.origin);
+  const asset = await fetchAssets(new Request(source, { method: request.method, headers: request.headers }), env);
+  if (![200, 206, 304].includes(asset.status)) return null;
+  const headers = markdownHeaders(asset.headers, url.pathname);
+  headers.set("Content-Location", source.pathname);
+  headers.append("Vary", "Accept");
+  return new Response(asset.body, { status: asset.status, statusText: asset.statusText, headers });
+}
+
+function withAgentHeaders(response, url) {
+  const { pathname } = url;
+  if (response.status !== 200) return response;
+  let headers;
+  if (pathname.endsWith("/") && /\btext\/html\b/i.test(response.headers.get("Content-Type") || "")) {
+    headers = new Headers(response.headers);
+    const links = [`<${SITE_ORIGIN}${pathname}index.md>; rel="alternate"; type="text/markdown"`];
+    if (pathname === "/") links.push(`<${SITE_ORIGIN}/llms.txt>; rel="describedby"; type="text/plain"`);
+    headers.append("Link", links.join(", "));
+    headers.append("Vary", "Accept");
+  } else if (pathname.endsWith("/index.md")) {
+    headers = markdownHeaders(response.headers, pathname.slice(0, -"index.md".length));
+  } else if (pathname.endsWith(".txt")) {
+    headers = new Headers(response.headers);
+    headers.set("Content-Type", "text/plain; charset=utf-8");
+    headers.set("X-Content-Type-Options", "nosniff");
+  } else {
+    return response;
+  }
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+}
+
 async function handle(request, env, executionCtx) {
   const url = new URL(request.url);
   const hostname = url.hostname.toLowerCase();
@@ -264,6 +334,10 @@ async function handle(request, env, executionCtx) {
 
   let response;
   try {
+    if (url.pathname.endsWith("/") && ["GET", "HEAD"].includes(request.method) && prefersMarkdown(request)) {
+      const markdown = await markdownResponse(request, env, url);
+      if (markdown) return markdown;
+    }
     response = await fetchAssets(request, env);
   } catch {
     return new Response("Site assets unavailable", { status: 503, headers: responseHeaders() });
@@ -278,6 +352,7 @@ async function handle(request, env, executionCtx) {
       headers,
     });
   }
+  response = withAgentHeaders(response, url);
   const allowed = Boolean(configured(env)) && eligibleResponse(request, response);
   if (allowed) background(collect(env, "page", payloadFor(request)), executionCtx);
   return permissionResponse(response, allowed);
@@ -294,4 +369,5 @@ export {
   isRecognizableBot,
   canonicalRedirect,
   payloadFor,
+  prefersMarkdown,
 };

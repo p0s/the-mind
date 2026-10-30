@@ -65,6 +65,12 @@ class TestSiteMarkdown(unittest.TestCase):
         self.assertIn('href="./claims/index.html#clm-0001"', html_body)
         self.assertIn('href="./glossary/index.html#term-0002"', html_body)
 
+    def test_formats_emphasis_inside_link_labels(self) -> None:
+        md = "Read [*The Paper*](https://example.org/paper.pdf) and [Notes on snake_case](/guide/).\n"
+        html_body, _text = build_site.blocks_to_html(build_site.parse_blocks(md), sources={}, root="./")
+        self.assertIn('rel="noopener noreferrer"><em>The Paper</em></a>', html_body)
+        self.assertIn(">Notes on snake_case</a>", html_body)
+
     def test_claims_have_deterministic_ids(self) -> None:
         md = "## CLM-0001: Foo\n\nBar\n"
         html_body, _text = build_site.blocks_to_html(

@@ -6,6 +6,7 @@ import worker, {
   eligibleResponse,
   fetchAssets,
   payloadFor,
+  prefersMarkdown,
 } from "./worker.js";
 globalThis.HTMLRewriter = FixtureRewriter;
 
@@ -108,6 +109,108 @@ const crossOrigin = await worker.fetch(new Request("https://the-mind.xyz/analyti
   headers: { Origin: "https://evil.example" },
 }), {}, {});
 assert.equal(crossOrigin.status, 403);
+
+// Agent-readable responses: Markdown negotiation and discovery headers.
+const browserAccept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
+function agentRequest(path, accept, method = "GET") {
+  const value = new Request(`https://the-mind.xyz${path}`, {
+    method,
+    headers: { "CF-Connecting-IP": "203.0.113.9", "User-Agent": "Mozilla/5.0", ...(accept ? { Accept: accept } : {}) },
+  });
+  Object.defineProperty(value, "cf", { value: { country: "sg" } });
+  return value;
+}
+for (const [accept, expected] of [
+  ["text/markdown", true],
+  ["text/markdown, text/html;q=0.9", true],
+  ["text/markdown, */*", true],
+  ["text/html, text/markdown;q=0.5", false],
+  ["text/markdown;q=0, text/html", false],
+  ["text/*", false],
+  ["*/*", false],
+  [browserAccept, false],
+  [undefined, false],
+]) {
+  assert.equal(prefersMarkdown(agentRequest("/", accept)), expected, accept);
+}
+
+const siteFiles = new Map([
+  ["/", ["text/html", "<!doctype html><body>home</body>"]],
+  ["/index.md", ["text/markdown", "# Home\n"]],
+  ["/guide/", ["text/html", "<!doctype html><body>guide</body>"]],
+  ["/guide/index.md", ["text/markdown", "# Guide\n"]],
+  ["/llms.txt", ["text/plain", "# the-mind\n"]],
+]);
+const siteAssets = {
+  fetch: async (input) => {
+    const file = siteFiles.get(new URL(input.url).pathname);
+    if (!file) return new Response(null, { status: 404 });
+    return new Response(input.method === "HEAD" ? null : file[1], {
+      status: 200,
+      headers: { "Content-Type": file[0], "Cache-Control": "public, max-age=0, must-revalidate" },
+    });
+  },
+};
+const agentWaits = [];
+const agentEnv = {
+  ASSETS: siteAssets,
+  ANALYTICS_INGEST_URL: "https://stats.p0s.eu/ingest/v1",
+  ANALYTICS_INGEST_TOKEN: "test-token",
+};
+const agentCtx = { waitUntil: (promise) => agentWaits.push(promise) };
+
+const markdownHome = await worker.fetch(agentRequest("/", "text/markdown"), agentEnv, agentCtx);
+assert.equal(markdownHome.status, 200);
+assert.equal(markdownHome.headers.get("Content-Type"), "text/markdown; charset=utf-8");
+assert.equal(markdownHome.headers.get("Content-Location"), "/index.md");
+assert.equal(markdownHome.headers.get("Link"), '<https://the-mind.xyz/>; rel="canonical"');
+assert.equal(markdownHome.headers.get("Vary"), "Accept");
+assert.equal(markdownHome.headers.get("X-Content-Type-Options"), "nosniff");
+assert.equal(markdownHome.headers.get("Cache-Control"), "public, max-age=0, must-revalidate");
+assert.equal(await markdownHome.text(), "# Home\n");
+
+const markdownHead = await worker.fetch(agentRequest("/guide/", "text/markdown, text/html;q=0.9", "HEAD"), agentEnv, agentCtx);
+assert.equal(markdownHead.status, 200);
+assert.equal(markdownHead.headers.get("Content-Type"), "text/markdown; charset=utf-8");
+assert.equal(markdownHead.headers.get("Content-Location"), "/guide/index.md");
+assert.equal(await markdownHead.text(), "");
+
+const htmlHome = await worker.fetch(agentRequest("/", browserAccept), agentEnv, agentCtx);
+assert.equal(htmlHome.headers.get("Content-Type"), "text/html");
+assert.equal(
+  htmlHome.headers.get("Link"),
+  '<https://the-mind.xyz/index.md>; rel="alternate"; type="text/markdown", '
+    + '<https://the-mind.xyz/llms.txt>; rel="describedby"; type="text/plain"',
+);
+assert.equal(htmlHome.headers.get("Vary"), "Accept");
+assert.equal(htmlHome.headers.get("Cache-Control"), "private, no-store");
+assert.match(await htmlHome.text(), /<body data-site-measurement="allowed">home/);
+
+const htmlGuide = await worker.fetch(agentRequest("/guide/", "text/html, text/markdown;q=0.5"), agentEnv, agentCtx);
+assert.equal(htmlGuide.headers.get("Content-Type"), "text/html");
+assert.equal(htmlGuide.headers.get("Link"), '<https://the-mind.xyz/guide/index.md>; rel="alternate"; type="text/markdown"');
+assert.match(await htmlGuide.text(), /guide/);
+
+const missingMarkdown = await worker.fetch(agentRequest("/missing/", "text/markdown"), agentEnv, agentCtx);
+assert.equal(missingMarkdown.status, 404);
+assert.equal(missingMarkdown.headers.get("Link"), null);
+assert.equal(missingMarkdown.headers.get("Content-Type"), null);
+
+const directMarkdown = await worker.fetch(agentRequest("/guide/index.md"), agentEnv, agentCtx);
+assert.equal(directMarkdown.headers.get("Content-Type"), "text/markdown; charset=utf-8");
+assert.equal(directMarkdown.headers.get("Link"), '<https://the-mind.xyz/guide/>; rel="canonical"');
+assert.equal(directMarkdown.headers.get("Content-Location"), null);
+assert.equal(await directMarkdown.text(), "# Guide\n");
+
+const llmsIndex = await worker.fetch(agentRequest("/llms.txt"), agentEnv, agentCtx);
+assert.equal(llmsIndex.headers.get("Content-Type"), "text/plain; charset=utf-8");
+assert.equal(llmsIndex.headers.get("Link"), null);
+
+// Only the two ordinary HTML page views are eligible for counting.
+assert.equal(agentWaits.length, 2);
+await Promise.all(agentWaits);
+const unavailableMarkdown = await worker.fetch(agentRequest("/", "text/markdown"), {}, {});
+assert.equal(unavailableMarkdown.status, 503);
 
 globalThis.fetch = originalFetch;
 console.log("the-mind analytics edge contract: ok");
