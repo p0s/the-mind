@@ -4,6 +4,7 @@ const SITE_HOSTNAME = "the-mind.xyz";
 const SITE_ORIGIN = `https://${SITE_HOSTNAME}`;
 const WWW_HOSTNAME = "www.the-mind.xyz";
 const INDEXNOW_RELEASE_PATH = "/.well-known/indexnow-release.json";
+const AGENT_SKILLS_PREFIX = "/.well-known/agent-skills/";
 const MARKDOWN_TYPE = "text/markdown; charset=utf-8";
 const QVALUE = /^(?:0(?:\.\d{0,3})?|1(?:\.0{0,3})?)$/;
 const OPT_OUT_COOKIE = "p0s_analytics_optout";
@@ -305,7 +306,15 @@ function withAgentHeaders(response, url) {
   const { pathname } = url;
   if (response.status !== 200) return response;
   let headers;
-  if (pathname.endsWith("/") && /\btext\/html\b/i.test(response.headers.get("Content-Type") || "")) {
+  if (pathname.startsWith(AGENT_SKILLS_PREFIX)) {
+    // Public, credential-free skill files: readable by browser-based clients, kept out of search results.
+    headers = new Headers(response.headers);
+    if (pathname.endsWith("/SKILL.md")) headers.set("Content-Type", MARKDOWN_TYPE);
+    else if (pathname.endsWith(".json")) headers.set("Content-Type", "application/json");
+    headers.set("Access-Control-Allow-Origin", "*");
+    headers.set("X-Content-Type-Options", "nosniff");
+    headers.set("X-Robots-Tag", "noindex");
+  } else if (pathname.endsWith("/") && /\btext\/html\b/i.test(response.headers.get("Content-Type") || "")) {
     headers = new Headers(response.headers);
     const links = [`<${SITE_ORIGIN}${pathname}index.md>; rel="alternate"; type="text/markdown"`];
     if (pathname === "/") links.push(`<${SITE_ORIGIN}/llms.txt>; rel="describedby"; type="text/plain"`);

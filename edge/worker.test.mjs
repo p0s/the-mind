@@ -140,6 +140,8 @@ const siteFiles = new Map([
   ["/guide/", ["text/html", "<!doctype html><body>guide</body>"]],
   ["/guide/index.md", ["text/markdown", "# Guide\n"]],
   ["/llms.txt", ["text/plain", "# the-mind\n"]],
+  ["/.well-known/agent-skills/index.json", ["application/json", '{"skills":[]}\n']],
+  ["/.well-known/agent-skills/example-skill/SKILL.md", ["application/octet-stream", "---\nname: example-skill\n---\n"]],
 ]);
 const siteAssets = {
   fetch: async (input) => {
@@ -205,6 +207,41 @@ assert.equal(await directMarkdown.text(), "# Guide\n");
 const llmsIndex = await worker.fetch(agentRequest("/llms.txt"), agentEnv, agentCtx);
 assert.equal(llmsIndex.headers.get("Content-Type"), "text/plain; charset=utf-8");
 assert.equal(llmsIndex.headers.get("Link"), null);
+
+// Agent Skills discovery files keep their bytes and get explicit types, CORS and noindex.
+const skillsIndex = await worker.fetch(agentRequest("/.well-known/agent-skills/index.json"), agentEnv, agentCtx);
+assert.equal(skillsIndex.status, 200);
+assert.equal(skillsIndex.headers.get("Content-Type"), "application/json");
+assert.equal(skillsIndex.headers.get("Access-Control-Allow-Origin"), "*");
+assert.equal(skillsIndex.headers.get("X-Content-Type-Options"), "nosniff");
+assert.equal(skillsIndex.headers.get("X-Robots-Tag"), "noindex");
+assert.equal(skillsIndex.headers.get("Cache-Control"), "public, max-age=0, must-revalidate");
+assert.equal(skillsIndex.headers.get("Link"), null);
+assert.equal(await skillsIndex.text(), '{"skills":[]}\n');
+
+const skillFile = await worker.fetch(
+  agentRequest("/.well-known/agent-skills/example-skill/SKILL.md", "text/markdown"),
+  agentEnv,
+  agentCtx,
+);
+assert.equal(skillFile.headers.get("Content-Type"), "text/markdown; charset=utf-8");
+assert.equal(skillFile.headers.get("Access-Control-Allow-Origin"), "*");
+assert.equal(skillFile.headers.get("X-Robots-Tag"), "noindex");
+assert.equal(skillFile.headers.get("Link"), null);
+assert.equal(await skillFile.text(), "---\nname: example-skill\n---\n");
+
+const skillHead = await worker.fetch(
+  agentRequest("/.well-known/agent-skills/example-skill/SKILL.md", undefined, "HEAD"),
+  agentEnv,
+  agentCtx,
+);
+assert.equal(skillHead.status, 200);
+assert.equal(skillHead.headers.get("Content-Type"), "text/markdown; charset=utf-8");
+assert.equal(await skillHead.text(), "");
+
+const missingSkill = await worker.fetch(agentRequest("/.well-known/agent-skills/missing/SKILL.md"), agentEnv, agentCtx);
+assert.equal(missingSkill.status, 404);
+assert.equal(missingSkill.headers.get("Access-Control-Allow-Origin"), null);
 
 // Only the two ordinary HTML page views are eligible for counting.
 assert.equal(agentWaits.length, 2);

@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 from dataclasses import dataclass
 from html.parser import HTMLParser
 from pathlib import Path
@@ -14,6 +15,9 @@ from urllib.parse import unquote, urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 LOCAL_ATTRIBUTES = {"href", "src"}
 ALLOWED_EXTERNAL_SCHEMES = {"http", "https", "mailto", "tel"}
+# Published agent skills name their resources with absolute URLs on the production host.
+SITE_ORIGIN = "https://the-mind.xyz"
+SKILL_SITE_URL = re.compile(re.escape(SITE_ORIGIN) + r"/[^\s)>|`\"]*")
 
 
 @dataclass(frozen=True)
@@ -56,6 +60,17 @@ def parse_document(path: Path) -> DocumentParser:
     return parser
 
 
+def skill_references(dist: Path) -> list[Reference]:
+    """Site links in published agent skills, checked as path-absolute local links."""
+    references: list[Reference] = []
+    for path in sorted(dist.glob(".well-known/agent-skills/*/SKILL.md")):
+        lines = path.read_text(encoding="utf-8").splitlines()
+        for line_no, line in enumerate(lines, 1):
+            for url in SKILL_SITE_URL.findall(line):
+                references.append(Reference(path, line_no, "link", url[len(SITE_ORIGIN):].rstrip(".,;:")))
+    return references
+
+
 def external_scheme_error(value: str) -> str | None:
     parsed = urlsplit(value)
     scheme = parsed.scheme.lower()
@@ -92,9 +107,11 @@ def check_site_links(dist: Path) -> list[str]:
     documents = {path.resolve(): parse_document(path) for path in html_paths}
     identifier_cache = {path: document.identifiers for path, document in documents.items()}
     errors: list[str] = []
+    sources = [(source, document.references) for source, document in documents.items()]
+    sources += [(reference.source, [reference]) for reference in skill_references(dist)]
 
-    for source, document in documents.items():
-        for reference in document.references:
+    for source, references in sources:
+        for reference in references:
             value = reference.value
             if not value:
                 continue

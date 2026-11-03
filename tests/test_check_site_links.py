@@ -81,6 +81,32 @@ class TestCheckSiteLinks(unittest.TestCase):
 
             self.assertEqual(check_site_links.check_site_links(dist), [])
 
+    def test_checks_site_links_in_published_agent_skills(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            dist = Path(tmp)
+            (dist / "claims").mkdir()
+            (dist / "claims" / "index.html").write_text('<h2 id="clm-0001">CLM-0001</h2>', encoding="utf-8")
+            (dist / "claims" / "index.md").write_text("# Claims\n", encoding="utf-8")
+            (dist / "index.html").write_text("<p>Home</p>", encoding="utf-8")
+            skill = dist / ".well-known" / "agent-skills" / "example-skill" / "SKILL.md"
+            skill.parent.mkdir(parents=True)
+            skill.write_text(
+                "Start at https://the-mind.xyz/, then read https://the-mind.xyz/claims/index.md.\n"
+                "| Claim | https://the-mind.xyz/claims/#clm-0001 |\n"
+                "Cite the [claim](https://the-mind.xyz/claims/#clm-0001) and https://example.org/missing.\n",
+                encoding="utf-8",
+            )
+            self.assertEqual(check_site_links.check_site_links(dist), [])
+
+            skill.write_text(
+                "See https://the-mind.xyz/missing/index.md and https://the-mind.xyz/claims/#clm-9999.\n",
+                encoding="utf-8",
+            )
+            errors = check_site_links.check_site_links(dist)
+            self.assertEqual(len(errors), 2)
+            self.assertTrue(any("SKILL.md:1: missing local target for link: /missing/index.md" in e for e in errors))
+            self.assertTrue(any("missing fragment #clm-9999 in claims/index.html" in e for e in errors))
+
 
 if __name__ == "__main__":
     unittest.main()

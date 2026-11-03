@@ -21,6 +21,8 @@ Archive:
 - reader/ (legacy V1 single-page reader)
 
 Every page also gets an index.md Markdown alternate, and llms.txt indexes them.
+Agent skills in site/agent-skills/ are published unchanged under
+/.well-known/agent-skills/ with a discovery index of their SHA-256 digests.
 
 The site keeps provenance as links to original sources (URL + locator).
 """
@@ -54,6 +56,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE_BASE = ROOT / "site" / "templates" / "base.html"
 ASSETS_DIR = ROOT / "site" / "assets"
 INDEXNOW_KEY_DIR = ROOT / "site" / "indexnow"
+AGENT_SKILLS_DIR = ROOT / "site" / "agent-skills"
 HOME_MD = ROOT / "site" / "home.md"
 
 CHAPTERS_DIR = ROOT / "manuscript" / "chapters"
@@ -1544,9 +1547,17 @@ def write_llms_txt(
     base_url: str,
     pages: List[Tuple[str, str]],
     sources: Dict[str, Dict[str, str]],
+    skills: List[Dict[str, str]],
 ) -> None:
-    """Write an llms.txt index (https://llmstxt.org/) of the Markdown pages."""
+    """Write an llms.txt index (https://llmstxt.org/) of the Markdown pages and agent skills."""
     sections: Dict[str, List[str]] = {name: [] for name, _matches in LLMS_SECTIONS}
+    sections["Agent skills"] = [
+        f"- [Agent Skills index]({urljoin(base_url, AGENT_SKILLS_PATH + '/index.json')}): "
+        "The task instructions below with their SHA-256 digests, in the Agent Skills discovery format."
+    ] + [
+        f"- [{markdown_link_text(skill['name'])}]({urljoin(base_url, skill['url'])}): {skill['description']}"
+        for skill in skills
+    ]
     sections["Optional"] = []
     for href, label in pages:
         entry = f"- [{markdown_link_text(label)}]({markdown_url(base_url, href)}): {page_description(href)}"
@@ -1569,8 +1580,9 @@ def write_llms_txt(
         "This is an independent explanatory project. Not affiliated with or endorsed by Joscha Bach. "
         "Citations establish where an explanation comes from, not that a hypothesis is settled science.",
         "",
-        "Each link below is the Markdown version of a page. The HTML pages also return Markdown "
-        "when a request sends `Accept: text/markdown`.",
+        "Page links below go to the Markdown version of each page. The HTML pages also return Markdown "
+        "when a request sends `Accept: text/markdown`. Agent skills are task instructions for AI agents "
+        "that use these pages.",
     ]
     for name, entries in sections.items():
         if entries:
@@ -1602,6 +1614,77 @@ def validate_markdown_output(out_dir: Path, base_url: str) -> int:
         if f"]({markdown_url(base_url, rel + 'index.html')}):" not in llms:
             raise ValueError(f"llms.txt does not list the Markdown alternate for {page_url}")
     return len(page_urls)
+
+
+# Agent Skills discovery (https://github.com/cloudflare/agent-skills-discovery-rfc, v0.2.0)
+# with SKILL.md files in the Agent Skills format (https://agentskills.io/specification).
+AGENT_SKILLS_PATH = ".well-known/agent-skills"
+AGENT_SKILLS_SCHEMA = "https://schemas.agentskills.io/discovery/0.2.0/schema.json"
+SKILL_NAME_RX = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
+SKILL_FIELD_LIMITS = {"name": 64, "description": 1024, "compatibility": 500}
+# One-line values without YAML indicators or quoting, so every YAML parser reads them alike.
+SKILL_VALUE_RX = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9 .,;'()/?!-]*[A-Za-z0-9.)?!])?")
+
+
+def parse_skill_front_matter(text: str, source: Path) -> Dict[str, str]:
+    """Return the front matter of a SKILL.md, failing on anything a skill client could misread."""
+    lines = text.split("\n")
+    if lines[0] != "---" or "---" not in lines[1:]:
+        raise ValueError(f"{source} must start with YAML front matter")
+    end = lines.index("---", 1)
+    fields: Dict[str, str] = {}
+    for line in lines[1:end]:
+        key, _sep, value = line.partition(": ")
+        if key not in SKILL_FIELD_LIMITS or key in fields:
+            raise ValueError(f"{source}: unexpected or repeated front matter line {line!r}")
+        if SKILL_VALUE_RX.fullmatch(value) is None or len(value) > SKILL_FIELD_LIMITS[key]:
+            raise ValueError(f"{source}: {key} must be one plain line of at most {SKILL_FIELD_LIMITS[key]} characters")
+        fields[key] = value
+    if SKILL_NAME_RX.fullmatch(fields.get("name", "")) is None or fields["name"] != source.parent.name:
+        raise ValueError(f"{source}: name must use lowercase words joined by single hyphens and match its directory")
+    if "description" not in fields:
+        raise ValueError(f"{source}: description is required")
+    if not "\n".join(lines[end + 1:]).strip() or len(lines) >= 500:
+        raise ValueError(f"{source}: instructions must follow the front matter in under 500 lines")
+    return fields
+
+
+def write_agent_skills(out_dir: Path) -> List[Dict[str, str]]:
+    """Publish each SKILL.md byte for byte and index it with the digest of those bytes."""
+    skills: List[Dict[str, str]] = []
+    for source in sorted(AGENT_SKILLS_DIR.glob("*/SKILL.md")):
+        data = source.read_bytes()
+        fields = parse_skill_front_matter(data.decode("utf-8"), source)
+        rel = f"{AGENT_SKILLS_PATH}/{fields['name']}/SKILL.md"
+        (out_dir / rel).parent.mkdir(parents=True, exist_ok=True)
+        (out_dir / rel).write_bytes(data)
+        skills.append(
+            {
+                "name": fields["name"],
+                "type": "skill-md",
+                "description": fields["description"],
+                "url": f"/{rel}",
+                "digest": f"sha256:{hashlib.sha256(data).hexdigest()}",
+            }
+        )
+    if not skills:
+        raise ValueError(f"No agent skills found in {AGENT_SKILLS_DIR}")
+    index = {"$schema": AGENT_SKILLS_SCHEMA, "skills": skills}
+    write(out_dir / AGENT_SKILLS_PATH / "index.json", json.dumps(index, indent=2) + "\n")
+    return skills
+
+
+def validate_agent_skills_output(out_dir: Path) -> int:
+    """Fail the build unless every indexed skill file still matches its digest.
+
+    scripts/check_site_links.py checks the site links inside the skills.
+    """
+    index = json.loads((out_dir / AGENT_SKILLS_PATH / "index.json").read_text(encoding="utf-8"))
+    for skill in index["skills"]:
+        data = (out_dir / skill["url"].lstrip("/")).read_bytes()
+        if skill["digest"] != f"sha256:{hashlib.sha256(data).hexdigest()}":
+            raise ValueError(f"Agent skill digest does not match {skill['url']}")
+    return len(index["skills"])
 
 
 class _SitemapPageParser(HTMLParser):
@@ -1967,14 +2050,16 @@ def main(argv: Optional[List[str]] = None) -> int:
     (out_dir / "search_index.json").write_text(json.dumps(search_index, ensure_ascii=True, indent=2) + "\n", encoding="utf-8")
     write_sitemap(out_dir, base_url, page_hrefs)
     write_robots(out_dir, base_url)
-    write_llms_txt(out_dir, base_url, agent_pages, sources)
+    agent_skills = write_agent_skills(out_dir)
+    write_llms_txt(out_dir, base_url, agent_pages, sources, agent_skills)
     sitemap_result = validate_sitemap_output(out_dir, base_url)
     markdown_pages = validate_markdown_output(out_dir, base_url)
+    skill_count = validate_agent_skills_output(out_dir)
     write_indexnow_release(out_dir)
 
     print(
         f"wrote site to {out_dir}; sitemap verified: {sitemap_result['pages']} indexable pages; "
-        f"Markdown alternates verified: {markdown_pages}"
+        f"Markdown alternates verified: {markdown_pages}; agent skills verified: {skill_count}"
     )
     return 0
 
