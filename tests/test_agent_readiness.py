@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import hashlib
+import json
 import re
 import sys
 import tempfile
@@ -13,8 +15,11 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 
 import build_site  # noqa: E402
+import check_site_links  # noqa: E402
 
 BASE_URL = "https://the-mind.xyz/"
+SKILLS_DIR = ROOT / "site" / "agent-skills"
+ANY_URL = re.compile(r"https?://[^\s)>|`\"]+")
 
 
 class ReadingBody(HTMLParser):
@@ -182,6 +187,102 @@ class TestAgentReadiness(unittest.TestCase):
         )
         self.assertEqual(build_site.markdown_link_text("A [draft] title"), "A \\[draft\\] title")
         self.assertEqual(build_site.markdown_destination("https://example.org/a b"), "<https://example.org/a%20b>")
+
+    def test_agent_skills_index_follows_the_discovery_rfc(self) -> None:
+        index = json.loads((self.dist / ".well-known/agent-skills/index.json").read_text(encoding="utf-8"))
+        self.assertEqual(set(index), {"$schema", "skills"})
+        self.assertEqual(index["$schema"], "https://schemas.agentskills.io/discovery/0.2.0/schema.json")
+        names = sorted(path.parent.name for path in SKILLS_DIR.glob("*/SKILL.md"))
+        self.assertEqual([skill["name"] for skill in index["skills"]], names)
+        self.assertEqual(len(names), 2)
+        for skill in index["skills"]:
+            with self.subTest(skill=skill["name"]):
+                self.assertEqual(set(skill), {"name", "type", "description", "url", "digest"})
+                self.assertRegex(skill["name"], r"^(?!.*--)[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$")
+                self.assertEqual(skill["type"], "skill-md")
+                self.assertEqual(skill["url"], f"/.well-known/agent-skills/{skill['name']}/SKILL.md")
+                source = SKILLS_DIR / skill["name"] / "SKILL.md"
+                published = (self.dist / skill["url"].lstrip("/")).read_bytes()
+                self.assertEqual(published, source.read_bytes())
+                self.assertEqual(skill["digest"], f"sha256:{hashlib.sha256(published).hexdigest()}")
+                front = build_site.parse_skill_front_matter(published.decode("utf-8"), source)
+                self.assertEqual(skill["description"], front["description"])
+                self.assertTrue(published.isascii())
+
+    def test_skill_front_matter_rejects_values_clients_could_misread(self) -> None:
+        source = SKILLS_DIR / "example-skill" / "SKILL.md"
+        valid = "---\nname: example-skill\ndescription: Do one thing. Use when asked.\n---\n\n# Example\n"
+        self.assertEqual(build_site.parse_skill_front_matter(valid, source)["name"], "example-skill")
+        for invalid in (
+            valid.replace("name: example-skill", "name: Example-Skill"),
+            valid.replace("name: example-skill", "name: other-skill"),
+            valid.replace("name: example-skill", "name: example--skill"),
+            valid.replace("Do one thing.", "Note: do one thing."),
+            valid.replace("Do one thing.", "'Do one thing.'"),
+            valid.replace("description: ", "summary: "),
+            valid.replace("# Example\n", ""),
+            "﻿" + valid,
+        ):
+            with self.subTest(front_matter=invalid[:70]):
+                with self.assertRaises(ValueError):
+                    build_site.parse_skill_front_matter(invalid, source)
+
+    def test_agent_skills_use_only_public_site_resources(self) -> None:
+        for path in sorted((self.dist / ".well-known/agent-skills").glob("*/SKILL.md")):
+            text = path.read_text(encoding="utf-8")
+            with self.subTest(skill=path.parent.name):
+                hosts = {urlsplit(url).hostname for url in ANY_URL.findall(text)}
+                self.assertLessEqual(hosts, {"the-mind.xyz", "cimc.ai"})
+                self.assertIn("https://the-mind.xyz/llms.txt", text)
+                self.assertIn("not affiliated with or endorsed by Joscha Bach", text)
+                self.assertIn("Do not work around it.", text)
+                self.assertNotRegex(text, r"/Users/|/home/|localhost|127\.0\.0\.1|analytics")
+        self.assertEqual(build_site.validate_agent_skills_output(self.dist), 2)
+        self.assertTrue(check_site_links.skill_references(self.dist))
+        self.assertEqual(check_site_links.check_site_links(self.dist), [])
+
+    def test_skill_validation_rejects_a_stale_digest(self) -> None:
+        with tempfile.TemporaryDirectory(prefix="the-mind-skill-check-") as temporary:
+            dist = Path(temporary)
+            skill = dist / ".well-known/agent-skills/example-skill/SKILL.md"
+            skill.parent.mkdir(parents=True)
+            skill.write_text("---\nname: example-skill\n---\n", encoding="utf-8")
+            entry = {"name": "example-skill", "url": "/.well-known/agent-skills/example-skill/SKILL.md"}
+            index = dist / ".well-known/agent-skills/index.json"
+            entry["digest"] = f"sha256:{hashlib.sha256(skill.read_bytes()).hexdigest()}"
+            index.write_text(json.dumps({"skills": [entry]}), encoding="utf-8")
+            self.assertEqual(build_site.validate_agent_skills_output(dist), 1)
+            skill.write_text("---\nname: example-skill\n---\nChanged.\n", encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "digest does not match"):
+                build_site.validate_agent_skills_output(dist)
+
+    def test_llms_txt_lists_the_agent_skills(self) -> None:
+        llms = (self.dist / "llms.txt").read_text(encoding="utf-8")
+        index = json.loads((self.dist / ".well-known/agent-skills/index.json").read_text(encoding="utf-8"))
+        self.assertIn(
+            "\n## Agent skills\n\n- [Agent Skills index](https://the-mind.xyz/.well-known/agent-skills/index.json): ",
+            llms,
+        )
+        for skill in index["skills"]:
+            self.assertIn(f"\n- [{skill['name']}](https://the-mind.xyz{skill['url']}): {skill['description']}\n", llms)
+        self.assertLess(llms.index("\n## Agent skills\n"), llms.index("\n## Optional\n"))
+
+    def test_agent_skill_examples_match_the_published_pages(self) -> None:
+        skills = self.dist / ".well-known/agent-skills"
+        claims = (self.dist / "claims/index.md").read_text(encoding="utf-8")
+        trace = (skills / "trace-machine-consciousness-claims/SKILL.md").read_text(encoding="utf-8")
+        example = trace.split("```markdown\n", 1)[1].split("\n```", 1)[0]
+        self.assertIn(example, claims)
+        for label in ("Primary paper", "Supporting source", "Project synthesis", "Open question"):
+            self.assertIn(f"- **{label}:**", claims)
+        self.assertIn("Whether any present LLM has qualia remains an **Open question**.", claims)
+        self.assertIn("## 9) What this does not settle", (self.dist / "guide/index.md").read_text(encoding="utf-8"))
+        llms = (self.dist / "llms.txt").read_text(encoding="utf-8")
+        self.assertIn("not established by current AI performance or fluent self-report alone", llms)
+        explain = (skills / "explain-machine-consciousness-hypothesis/SKILL.md").read_text(encoding="utf-8")
+        for title in ("Could AI be conscious?", "Do LLMs have qualia?"):
+            self.assertIn(f'"{title}"', explain)
+            self.assertIn(f"- [{title}](", llms)
 
 
 if __name__ == "__main__":

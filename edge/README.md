@@ -92,6 +92,33 @@ the Markdown alternate in a `Link` header and `Vary: Accept`; the homepage also
 links `llms.txt` with `rel="describedby"`. Markdown responses are not counted as
 page views. The site publishes no MCP, A2A, OAuth, API catalog or payment
 metadata, so those well-known paths keep returning 404.
+[agent-integrations.md](agent-integrations.md) records why, and what would
+change each decision.
+
+## Agent skills
+
+The build copies each `site/agent-skills/<name>/SKILL.md` byte for byte to
+`/.well-known/agent-skills/<name>/SKILL.md` and writes
+`/.well-known/agent-skills/index.json` in the Agent Skills discovery format
+v0.2.0, with the SHA-256 digest of each file. `llms.txt` lists the index and
+the skills. Both skills describe read-only work with the public pages:
+explaining the hypothesis with citations, and tracing a claim to the claims
+ledger and the original source locator.
+
+The build fails if a skill's front matter is not a plain one-line `name`,
+`description` and optional `compatibility`, if a name does not match its
+directory, or if a digest does not match. `scripts/check_site_links.py` fails
+if a skill links to a page or anchor that the build did not produce. The tests
+also check that the skills' examples still match the published claims ledger
+and pages, so update a skill when you change the text it quotes.
+
+The Worker serves `SKILL.md` as `text/markdown; charset=utf-8` and the index as
+`application/json`, with `Access-Control-Allow-Origin: *`,
+`X-Content-Type-Options: nosniff` and `X-Robots-Tag: noindex`. Caching stays the
+asset default (`public, max-age=0, must-revalidate` with an ETag), so the index
+and the files it describes revalidate together. Missing skills return 404. Skill
+files are not page views and are not in the sitemap, so they do not change the
+pages that IndexNow tracks.
 
 ## Measurement contract
 
